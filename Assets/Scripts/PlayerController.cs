@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using EnhancedUI.EnhancedScroller;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public enum GameStatus
 {
     DIGGING,
     MENU,
+    ITEM,
 }
 
 public class Define
@@ -26,7 +28,7 @@ public class Define
     public static Vector2[] directions = { new Vector2(1, 1), new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1), new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 0) };
 }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
     [SerializeField] private float speed;
     [SerializeField] private GroundController groundController;
@@ -38,6 +40,13 @@ public class PlayerController : MonoBehaviour
     private int currentItemNum;
 
     private Player player;
+
+    // アイテム関係 ======================
+    private List<CellData> itemCellData;
+
+    public EnhancedScroller itemPanel;
+    public EnhancedScrollerCellView cellViewPrefab;
+    public float cellSize = 100f;
 
     // Start is called before the first frame update
     private void Start()
@@ -160,9 +169,13 @@ public class PlayerController : MonoBehaviour
             }
         }
         // メインパネルを選択中だったら
-        if (currentGameStatus == GameStatus.MENU)
+        else if (currentGameStatus == GameStatus.MENU)
         {
             HandleMenuSelect();
+        }
+        else if (currentGameStatus == GameStatus.ITEM)
+        {
+            HandleItemSelect();
         }
     }
 
@@ -187,21 +200,84 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             // メニューを選択
-            if (Input.GetKeyDown(KeyCode.Escape))
+            // アイテムコマンドだったら
+            if (currentMenuCommandNum == ((int)MenuCommand.ITEM))
             {
-                // メニュー画面を閉じる
+                // アイテムパネルを開く
+                menu.ActivateItemPanel(true);
+                currentGameStatus = GameStatus.ITEM;
                 menu.ActivateMenuPanel(false);
-                currentGameStatus = GameStatus.DIGGING;
+                InitItem();
             }
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // メニュー画面を閉じる
+            menu.ActivateMenuPanel(false);
+            currentGameStatus = GameStatus.DIGGING;
+        }
+    }
+
+    private void HandleItemSelect()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // アイテム画面を閉じてメニュー画面を開く
+            menu.ActivateMenuPanel(true);
+            menu.ActivateItemPanel(false);
+            currentGameStatus = GameStatus.MENU;
+        }
+    }
+
+    // アイテム関係 ===========
+
+    private void InitItem()
+    {
+        itemPanel.Delegate = this;
+        LoadItemData();
+    }
+
+    // アイテムのロード
+    private void LoadItemData()
+    {
+        itemCellData = new List<CellData>();
+        for (int i = 0; i < player.Items.Count; i++)
+        {
+            Debug.Log(player.Items[i].ItemBase.ItemName);
+            itemCellData.Add(new CellData()
+            {
+                cellText = player.Items[i].ItemBase.ItemName,
+            });
+        }
+        itemPanel.ReloadData();
+    }
+
+    public int GetNumberOfCells(EnhancedScroller playerItemPanel)
+    {
+        return itemCellData.Count;
+    }
+
+    public float GetCellViewSize(EnhancedScroller playerItemPanel, int dataIndex)
+    {
+        return cellSize;
+    }
+
+    // 表示するセルの取得
+    public EnhancedScrollerCellView GetCellView(EnhancedScroller playerItemPanel, int dataIndex, int cellIndex)
+    {
+        CellView cell = playerItemPanel.GetCellView(cellViewPrefab) as CellView;
+        cell.name = "Cell" + dataIndex.ToString();
+        cell.SetData(itemCellData[dataIndex]);
+        return cell;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        /*
         for (int i = 0; i < player.Items.Count; i++)
         {
             Debug.Log(player.Items[i].ItemBase.ItemName + ":" + player.Items[i].ItemCount);
-        }
+        }*/
         // 衝突したのがアイテムだったら
         if (other.tag == "Item")
         {
@@ -228,5 +304,6 @@ public class PlayerController : MonoBehaviour
             // idが早い順に並べる
             player.Items.Sort((x, y) => y.Id - x.Id);
         }
+        LoadItemData();
     }
 }
