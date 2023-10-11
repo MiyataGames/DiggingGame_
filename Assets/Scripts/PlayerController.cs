@@ -23,7 +23,7 @@ public class Define
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] private GroundController groundController;
+    //[SerializeField] private GroundController groundController;
     private Define.DirectionNumber currentDirectionNumber;
 
     private bool ajustPosition = false;
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
+        //groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
     }
 
     // Update is called once per frame
@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(-1, 1, 0).normalized * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.LEFT_UP;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+           // groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
         else
         //D+W：右上
@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(1, 1, 0).normalized * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.RIGHT_UP;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+           // groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
         else
         // A：左
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(-1, 0, 0) * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.LEFT;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+            //groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
         else
         // S：下
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(0, -1, 0) * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.DOWN;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+           // groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
         else
         // D：右
@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(1, 0, 0) * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.RIGHT;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+           // groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
         else
         // 左下
@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(-1, -1, 0).normalized * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.LEFT_DOWN;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+           // groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
         else
         // 右下
@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
         {
             this.transform.position += new Vector3(1, -1, 0).normalized * speed * Time.deltaTime;
             currentDirectionNumber = Define.DirectionNumber.RIGHT_DOWN;
-            groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
+           // groundController.DigHoleAllTexture(transform.position, currentDirectionNumber);
         }
 
         // 移動しているキーを話したら
