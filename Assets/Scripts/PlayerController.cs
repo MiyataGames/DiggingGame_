@@ -42,11 +42,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private Player player;
 
     // アイテム関係 ======================
-    private List<CellData> itemCellData;
+    private List<ItemCellData> itemCellData;
 
     public EnhancedScroller itemPanel;
     public EnhancedScrollerCellView cellViewPrefab;
     public float cellSize = 100f;
+
+    // アイテムの選択されているインデックス番号
+    private int selectedItemIndex;
 
     // Start is called before the first frame update
     private void Start()
@@ -54,6 +57,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         currentGameStatus = GameStatus.DIGGING;
         currentMenuCommandNum = 0;
         currentItemNum = 0;
+        selectedItemIndex = 0;
         groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
         player = new Player("マオ");
     }
@@ -220,6 +224,39 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void HandleItemSelect()
     {
+        bool selectionChanged = false;
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            // 値を範囲内にする
+            selectedItemIndex = Mathf.Clamp(selectedItemIndex - 1, 0, itemCellData.Count - 1);
+            selectionChanged = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellData.Count - 1);
+            selectionChanged = true;
+        }
+
+        // 選択中
+        if (selectionChanged)
+        {
+            for (int i = 0; i < itemCellData.Count; i++)
+            {
+                itemCellData[i].isSelected = (i == selectedItemIndex);
+            }
+            // アクティブセルに対してUIの更新をする
+            itemPanel.RefreshActiveCellViews();
+
+            if (selectedItemIndex >= itemPanel.EndCellViewIndex)
+            {
+                itemPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
+            }
+            else if (selectedItemIndex <= itemPanel.StartCellViewIndex)
+            {
+                itemPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // アイテム画面を閉じてメニュー画面を開く
@@ -235,18 +272,21 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         itemPanel.Delegate = this;
         LoadItemData();
+        itemPanel.RefreshActiveCellViews();
     }
 
     // アイテムのロード
     private void LoadItemData()
     {
-        itemCellData = new List<CellData>();
+        itemCellData = new List<ItemCellData>();
         for (int i = 0; i < player.Items.Count; i++)
         {
             Debug.Log(player.Items[i].ItemBase.ItemName);
-            itemCellData.Add(new CellData()
+            itemCellData.Add(new ItemCellData()
             {
-                cellText = player.Items[i].ItemBase.ItemName,
+                isSelected = i == selectedItemIndex,// 選択されているか
+                itemText = player.Items[i].ItemBase.ItemName,
+                itemCountText = player.Items[i].ItemCount.ToString()
             });
         }
         itemPanel.ReloadData();
@@ -265,7 +305,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // 表示するセルの取得
     public EnhancedScrollerCellView GetCellView(EnhancedScroller playerItemPanel, int dataIndex, int cellIndex)
     {
-        CellView cell = playerItemPanel.GetCellView(cellViewPrefab) as CellView;
+        ItemCellView cell = playerItemPanel.GetCellView(cellViewPrefab) as ItemCellView;
         cell.name = "Cell" + dataIndex.ToString();
         cell.SetData(itemCellData[dataIndex]);
         return cell;
