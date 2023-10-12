@@ -13,12 +13,14 @@ public class scop : MonoBehaviour
         if (isRotating)
         {
             // スペースキーが押されたら回転を停止
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetMouseButtonDown(0))
             {
+                Debug.Log("回転停止");
                 isRotating = false;
             }
             else
             {
+                Debug.Log("回転中");
                 // 親オブジェクトの位置を中心に回転
                 transform.RotateAround(transform.parent.position, Vector3.forward, rotationSpeed * Time.deltaTime);
             }
@@ -26,8 +28,9 @@ public class scop : MonoBehaviour
         else
         {
             // スペースキーが押されたら回転を開始
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetMouseButtonDown(0))
             {
+                Debug.Log("回転開始");
                 isRotating = true;
             }
         }

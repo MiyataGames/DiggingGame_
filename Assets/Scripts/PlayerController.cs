@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Define
 {
@@ -22,36 +24,55 @@ public class Define
 
 public class PlayerController : MonoBehaviour
 {
+
     [SerializeField] private float speed;
-    //[SerializeField] private GroundController groundController;
-    private Define.DirectionNumber currentDirectionNumber;
+    [SerializeField] private float jumpPower;
 
-    private bool ajustPosition = false;
-
-    public Rigidbody2D rb;
+    private Rigidbody2D rb;
+    private float vx;
+    private float vy;
+    private bool pushFlag;
+    private bool jumpFlag;
+    private bool groundFlag;
 
     // Start is called before the first frame update
     private void Start()
     {
         //groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
-
+        rb = GetComponent<Rigidbody2D>();
 
     }
 
     // Update is called once per frame
     private void Update()
     {
-        // 移動
-        /*
-        // W：上
-        if (Input.GetKey(KeyCode.W))
-        {
-            this.transform.position += new Vector3(0, 1, 0) * speed * Time.deltaTime;
-        }*/
 
+        vx = 0;
+        vy = 0;
+        
+        // A：左
+        if (Input.GetKey(KeyCode.A))
+        {
+            vx = -speed;
+        }
+        else
+        // D：右
+        if (Input.GetKey(KeyCode.D))
+        {
+            vx = speed;
+        }
+
+        if(Input.GetKey("space") && groundFlag == true){
+            if(pushFlag == false){
+                jumpFlag = true;
+                pushFlag = true;
+            }
+        }else{
+            pushFlag = false;
+        }
         
         // サーチ
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))                     
         {
             // サーチ機能
         }
@@ -68,18 +89,21 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        // A：左
-        if (Input.GetKey(KeyCode.A))
-        {
-            rb.velocity = new Vector3(-speed,0, 0);
-        }
-        else
-        // D：右
-        if (Input.GetKey(KeyCode.D))
-        {
-            rb.velocity = new Vector3(speed,0, 0);
-        }
         
+        rb.velocity = new Vector2(vx,rb.velocity.y);
+
+        if(jumpFlag == true){
+            rb.AddForce(new Vector2(0,jumpPower),ForceMode2D.Impulse);
+            jumpFlag = false;
+        }
     
+    }
+
+    void OnTriggerStay2D(Collider2D other){
+        groundFlag = true;
+    }
+
+    void OnTriggerExit2D(Collider2D other){
+        groundFlag = false;
     }
 }

@@ -46,7 +46,7 @@ public class soil : MonoBehaviour
                 //衝突位置
                 Vector2 hitPos = (Vector2)point.point;
                 var tilePos = soilTilemap.WorldToCell(hitPos);
-                Debug.Log("dig: " + tilePos);
+                //Debug.Log("dig: " + tilePos);
                 //Instantiate(hitObj,hitPos,Quaternion.identity);
                 soilTilemap.SetTile(tilePos, null);
             }
