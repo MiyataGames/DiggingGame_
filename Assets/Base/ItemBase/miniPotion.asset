@@ -9,13 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46df081c9562fdf49bafd25df5d9c526, type: 3}
+  m_Script: {fileID: 11500000, guid: b7a83985bdc27184087865a5f318f347, type: 3}
   m_Name: miniPotion
   m_EditorClassIdentifier: 
-  itemName: "\u5C0F\u3055\u3044\u30DD\u30FC\u30B7\u30E7\u30F3"
+  itemName: 
   description: 
-  id: 1
-  itemType: 1
+  id: 0
+  itemType: 0
   isAll: 0
-  isHeal: 0
-  healHp: 0
+  healPoint: 0

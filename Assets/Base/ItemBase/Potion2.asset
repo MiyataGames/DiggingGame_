@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a83985bdc27184087865a5f318f347, type: 3}
   m_Name: Potion2
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: "\u56DE\u5FA9\u85AC"
   description: 
   id: 0
-  itemType: 0
+  itemType: 2
   isAll: 0
-  isHeal: 0
-  healHp: 0
-  healPoint: 0
+  healPoint: 10

@@ -347,7 +347,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
             if (Input.GetKeyDown(KeyCode.Return))
-            {                // アイテムの残りが0だったら
+            {   // アイテムの残りが0だったら
                 if (players[0].Items[selectedItemIndex].ItemCount == 0)
                 {
                     Debug.Log("使えないよ");
@@ -367,8 +367,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // 0のものをアイテムリストから除外する
-                players[0].Items.RemoveAt(selectedItemIndex);
-                selectedItemIndex--;
+                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                {
+                    players[0].Items.RemoveAt(selectedItemIndex);
+                    if (selectedItemIndex != 0)
+                    {
+                        selectedItemIndex--;
+                    }
+                }
                 // アイテムパネルの更新
                 LoadItemData();
                 itemPanel.RefreshActiveCellViews();
