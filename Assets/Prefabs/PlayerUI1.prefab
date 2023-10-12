@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 4503451891278375293}
   - component: {fileID: 4503451891278375291}
   - component: {fileID: 4503451891278375292}
+  - component: {fileID: 2367052802753222425}
   m_Layer: 5
   m_Name: SPFilldImage
   m_TagString: Untagged
@@ -156,6 +157,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2367052802753222425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4503451891278375294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 654350ca3cbd41049bf8120c9c94756d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spBar: {fileID: 4503451891278375292}
+  spText: {fileID: 4503451893177933939}
+  maxSpText: {fileID: 4503451892359072624}
 --- !u!1 &4503451891293388232
 GameObject:
   m_ObjectHideFlags: 0
@@ -487,6 +503,7 @@ GameObject:
   - component: {fileID: 4503451892244974336}
   - component: {fileID: 4503451892244974350}
   - component: {fileID: 4503451892244974351}
+  - component: {fileID: 2416687030397759781}
   m_Layer: 5
   m_Name: HPFilldImage
   m_TagString: Untagged
@@ -552,6 +569,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2416687030397759781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4503451892244974337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e5ff3cead545d545ac6aaa2c4927b86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBar: {fileID: 4503451892244974351}
+  hpText: {fileID: 4503451891261755139}
+  maxHpText: {fileID: 4503451891408590323}
 --- !u!1 &4503451892359072626
 GameObject:
   m_ObjectHideFlags: 0
@@ -979,3 +1011,5 @@ MonoBehaviour:
   statusPlayerMaxSpText: {fileID: 4503451892359072624}
   statusIconImage: {fileID: 4503451891880599629}
   frame: {fileID: 4503451893130338482}
+  playerHpBar: {fileID: 2416687030397759781}
+  playerSpBar: {fileID: 2367052802753222425}

@@ -30,6 +30,8 @@ public class PlayerStatusUIsManager : MonoBehaviour
                 players[i].playerUI = playerFieldUI;
                 // ステータス画面に情報を設定する
                 playerFieldUI.SetPlayerStatus(players[i]);
+                // UIの更新
+                players[i].playerUI.UpdateHpSp();
             }
         }
         playersCount = players.Count;
@@ -43,5 +45,15 @@ public class PlayerStatusUIsManager : MonoBehaviour
             playerFieldUIs[i].SetActivateSelectedFrame(false);
         }
         playerFieldUIs[index].SetActivateSelectedFrame(true);
+    }
+
+    // 全選択
+    public void selectStatusAll(int index)
+    {
+        // フレームをオフ
+        for (int i = 0; i < playerFieldUIs.Count; i++)
+        {
+            playerFieldUIs[i].SetActivateSelectedFrame(true);
+        }
     }
 }

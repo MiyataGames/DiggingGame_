@@ -64,6 +64,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテムの選択されているインデックス番号
     private int selectedItemIndex;
 
+    // アイテムのターゲットのインデックス番号
+    private int selectedItemTargetIndex;
+
     // ステータス関係 ==========================
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
@@ -79,6 +82,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         currentItemNum = 0;
         selectedItemIndex = 0;
         selectedStatusIndex = 0;
+        selectedItemTargetIndex = 0;
         groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
         Player player = new Player(playerBase[0], 1);
         players.Add(player);
@@ -89,28 +93,27 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     private void Update()
     {
-        // サーチ
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            // サーチ機能
-        }
-        // メニュー画面
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            // メニュー画面をひらく
-            currentGameStatus = GameStatus.MENU;
-            menu.ActivateMenuPanel(true);
-            menu.ActivateMenuSelectArrow(MenuCommand.ITEM);
-        }
-        // マップ
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            // マップを開く
-        }
-
         // 穴掘り中だったら
         if (currentGameStatus == GameStatus.DIGGING)
         {
+            // サーチ
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                // サーチ機能
+            }
+            // メニュー画面
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                // メニュー画面をひらく
+                currentGameStatus = GameStatus.MENU;
+                menu.ActivateMenuPanel(true);
+                menu.ActivateMenuSelectArrow(MenuCommand.ITEM);
+            }
+            // マップ
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                // マップを開く
+            }
             // 移動
             /*
             // W：上
@@ -258,60 +261,123 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void HandleItemSelect()
     {
-        bool selectionChanged = false;
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (currentItemUseStatus == ItemUseStatus.SELECT_ITEM)
         {
-            // 値を範囲内にする
-            selectedItemIndex = Mathf.Clamp(selectedItemIndex - 1, 0, itemCellData.Count - 1);
-            selectionChanged = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellData.Count - 1);
-            selectionChanged = true;
-        }
-
-        // 選択中
-        if (selectionChanged)
-        {
-            for (int i = 0; i < itemCellData.Count; i++)
+            bool selectionChanged = false;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                itemCellData[i].isSelected = (i == selectedItemIndex);
+                // 値を範囲内にする
+                selectedItemIndex = Mathf.Clamp(selectedItemIndex - 1, 0, itemCellData.Count - 1);
+                selectionChanged = true;
             }
-            // アクティブセルに対してUIの更新をする
-            itemPanel.RefreshActiveCellViews();
-
-            if (selectedItemIndex >= itemPanel.EndCellViewIndex)
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                itemPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
+                selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellData.Count - 1);
+                selectionChanged = true;
             }
-            else if (selectedItemIndex <= itemPanel.StartCellViewIndex)
+
+            // 選択中
+            if (selectionChanged)
             {
-                itemPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
+                for (int i = 0; i < itemCellData.Count; i++)
+                {
+                    itemCellData[i].isSelected = (i == selectedItemIndex);
+                }
+                // アクティブセルに対してUIの更新をする
+                itemPanel.RefreshActiveCellViews();
+
+                if (selectedItemIndex >= itemPanel.EndCellViewIndex)
+                {
+                    itemPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
+                }
+                else if (selectedItemIndex <= itemPanel.StartCellViewIndex)
+                {
+                    itemPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
+                }
+            }
+
+            // アイテムを使用する
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                Debug.Log("アイテムを使うよ");
+                // 使うアイテムの情報を保持
+                Item item = players[0].Items[selectedItemIndex];
+
+                // 回復アイテムだったら
+                if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
+                {
+                    // アイテムパネルを消す
+                    menu.ActivateItemPanel(false);
+                    // ステータス画面を開く
+                    menu.ActivateStatusPanel(true);
+                    // ステータス画面の更新
+                    playerStatusUIsManager.SetUpPlayerStatusUI(players);
+                    playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
+                }
+                // ターゲットを選ぶステータスに移行
+                currentItemUseStatus = ItemUseStatus.SELECT_TARGET;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                // アイテム画面を閉じてメニュー画面を開く
+                menu.ActivateMenuPanel(true);
+                menu.ActivateItemPanel(false);
+                currentGameStatus = GameStatus.MENU;
+                currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
             }
         }
-
-        // アイテムを使用する
-        if (Input.GetKeyDown(KeyCode.Return))
+        else if (currentItemUseStatus == ItemUseStatus.SELECT_TARGET)
         {
-            // アイテムの数を減らす
-            players[0].Items[selectedItemIndex].ItemCount--;
-            // 0だったらアイテムリストから除外する
-            if (players[0].Items[selectedItemIndex].ItemCount == 0)
+            if (Input.GetKeyDown(KeyCode.DownArrow))
             {
+                if (selectedItemTargetIndex < players.Count - 1)
+                {
+                    selectedItemTargetIndex++;
+                    playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (selectedItemTargetIndex > 0)
+                {
+                    selectedItemTargetIndex--;
+                    playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {                // アイテムの残りが0だったら
+                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                {
+                    Debug.Log("使えないよ");
+                }
+                else
+                {
+                    Item item = players[0].Items[selectedItemIndex];
+                    // アイテムの効果発動
+                    players[selectedItemTargetIndex].TakeHeal(item);
+                    players[selectedItemTargetIndex].playerUI.UpdateHpSp();
+
+                    // アイテムの数を減らす
+                    players[0].Items[selectedItemIndex].ItemCount--;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                // 0のものをアイテムリストから除外する
                 players[0].Items.RemoveAt(selectedItemIndex);
+                selectedItemIndex--;
+                // アイテムパネルの更新
+                LoadItemData();
+                itemPanel.RefreshActiveCellViews();
+                // ステータス画面を閉じてアイテム画面を開く
+                menu.ActivateStatusPanel(false);
+                menu.ActivateItemPanel(true);
+                currentGameStatus = GameStatus.ITEM;
+                currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
             }
-            // 回復アイテムだったらステータス画面を開く
-
-            // ターゲットを選ぶステータスに移行
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            // アイテム画面を閉じてメニュー画面を開く
-            menu.ActivateMenuPanel(true);
-            menu.ActivateItemPanel(false);
-            currentGameStatus = GameStatus.MENU;
         }
     }
 

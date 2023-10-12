@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerFieldUI : MonoBehaviour
 {
+    [SerializeField] private Player player;
     [SerializeField] private Text statusPlayerNameText;
     [SerializeField] private Text statusPlayerHpText;
     [SerializeField] private Text statusPlayerMaxHpText;
@@ -13,11 +14,12 @@ public class PlayerFieldUI : MonoBehaviour
     [SerializeField] private Image statusIconImage;
     [SerializeField] private GameObject frame;
 
-    private HPBar playerHpBar;
-    private SPBar playerSpBar;
+    [SerializeField] private HPBar playerHpBar;
+    [SerializeField] private SPBar playerSpBar;
 
     public void SetPlayerStatus(Player player)
     {
+        this.player = player;
         statusPlayerNameText.text = player.PlayerBase.PlayerName;
         statusPlayerHpText.text = player.currentHp.ToString() + " / ";
         statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
@@ -26,10 +28,14 @@ public class PlayerFieldUI : MonoBehaviour
         statusIconImage.sprite = player.PlayerBase.PlayerFaceIcon;
     }
 
-    public void UpdateHpSp(Player player)
+    public void UpdateHpSp()
     {
         playerHpBar.SetHp((float)player.currentHp, player.currentMaxHp);
         playerSpBar.SetSp((float)player.currentSp, player.currentMaxSp);
+        statusPlayerHpText.text = player.currentHp.ToString() + " / ";
+        statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
+        statusPlayerSpText.text = player.currentSp.ToString() + " / ";
+        statusPlayerMaxSpText.text = player.currentMaxSp.ToString();
     }
 
     public void SetActivateSelectedFrame(bool activate)

@@ -38,7 +38,7 @@ public class Player : Character
         isPlayer = true;
         PlayerBase = pBase;
         // ‚ ‚Æ‚ÅƒŒƒxƒ‹‚²‚Æ‚É•Ï‚¦‚é
-        currentHp = currentMaxHp;
+        currentHp = 3;
         currentSp = currentMaxSp;
         Atk = PlayerBase.PlayerMaxAtk;
         Def = PlayerBase.PlayerMaxDef;
@@ -47,7 +47,18 @@ public class Player : Character
         Items = new List<Item>();
     }
 
-    public void TakeHeal()
+    public void TakeHeal(Item healItem)
     {
+        HealItemBase healItemBase = healItem.ItemBase as HealItemBase;
+        if (currentHp + healItemBase.HealPoint > currentMaxHp)
+        {
+            currentHp = currentMaxHp;
+        }
+        else
+        {
+            Debug.Log(currentMaxHp);
+            currentHp += healItemBase.HealPoint;
+        }
+        //Debug.Log(currentHp);
     }
 }
