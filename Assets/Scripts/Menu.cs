@@ -15,6 +15,7 @@ public class Menu : MonoBehaviour
 {
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject itemPanel;
+    [SerializeField] private GameObject statusPanel;
     [SerializeField] private GameObject[] menuSelectArrow;
 
     // メインパネルをオンオフする関数
@@ -27,6 +28,12 @@ public class Menu : MonoBehaviour
     public void ActivateItemPanel(bool activate)
     {
         itemPanel.SetActive(activate);
+    }
+
+    // ステータスパネルをオンオフする
+    public void ActivateStatusPanel(bool activate)
+    {
+        statusPanel.SetActive(activate);
     }
 
     // メインパネルの矢印をオンオフする

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// アイテムのマスターデータ
 /// </summary>
-[CreateAssetMenu(menuName = "ItemBase")]
+[CreateAssetMenu(menuName = "Base/ItemBase")]
 public class ItemBase : ScriptableObject
 {
     [SerializeField] private string itemName;
