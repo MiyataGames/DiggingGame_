@@ -18,25 +18,25 @@ public class Menu : MonoBehaviour
     [SerializeField] private GameObject statusPanel;
     [SerializeField] private GameObject[] menuSelectArrow;
 
-    // ƒƒCƒ“ƒpƒlƒ‹‚ğƒIƒ“ƒIƒt‚·‚éŠÖ”
+    // ãƒ¡ã‚¤ãƒ³ãƒ‘ãƒãƒ«ã‚’ã‚ªãƒ³ã‚ªãƒ•ã™ã‚‹é–¢æ•°
     public void ActivateMenuPanel(bool activate)
     {
         menuPanel.SetActive(activate);
     }
 
-    // ƒAƒCƒeƒ€ƒpƒlƒ‹‚ğƒIƒ“ƒIƒt‚·‚é
+    // ã‚¢ã‚¤ãƒ†ãƒ ãƒ‘ãƒãƒ«ã‚’ã‚ªãƒ³ã‚ªãƒ•ã™ã‚‹
     public void ActivateItemPanel(bool activate)
     {
         itemPanel.SetActive(activate);
     }
 
-    // ƒXƒe[ƒ^ƒXƒpƒlƒ‹‚ğƒIƒ“ƒIƒt‚·‚é
+    // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ‘ãƒãƒ«ã‚’ã‚ªãƒ³ã‚ªãƒ•ã™ã‚‹
     public void ActivateStatusPanel(bool activate)
     {
         statusPanel.SetActive(activate);
     }
 
-    // ƒƒCƒ“ƒpƒlƒ‹‚Ì–îˆó‚ğƒIƒ“ƒIƒt‚·‚é
+    // ãƒ¡ã‚¤ãƒ³ãƒ‘ãƒãƒ«ã®çŸ¢å°ã‚’ã‚ªãƒ³ã‚ªãƒ•ã™ã‚‹
     public void ActivateMenuSelectArrow(MenuCommand menuCommand)
     {
         for (int i = 0; i < menuSelectArrow.Length; i++)

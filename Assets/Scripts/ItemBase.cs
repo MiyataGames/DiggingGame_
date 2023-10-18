@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// アイテムのマスターデータ
+/// 繧｢繧､繝�繝縺ｮ繝槭せ繧ｿ繝ｼ繝�繝ｼ繧ｿ
 /// </summary>
 [CreateAssetMenu(menuName = "Base/ItemBase")]
 public class ItemBase : ScriptableObject

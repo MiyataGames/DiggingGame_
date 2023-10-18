@@ -9,7 +9,7 @@ public class Player : Character
     // UI
     public PlayerFieldUI playerUI;
 
-    // ƒpƒ‰ƒ[ƒ^
+    // ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     public int Level { get; set; }
 
     public int currentHp { get; set; }
@@ -18,13 +18,13 @@ public class Player : Character
     public int Def { get; set; }
     public int Agi { get; set; }
 
-    // ƒŒƒxƒ‹‚É‰‚¶‚½HP‚ğ•Ô‚·
+    // ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸHPã‚’è¿”ã™
     public int currentMaxHp
     {
         get { return Mathf.FloorToInt((PlayerBase.PlayerMaxHp * Level) / 100f) + 10; }
     }
 
-    // ƒŒƒxƒ‹‚É‰‚¶‚½SP‚ğ•Ô‚·
+    // ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸSPã‚’è¿”ã™
     public int currentMaxSp
     {
         get { return Mathf.FloorToInt((PlayerBase.PlayerMaxSp * Level) / 100f) + 30; }
@@ -37,13 +37,13 @@ public class Player : Character
     {
         isPlayer = true;
         PlayerBase = pBase;
-        // ‚ ‚Æ‚ÅƒŒƒxƒ‹‚²‚Æ‚É•Ï‚¦‚é
+        // ã‚ã¨ã§ãƒ¬ãƒ™ãƒ«ã”ã¨ã«å¤‰ãˆã‚‹
         currentHp = 3;
         currentSp = currentMaxSp;
         Atk = PlayerBase.PlayerMaxAtk;
         Def = PlayerBase.PlayerMaxDef;
         Agi = PlayerBase.PlayerMaxAgi;
-        // ƒZ[ƒuƒf[ƒ^‚ª‚ ‚ê‚ÎƒAƒCƒeƒ€‚ÍˆøŒp‚¬‚È‚¯‚ê‚Î‰Šú‰»
+        // ã‚»ãƒ¼ãƒ–ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Œã°ã‚¢ã‚¤ãƒ†ãƒ ã¯å¼•ç¶™ããªã‘ã‚Œã°åˆæœŸåŒ–
         Items = new List<Item>();
     }
 

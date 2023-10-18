@@ -11,26 +11,26 @@ public class PlayerStatusUIsManager : MonoBehaviour
 
     public void SetUpPlayerStatusUI(List<Player> players)
     {
-        // ƒvƒŒƒCƒ„[‚Ìl”‚ª•Ï‚í‚Á‚½‚Æ‚«‚¾‚¯XV‚·‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®äººæ•°ãŒå¤‰ã‚ã£ãŸã¨ãã ã‘æ›´æ–°ã™ã‚‹
         if (players.Count != playersCount)
         {
-            // “®ìŠm”F‚Ü‚¾
+            // å‹•ä½œç¢ºèªã¾ã 
             for (int i = 0; i < playersCount; i++)
             {
                 Destroy(playerFieldUIs[i]);
             }
             playerFieldUIs = new List<PlayerFieldUI>();
-            // ƒXƒe[ƒ^ƒX‰æ–Ê‚ÌPrefab‚ğInstantiate‚·‚é
+            // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç”»é¢ã®Prefabã‚’Instantiateã™ã‚‹
             for (int i = 0; i < players.Count; i++)
             {
                 PlayerFieldUI playerFieldUI = Instantiate(playerUIPrefab, playerStatusUIsManager.transform).GetComponent<PlayerFieldUI>();
-                // ƒXƒe[ƒ^ƒXUIƒ}ƒlƒWƒƒ[‚É’Ç‰Á‚·‚é
+                // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹UIãƒãƒã‚¸ãƒ£ãƒ¼ã«è¿½åŠ ã™ã‚‹
                 playerFieldUIs.Add(playerFieldUI);
-                // ƒvƒŒƒCƒ„[‚ÌUI‚É’Ç‰Á
+                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®UIã«è¿½åŠ 
                 players[i].playerUI = playerFieldUI;
-                // ƒXƒe[ƒ^ƒX‰æ–Ê‚Éî•ñ‚ğİ’è‚·‚é
+                // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç”»é¢ã«æƒ…å ±ã‚’è¨­å®šã™ã‚‹
                 playerFieldUI.SetPlayerStatus(players[i]);
-                // UI‚ÌXV
+                // UIã®æ›´æ–°
                 players[i].playerUI.UpdateHpSp();
             }
         }
@@ -39,7 +39,7 @@ public class PlayerStatusUIsManager : MonoBehaviour
 
     public void selectStatus(int index)
     {
-        // ƒtƒŒ[ƒ€‚ğƒIƒt
+        // ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’ã‚ªãƒ•
         for (int i = 0; i < playerFieldUIs.Count; i++)
         {
             playerFieldUIs[i].SetActivateSelectedFrame(false);
@@ -47,10 +47,10 @@ public class PlayerStatusUIsManager : MonoBehaviour
         playerFieldUIs[index].SetActivateSelectedFrame(true);
     }
 
-    // ‘S‘I‘ğ
+    // å…¨é¸æŠ
     public void selectStatusAll(int index)
     {
-        // ƒtƒŒ[ƒ€‚ğƒIƒt
+        // ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’ã‚ªãƒ•
         for (int i = 0; i < playerFieldUIs.Count; i++)
         {
             playerFieldUIs[i].SetActivateSelectedFrame(true);

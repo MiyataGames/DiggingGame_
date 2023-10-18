@@ -5,8 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Base/HealItemBase")]
 public class HealItemBase : ItemBase
 {
-    [SerializeField] private bool isAll;// ‘S‘Ì‚©
-    [SerializeField] private int healPoint;// ‰ñ•œ—Ê
+    [SerializeField] private bool isAll;// å…¨ä½“ã‹
+    [SerializeField] private int healPoint;// å›žå¾©é‡
     public bool IsAll1 { get => isAll; set => isAll = value; }
     public int HealPoint { get => healPoint; set => healPoint = value; }
 }

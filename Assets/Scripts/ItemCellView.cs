@@ -9,10 +9,10 @@ public class ItemCellView : EnhancedScrollerCellView
     private ItemCellData itemCellData;
     public GameObject selectedIcon;
 
-    // ƒAƒCƒeƒ€‚Ì–¼‘O‚ÌƒeƒLƒXƒg
+    // ã‚¢ã‚¤ãƒ†ãƒ ã®åå‰ã®ãƒ†ã‚­ã‚¹ãƒˆ
     public Text itemNameText;
 
-    // ƒAƒCƒeƒ€‚Ì”‚ÌƒeƒLƒXƒg
+    // ã‚¢ã‚¤ãƒ†ãƒ ã®æ•°ã®ãƒ†ã‚­ã‚¹ãƒˆ
     public Text itemCountText;
 
     public void SetData(ItemCellData data)
@@ -22,9 +22,9 @@ public class ItemCellView : EnhancedScrollerCellView
         itemCountText.text = data.itemCountText;
     }
 
-    // UI‚ÌXV
-    // RefreshCellViewƒƒ\ƒbƒh‚ğƒI[ƒo[ƒ‰ƒCƒh‚·‚é‚ÆA
-    // ƒf[ƒ^‚ğÄ“Ç‚İ‚İ‚·‚é‚±‚Æ‚È‚­UI‚ğXV‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+    // UIã®æ›´æ–°
+    // RefreshCellViewãƒ¡ã‚½ãƒƒãƒ‰ã‚’ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã™ã‚‹ã¨ã€
+    // ãƒ‡ãƒ¼ã‚¿ã‚’å†èª­ã¿è¾¼ã¿ã™ã‚‹ã“ã¨ãªãUIã‚’æ›´æ–°ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚
     public override void RefreshCellView()
     {
         //base.RefreshCellView();

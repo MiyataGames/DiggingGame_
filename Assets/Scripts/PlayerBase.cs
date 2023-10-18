@@ -12,9 +12,9 @@ public class PlayerBase : ScriptableObject
     [SerializeField] private int playerMaxLv;
     [SerializeField] private int playerMaxHp;
     [SerializeField] private int playerMaxSp;
-    [SerializeField] private int playerMaxAtk;// UŒ‚—Í
-    [SerializeField] private int playerMaxDef;// –hŒä—Í
-    [SerializeField] private int playerMaxAgi;// ‘f‘‚³
+    [SerializeField] private int playerMaxAtk;// æ”»æ’ƒåŠ›
+    [SerializeField] private int playerMaxDef;// é˜²å¾¡åŠ›
+    [SerializeField] private int playerMaxAgi;// ç´ æ—©ã•
 
     public int PlayerId { get => playerId; }
     public string PlayerName { get => playerName; }
