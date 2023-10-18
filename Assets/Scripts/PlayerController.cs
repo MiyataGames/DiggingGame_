@@ -40,7 +40,6 @@ public class Define
 
 public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
-
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
 
@@ -107,7 +106,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     private void Update()
     {
-
         // 穴掘り中だったら
         if (currentGameStatus == GameStatus.DIGGING)
         {
@@ -145,14 +143,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 vx = speed;
             }
 
-            if(Input.GetKey("space") && groundFlag == true){
-                if(pushFlag == false){
+            if (Input.GetKey("space") && groundFlag == true)
+            {
+                if (pushFlag == false)
+                {
                     jumpFlag = true;
                     pushFlag = true;
                 }
-            }else{
+            }
+            else
+            {
                 pushFlag = false;
             }
+        }
 
         // メインパネルを選択中だったら
         else if (currentGameStatus == GameStatus.MENU)
@@ -171,18 +174,24 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void HandleMenuSelect()
     {
+        
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (currentMenuCommandNum < (int)MenuCommand.END - 1)
             {
                 currentMenuCommandNum++;
                 menu.ActivateMenuSelectArrow((MenuCommand)currentMenuCommandNum);
+                Debug.Log("++");
             }
+        }
+        else if(Input.GetKeyDown(KeyCode.UpArrow)){
             if (currentMenuCommandNum > 0)
             {
                 currentMenuCommandNum--;
                 menu.ActivateMenuSelectArrow((MenuCommand)currentMenuCommandNum);
+                Debug.Log("--");
             }
+            Debug.Log(currentMenuCommandNum);
         }
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -412,7 +421,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         return cell;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         /*
         for (int i = 0; i < player.Items.Count; i++)
@@ -455,22 +464,24 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         playerStatusUIsManager.selectStatus(selectedStatusIndex);
     }
 
-    private void FixedUpdate() {
-        
-        rb.velocity = new Vector2(vx,rb.velocity.y);
+    private void FixedUpdate()
+    {
+        rb.velocity = new Vector2(vx, rb.velocity.y);
 
-        if(jumpFlag == true){
-            rb.AddForce(new Vector2(0,jumpPower),ForceMode2D.Impulse);
+        if (jumpFlag == true)
+        {
+            rb.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
             jumpFlag = false;
         }
-    
     }
 
-    void OnTriggerStay2D(Collider2D other){
+    private void OnTriggerStay2D(Collider2D other)
+    {
         groundFlag = true;
     }
 
-    void OnTriggerExit2D(Collider2D other){
+    private void OnTriggerExit2D(Collider2D other)
+    {
         groundFlag = false;
     }
 }
