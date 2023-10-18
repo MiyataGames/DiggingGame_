@@ -115,7 +115,6 @@ public class GroundController : MonoBehaviour
     public void DigHoleAllTexture(Vector2 position, Define.DirectionNumber directionNum)
     {
         Vector2 digPosition = position + Define.directions[((int)directionNum)].normalized * 0.2f;
-        Debug.Log(Define.directions[((int)directionNum)].normalized);
         DigHole(middleGroundTexture, digPosition, digHoleRadius);
         DigHole(frontGroundTexture, digPosition, digHoleRadius + digHoleMiddleTexture);
     }
