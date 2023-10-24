@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
 
-    private Rigidbody2D rb;
+     [SerializeField] private Rigidbody2D rb;
     private float vx;
     private float vy;
     private bool pushFlag;
@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Start is called before the first frame update
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        //rb = GetComponent<Rigidbody2D>();
 
         players = new List<Player>();
         currentGameStatus = GameStatus.DIGGING;
@@ -538,6 +538,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // idが早い順に並べる
             players[0].Items.Sort((x, y) => y.Id - x.Id);
         }
+
+        // else if (other.tag == "Finish")
+        // {
+        //     Debug.Log("wwwwww");
+        // }
         LoadItemData();
     }
     #endregion

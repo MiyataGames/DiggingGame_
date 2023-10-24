@@ -6,6 +6,8 @@ TagManager:
   tags:
   - scop
   - Item
+  - ' sonar'
+  - invisibleitems
   layers:
   - Default
   - TransparentFX
