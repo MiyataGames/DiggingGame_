@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class soil : MonoBehaviour
 {
-    [SerializeField] Tilemap soilTilemap;
+    [SerializeField] Tilemap soilTilemap;//土のタイルマップ
     [SerializeField] Collider2D soilCollider;
     [SerializeField] GameObject hitObj;
     [SerializeField] GameObject scop;
@@ -22,6 +22,7 @@ public class soil : MonoBehaviour
 
     }
 
+    //OnTriggerでの穴掘りは衝突点を一度に一つしか取れないので廃止
     /*private void OnTriggerStay2D(Collider2D other) {
         Debug.Log("hit");
         if(other.gameObject.tag == "scop"){
@@ -38,17 +39,17 @@ public class soil : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        Debug.Log("hit");
-        if (other.gameObject.tag == "scop")
+        //Debug.Log("hit");
+        if (other.gameObject.tag == "scop")//スコップタグがついているか
         {
-            foreach (ContactPoint2D point in other.contacts)
+            foreach (ContactPoint2D point in other.contacts)//取得したすべての衝突オブジェクトに対して
             {
                 //衝突位置
                 Vector2 hitPos = (Vector2)point.point;
-                var tilePos = soilTilemap.WorldToCell(hitPos);
+                var tilePos = soilTilemap.WorldToCell(hitPos);//衝突位置をタイルマップ座標に変換
                 //Debug.Log("dig: " + tilePos);
-                //Instantiate(hitObj,hitPos,Quaternion.identity);
-                soilTilemap.SetTile(tilePos, null);
+                //Instantiate(hitObj,hitPos,Quaternion.identity);//衝突点のマーカー
+                soilTilemap.SetTile(tilePos, null);//タイルを消す
             }
         }
 
