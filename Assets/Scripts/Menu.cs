@@ -11,12 +11,20 @@ public enum MenuCommand
     END
 }
 
+
+public delegate void MenuSelectButtonClickedDelegate(int menuIndex);
+public delegate void ItemSelectButtonHoverdDelegate(int itemIndex);
+
 public class Menu : MonoBehaviour
 {
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject itemPanel;
     [SerializeField] private GameObject statusPanel;
     [SerializeField] private GameObject[] menuSelectArrow;
+
+    // メニューを選択したとき（ボタンを押したときに）に呼ばれる関数をいれるデリゲート
+    public MenuSelectButtonClickedDelegate menuSelectButtonClickedDelegate;
+    public ItemSelectButtonHoverdDelegate itemSelectButtonHoverdDelegate;
 
     // メインパネルをオンオフする関数
     public void ActivateMenuPanel(bool activate)
@@ -36,13 +44,24 @@ public class Menu : MonoBehaviour
         statusPanel.SetActive(activate);
     }
 
+
     // メインパネルの矢印をオンオフする
-    public void ActivateMenuSelectArrow(MenuCommand menuCommand)
+    public void ActivateMenuSelectArrow(int menuCommand)
     {
         for (int i = 0; i < menuSelectArrow.Length; i++)
         {
             menuSelectArrow[i].SetActive(false);
         }
-        menuSelectArrow[((int)menuCommand)].SetActive(true);
+        menuSelectArrow[(int)menuCommand].SetActive(true);
+    }
+
+    // メニューを開いているとき、メニューのボタンを押したときに呼ばれる関数
+    public void OnClickMenu(int menuIndex)
+    {
+        if (menuSelectButtonClickedDelegate != null) menuSelectButtonClickedDelegate(menuIndex);
+    }
+    public void OnHoverItem(int itemIndex)
+    {
+        if (itemSelectButtonHoverdDelegate != null) itemSelectButtonHoverdDelegate(itemIndex);
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
-
+using UnityEngine.EventSystems;
 public enum GameStatus
 {
     DIGGING,
@@ -38,6 +38,7 @@ public class Define
     public static Vector2[] directions = { new Vector2(1, 1), new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1), new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 0) };
 }
 
+
 public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
     [SerializeField] private float speed;
@@ -49,14 +50,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private bool pushFlag;
     private bool jumpFlag;
     private bool groundFlag;
-    [SerializeField] private GroundController groundController;
     private Define.DirectionNumber currentDirectionNumber;
     [SerializeField] private Menu menu;
 
-    private GameStatus currentGameStatus;
-    private ItemUseStatus currentItemUseStatus;
-    private int currentMenuCommandNum;
-    private int currentItemNum;
+    public static GameStatus currentGameStatus;
 
     // プレイヤー 仮
     [SerializeField] private PlayerBase[] playerBase;
@@ -64,7 +61,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private GameObject[] playerUIs;
     private List<Player> players;
 
+    // メニュー画面 =======================
+    private int currentMenuCommandNum;
     // アイテム関係 ======================
+
+    private ItemUseStatus currentItemUseStatus;
+    private int currentItemNum;
     private List<ItemCellData> itemCellData;
 
     public EnhancedScroller itemPanel;
@@ -77,6 +79,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテムのターゲットのインデックス番号
     private int selectedItemTargetIndex;
 
+
     // ステータス関係 ==========================
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
@@ -86,7 +89,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Start is called before the first frame update
     private void Start()
     {
-        //groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
         rb = GetComponent<Rigidbody2D>();
 
         players = new List<Player>();
@@ -96,11 +98,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         selectedItemIndex = 0;
         selectedStatusIndex = 0;
         selectedItemTargetIndex = 0;
-        groundController.DigHoleAllTexture(transform.position, Define.DirectionNumber.NONE);
         Player player = new Player(playerBase[0], 1);
         players.Add(player);
         player = new Player(playerBase[1], 1);
         players.Add(player);
+
+        menu.menuSelectButtonClickedDelegate = SelectMenuButton;
+        menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;
+        playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
     }
 
     // Update is called once per frame
@@ -120,7 +125,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // メニュー画面をひらく
                 currentGameStatus = GameStatus.MENU;
                 menu.ActivateMenuPanel(true);
-                menu.ActivateMenuSelectArrow(MenuCommand.ITEM);
+                menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
             }
             // マップ
             if (Input.GetKeyDown(KeyCode.M))
@@ -169,29 +174,31 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         else if (currentGameStatus == GameStatus.STATUS)
         {
             HandleStatusSelect();
+
+
         }
     }
 
     private void HandleMenuSelect()
     {
-        
+
+        /*
+        // キー操作
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (currentMenuCommandNum < (int)MenuCommand.END - 1)
             {
                 currentMenuCommandNum++;
                 menu.ActivateMenuSelectArrow((MenuCommand)currentMenuCommandNum);
-                Debug.Log("++");
             }
         }
-        else if(Input.GetKeyDown(KeyCode.UpArrow)){
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
             if (currentMenuCommandNum > 0)
             {
                 currentMenuCommandNum--;
                 menu.ActivateMenuSelectArrow((MenuCommand)currentMenuCommandNum);
-                Debug.Log("--");
             }
-            Debug.Log(currentMenuCommandNum);
         }
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -212,6 +219,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 InitStatus();
             }
         }
+        */
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // メニュー画面を閉じる
@@ -220,10 +228,33 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    // マウスでメニューを選択する
+    public void SelectMenuButton(int selectMenuIndex)
+    {
+        currentMenuCommandNum = selectMenuIndex;
+        // メニューを選択
+        // アイテムコマンドだったら
+        if (currentMenuCommandNum == ((int)MenuCommand.ITEM))
+        {
+            // アイテムパネルを開く
+            menu.ActivateItemPanel(true);
+            currentGameStatus = GameStatus.ITEM;
+            menu.ActivateMenuPanel(false);
+            InitItem();
+        }
+        if (currentMenuCommandNum == (int)MenuCommand.STATUS)
+        {
+            menu.ActivateStatusPanel(true);
+            currentGameStatus = GameStatus.STATUS;
+            InitStatus();
+        }
+    }
     private void HandleItemSelect()
     {
         if (currentItemUseStatus == ItemUseStatus.SELECT_ITEM)
         {
+            /*
+            // キー操作
             bool selectionChanged = false;
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -278,7 +309,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // ターゲットを選ぶステータスに移行
                 currentItemUseStatus = ItemUseStatus.SELECT_TARGET;
             }
-
+            */
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // アイテム画面を閉じてメニュー画面を開く
@@ -290,6 +321,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (currentItemUseStatus == ItemUseStatus.SELECT_TARGET)
         {
+            /*
+            // キー操作
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 if (selectedItemTargetIndex < players.Count - 1)
@@ -324,7 +357,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     players[0].Items[selectedItemIndex].ItemCount--;
                 }
             }
-
+            */
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // 0のものをアイテムリストから除外する
@@ -350,6 +383,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void HandleStatusSelect()
     {
+        /*
+        // キー操作
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             if (selectedStatusIndex < players.Count - 1)
@@ -366,6 +401,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 playerStatusUIsManager.selectStatus(selectedStatusIndex);
             }
         }
+        */
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // アイテム画面を閉じてメニュー画面を開く
@@ -375,6 +411,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    #region 
     // アイテム関係 ===========
 
     private void InitItem()
@@ -391,7 +428,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         itemCellData = new List<ItemCellData>();
         for (int i = 0; i < players[0].Items.Count; i++)
         {
-            Debug.Log(players[0].Items[i].ItemBase.ItemName);
+            // Debug.Log(players[0].Items[i].ItemBase.ItemName);
             itemCellData.Add(new ItemCellData()
             {
                 isSelected = i == selectedItemIndex,// 選択されているか
@@ -416,11 +453,58 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public EnhancedScrollerCellView GetCellView(EnhancedScroller playerItemPanel, int dataIndex, int cellIndex)
     {
         ItemCellView cell = playerItemPanel.GetCellView(cellViewPrefab) as ItemCellView;
+        cell.cellButtonClicked = CellButtonClicked;
+
         cell.name = "Cell" + dataIndex.ToString();
         cell.SetData(itemCellData[dataIndex]);
+        GameObject cellViewObj = cell.gameObject;
+        // イベントトリガーをつくる
+        EventTrigger eventTrigger = cellViewObj.GetComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerEnter;
+        entry.callback.AddListener((eventDate) => CellButtonOnHover(dataIndex));
+        eventTrigger.triggers.Add(entry);
         return cell;
     }
 
+    public void CellButtonOnHover(int selectedItemIndex)
+    {
+        Debug.Log("ほばー");
+        Debug.Log(selectedItemIndex);
+        for (int i = 0; i < itemCellData.Count; i++)
+        {
+            itemCellData[i].isSelected = (i == selectedItemIndex);
+        }
+    }
+    private void CellButtonClicked(int selectedItemIndex)
+    {
+
+        for (int i = 0; i < itemCellData.Count; i++)
+        {
+            itemCellData[i].isSelected = (i == selectedItemIndex);
+        }
+        // アクティブセルに対してUIの更新をする
+        itemPanel.RefreshActiveCellViews();
+        Debug.Log("アイテムを使うよ");
+        // 使うアイテムの情報を保持
+        Item item = players[0].Items[selectedItemIndex];
+
+        // 回復アイテムだったら
+        if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
+        {
+            // アイテムパネルを消す
+            menu.ActivateItemPanel(false);
+            // ステータス画面を開く
+            menu.ActivateStatusPanel(true);
+            // ステータス画面の更新
+            playerStatusUIsManager.SetUpPlayerStatusUI(players);
+            playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
+        }
+        // ターゲットを選ぶステータスに移行
+        currentItemUseStatus = ItemUseStatus.SELECT_TARGET;
+
+        Debug.Log("Cell Data Integer Button Clicked! Value = " + selectedItemIndex);
+    }
     private void OnTriggerEnter2D(Collider2D other)
     {
         /*
@@ -456,14 +540,49 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         LoadItemData();
     }
-
+    #endregion
+    #region 
     // ステータス関係　=======================
     private void InitStatus()
     {
         playerStatusUIsManager.SetUpPlayerStatusUI(players);
         playerStatusUIsManager.selectStatus(selectedStatusIndex);
     }
+    // マウスでステータスを選択　または　アイテムを使用するターゲットの選択
+    public void SelectStatusButton(int selectStatusIndex)
+    {
+        // ステータス選択画面だったら
+        if (currentGameStatus == GameStatus.STATUS)
+        {
+            selectedStatusIndex = selectStatusIndex;
+            //playerStatusUIsManager.selectStatus(selectedStatusIndex);
+            // 選択
+            // 決定キーを押したら
+            Debug.Log(selectedStatusIndex);
+        }
+        else if (currentGameStatus == GameStatus.ITEM)
+        {
+            // アイテムだったらターゲットを選択する
+            selectedItemTargetIndex = selectStatusIndex;
+            // アイテムを使う
+            // アイテムの残りが0だったら
+            if (players[0].Items[selectedItemIndex].ItemCount == 0)
+            {
+                Debug.Log("使えないよ");
+            }
+            else
+            {
+                Item item = players[0].Items[selectedItemIndex];
+                // アイテムの効果発動
+                players[selectedItemTargetIndex].TakeHeal(item);
+                players[selectedItemTargetIndex].playerUI.UpdateHpSp();
 
+                // アイテムの数を減らす
+                players[0].Items[selectedItemIndex].ItemCount--;
+            }
+        }
+    }
+    #endregion
     private void FixedUpdate()
     {
         rb.velocity = new Vector2(vx, rb.velocity.y);
@@ -484,4 +603,5 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         groundFlag = false;
     }
+
 }

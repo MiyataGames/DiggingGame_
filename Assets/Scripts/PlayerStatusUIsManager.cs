@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
+public delegate void StatusSelectButtonClickedDelegate(int statusIndex);
 public class PlayerStatusUIsManager : MonoBehaviour
 {
     private int playersCount = 0;
@@ -9,6 +12,7 @@ public class PlayerStatusUIsManager : MonoBehaviour
     [SerializeField] private GameObject playerStatusUIsManager;
     private List<PlayerFieldUI> playerFieldUIs;
 
+    public StatusSelectButtonClickedDelegate statusSelectButtonClickedDelegate;
     public void SetUpPlayerStatusUI(List<Player> players)
     {
         // プレイヤーの人数が変わったときだけ更新する
@@ -23,7 +27,8 @@ public class PlayerStatusUIsManager : MonoBehaviour
             // ステータス画面のPrefabをInstantiateする
             for (int i = 0; i < players.Count; i++)
             {
-                PlayerFieldUI playerFieldUI = Instantiate(playerUIPrefab, playerStatusUIsManager.transform).GetComponent<PlayerFieldUI>();
+                GameObject playerFieldUIObject = Instantiate(playerUIPrefab, playerStatusUIsManager.transform);
+                PlayerFieldUI playerFieldUI = playerFieldUIObject.GetComponent<PlayerFieldUI>();
                 // ステータスUIマネジャーに追加する
                 playerFieldUIs.Add(playerFieldUI);
                 // プレイヤーのUIに追加
@@ -32,6 +37,15 @@ public class PlayerStatusUIsManager : MonoBehaviour
                 playerFieldUI.SetPlayerStatus(players[i]);
                 // UIの更新
                 players[i].playerUI.UpdateHpSp();
+                // ボタンに関数の追加
+                Button button = playerFieldUIObject.GetComponent<Button>();
+                int buttonIndex = i;
+                button.onClick.AddListener(() => OnClickStatus(buttonIndex));
+                EventTrigger eventTrigger = playerFieldUIObject.GetComponent<EventTrigger>();
+                EventTrigger.Entry entry = new EventTrigger.Entry();
+                entry.eventID = EventTriggerType.PointerEnter;
+                entry.callback.AddListener((eventDate) => selectStatus(buttonIndex));
+                eventTrigger.triggers.Add(entry);
             }
         }
         playersCount = players.Count;
@@ -50,10 +64,15 @@ public class PlayerStatusUIsManager : MonoBehaviour
     // 全選択
     public void selectStatusAll(int index)
     {
-        // フレームをオフ
+        // フレームをオン
         for (int i = 0; i < playerFieldUIs.Count; i++)
         {
             playerFieldUIs[i].SetActivateSelectedFrame(true);
         }
+    }
+    // ステータス画面を開いているとき、キャラクターを選んだときに呼ばれる関数
+    public void OnClickStatus(int statusIndex)
+    {
+        if (statusSelectButtonClickedDelegate != null) statusSelectButtonClickedDelegate(statusIndex);
     }
 }
