@@ -10,28 +10,31 @@ public class scop : MonoBehaviour
 
     void Update()
     {
-        if (isRotating)
+        if (PlayerController.currentGameStatus == GameStatus.DIGGING)
         {
-            // スペースキーが押されたら回転を停止
-            if (Input.GetMouseButtonDown(0))
+            if (isRotating)
             {
-                Debug.Log("回転停止");
-                isRotating = false;
+                // スペースキーが押されたら回転を停止
+                if (Input.GetMouseButtonDown(0))
+                {
+                    //Debug.Log("回転停止");
+                    isRotating = false;
+                }
+                else
+                {
+                    // Debug.Log("回転中");
+                    // 親オブジェクトの位置を中心に回転
+                    transform.RotateAround(transform.parent.position, Vector3.forward, rotationSpeed * Time.deltaTime);
+                }
             }
             else
             {
-                Debug.Log("回転中");
-                // 親オブジェクトの位置を中心に回転
-                transform.RotateAround(transform.parent.position, Vector3.forward, rotationSpeed * Time.deltaTime);
-            }
-        }
-        else
-        {
-            // スペースキーが押されたら回転を開始
-            if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log("回転開始");
-                isRotating = true;
+                // スペースキーが押されたら回転を開始
+                if (Input.GetMouseButtonDown(0))
+                {
+                    // Debug.Log("回転開始");
+                    isRotating = true;
+                }
             }
         }
     }

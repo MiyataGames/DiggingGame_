@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+public delegate void CellButtonClickedDelegate(int selectedItemIndex);
 public class ItemCellView : EnhancedScrollerCellView
 {
     private ItemCellData itemCellData;
+    public CellButtonClickedDelegate cellButtonClicked;
     public GameObject selectedIcon;
+
+    // These delegates will publish events when a button is clicke
 
     // アイテムの名前のテキスト
     public Text itemNameText;
@@ -27,6 +32,7 @@ public class ItemCellView : EnhancedScrollerCellView
     // データを再読み込みすることなくUIを更新することができます。
     public override void RefreshCellView()
     {
+        Debug.Log("更新");
         //base.RefreshCellView();
         if (itemCellData.isSelected == true)
         {
@@ -37,4 +43,11 @@ public class ItemCellView : EnhancedScrollerCellView
             selectedIcon.SetActive(false);
         }
     }
+
+    public void CellButton_OnClick(int selectedItemIndex)
+    {
+        // fire event if anyone has subscribed to it
+        if (cellButtonClicked != null) cellButtonClicked(selectedItemIndex);
+    }
+
 }
