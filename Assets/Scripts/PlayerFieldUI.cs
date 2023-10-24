@@ -12,7 +12,7 @@ public class PlayerFieldUI : MonoBehaviour
     [SerializeField] private Text statusPlayerSpText;
     [SerializeField] private Text statusPlayerMaxSpText;
     [SerializeField] private Image statusIconImage;
-    [SerializeField] private GameObject frame;
+    [SerializeField] public GameObject frame;
 
     [SerializeField] private HPBar playerHpBar;
     [SerializeField] private SPBar playerSpBar;

@@ -458,7 +458,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         cell.name = "Cell" + dataIndex.ToString();
         cell.SetData(itemCellData[dataIndex]);
         GameObject cellViewObj = cell.gameObject;
-        // イベントトリガーをつくる
+        // イベントトリガーを追加してホバー時に実行する関数を指定する
         EventTrigger eventTrigger = cellViewObj.GetComponent<EventTrigger>();
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = EventTriggerType.PointerEnter;
@@ -467,25 +467,24 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         return cell;
     }
 
-    public void CellButtonOnHover(int selectedItemIndex)
+    // セルにホバーしたとき実行する関数 
+    public void CellButtonOnHover(int selectedIndex)
     {
-        Debug.Log("ほばー");
-        Debug.Log(selectedItemIndex);
+        selectedItemIndex = selectedIndex;
         for (int i = 0; i < itemCellData.Count; i++)
         {
-            itemCellData[i].isSelected = (i == selectedItemIndex);
-            Debug.Log("itemCellData" + itemCellData[i].isSelected + ":selectedItemIndex" + selectedItemIndex);
+            itemCellData[i].isSelected = (i == selectedIndex);
         }
         // 見た目の更新
         itemPanel.RefreshActiveCellViews();
     }
-    private void CellButtonClicked(int selectedItemIndex)
+    private void CellButtonClicked(int selectedIndex)
     {
 
-        for (int i = 0; i < itemCellData.Count; i++)
-        {
-            itemCellData[i].isSelected = (i == selectedItemIndex);
-        }
+        // for (int i = 0; i < itemCellData.Count; i++)
+        // {
+        //     itemCellData[i].isSelected = (i == selectedItemIndex);
+        // }
         // アクティブセルに対してUIの更新をする
         itemPanel.RefreshActiveCellViews();
         Debug.Log("アイテムを使うよ");
@@ -495,17 +494,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // 回復アイテムだったら
         if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
         {
+            HealItemBase healItem = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             // アイテムパネルを消す
             menu.ActivateItemPanel(false);
             // ステータス画面を開く
             menu.ActivateStatusPanel(true);
             // ステータス画面の更新
-            playerStatusUIsManager.SetUpPlayerStatusUI(players);
-            playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
+            InitStatus();
         }
         // ターゲットを選ぶステータスに移行
         currentItemUseStatus = ItemUseStatus.SELECT_TARGET;
-
         Debug.Log("Cell Data Integer Button Clicked! Value = " + selectedItemIndex);
     }
     private void OnTriggerEnter2D(Collider2D other)
@@ -548,8 +546,23 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // ステータス関係　=======================
     private void InitStatus()
     {
-        playerStatusUIsManager.SetUpPlayerStatusUI(players);
-        playerStatusUIsManager.selectStatus(selectedStatusIndex);
+        // ステータス選択画面だったら
+        if (currentGameStatus == GameStatus.STATUS)
+        {
+            playerStatusUIsManager.SetUpPlayerStatusUI(players, false);
+            playerStatusUIsManager.selectStatus(selectedStatusIndex);
+        }
+        else if (currentGameStatus == GameStatus.ITEM)
+        {
+            // ここ
+            HealItemBase healItemBase = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
+            Debug.Log("healItemIsAll" + healItemBase.IsAll);
+            playerStatusUIsManager.SetUpPlayerStatusUI(players, healItemBase.IsAll);
+            if (healItemBase.IsAll == false)
+            {
+                playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
+            }
+        }
     }
     // マウスでステータスを選択　または　アイテムを使用するターゲットの選択
     public void SelectStatusButton(int selectStatusIndex)
@@ -565,23 +578,52 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (currentGameStatus == GameStatus.ITEM)
         {
-            // アイテムだったらターゲットを選択する
-            selectedItemTargetIndex = selectStatusIndex;
-            // アイテムを使う
-            // アイテムの残りが0だったら
-            if (players[0].Items[selectedItemIndex].ItemCount == 0)
+            HealItemBase healItemBase = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
+            Debug.Log("えらばれているのは" + selectedItemIndex);
+            // 全体アイテムだったら
+            if (healItemBase.IsAll)
             {
-                Debug.Log("使えないよ");
+                Debug.Log("全体");
+                // アイテムを使う
+                // アイテムの残りが0だったら
+                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                {
+                    Debug.Log("使えないよ");
+                }
+                else
+                {
+                    Item item = players[0].Items[selectedItemIndex];
+                    // アイテムの効果発動
+                    for (int i = 0; i < players.Count; i++)
+                    {
+                        players[i].TakeHeal(item);
+                        players[i].playerUI.UpdateHpSp();
+                    }
+                    // アイテムの数を減らす
+                    players[0].Items[selectedItemIndex].ItemCount--;
+                }
             }
+            // アイテムだったらターゲットを選択する
             else
             {
-                Item item = players[0].Items[selectedItemIndex];
-                // アイテムの効果発動
-                players[selectedItemTargetIndex].TakeHeal(item);
-                players[selectedItemTargetIndex].playerUI.UpdateHpSp();
+                Debug.Log("個別");
+                selectedItemTargetIndex = selectStatusIndex;
+                // アイテムを使う
+                // アイテムの残りが0だったら
+                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                {
+                    Debug.Log("使えないよ");
+                }
+                else
+                {
+                    Item item = players[0].Items[selectedItemIndex];
+                    // アイテムの効果発動
+                    players[selectedItemTargetIndex].TakeHeal(item);
+                    players[selectedItemTargetIndex].playerUI.UpdateHpSp();
 
-                // アイテムの数を減らす
-                players[0].Items[selectedItemIndex].ItemCount--;
+                    // アイテムの数を減らす
+                    players[0].Items[selectedItemIndex].ItemCount--;
+                }
             }
         }
     }

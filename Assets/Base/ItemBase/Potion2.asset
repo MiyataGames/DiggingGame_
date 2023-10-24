@@ -16,5 +16,5 @@ MonoBehaviour:
   description: 
   id: 1
   itemType: 2
-  isAll: 0
+  isAll: 1
   healPoint: 10

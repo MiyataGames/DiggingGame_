@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public delegate void CellButtonClickedDelegate(int selectedItemIndex);
+public delegate void CellButtonClickedDelegate(int value);
 public class ItemCellView : EnhancedScrollerCellView
 {
     private ItemCellData itemCellData;
@@ -32,7 +32,7 @@ public class ItemCellView : EnhancedScrollerCellView
     // データを再読み込みすることなくUIを更新することができます。
     public override void RefreshCellView()
     {
-        base.RefreshCellView();
+        //base.RefreshCellView();
         if (itemCellData.isSelected == true)
         {
             selectedIcon.SetActive(true);
