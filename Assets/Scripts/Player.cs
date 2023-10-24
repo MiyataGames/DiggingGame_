@@ -47,8 +47,12 @@ public class Player : Character
         Items = new List<Item>();
     }
 
-    public void TakeHeal(Item healItem)
+    public bool TakeHeal(Item healItem)
     {
+        if (currentHp == currentMaxHp)
+        {
+            return false;
+        }
         HealItemBase healItemBase = healItem.ItemBase as HealItemBase;
         if (currentHp + healItemBase.HealPoint > currentMaxHp)
         {
@@ -60,5 +64,6 @@ public class Player : Character
             currentHp += healItemBase.HealPoint;
         }
         //Debug.Log(currentHp);
+        return true;
     }
 }

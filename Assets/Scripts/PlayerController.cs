@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.EventSystems;
+using System.Linq;
 public enum GameStatus
 {
     DIGGING,
@@ -480,11 +481,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     }
     private void CellButtonClicked(int selectedIndex)
     {
-
-        // for (int i = 0; i < itemCellData.Count; i++)
-        // {
-        //     itemCellData[i].isSelected = (i == selectedItemIndex);
-        // }
         // アクティブセルに対してUIの更新をする
         itemPanel.RefreshActiveCellViews();
         Debug.Log("アイテムを使うよ");
@@ -578,6 +574,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (currentGameStatus == GameStatus.ITEM)
         {
+            List<bool> usedItem = new List<bool>();
             HealItemBase healItemBase = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             Debug.Log("えらばれているのは" + selectedItemIndex);
             // 全体アイテムだったら
@@ -588,7 +585,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // アイテムの残りが0だったら
                 if (players[0].Items[selectedItemIndex].ItemCount == 0)
                 {
-                    Debug.Log("使えないよ");
+                    Debug.Log("アイテムがないから使えないよ");
                 }
                 else
                 {
@@ -596,11 +593,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     // アイテムの効果発動
                     for (int i = 0; i < players.Count; i++)
                     {
-                        players[i].TakeHeal(item);
+                        // 全員falseだったらアイテムを使わない
+                        usedItem.Add(players[i].TakeHeal(item));
                         players[i].playerUI.UpdateHpSp();
                     }
                     // アイテムの数を減らす
-                    players[0].Items[selectedItemIndex].ItemCount--;
+                    if (usedItem.All(value => value == true))
+                    {
+                        players[0].Items[selectedItemIndex].ItemCount--;
+                    }
+                    else
+                    {
+                        Debug.Log("体力が満タンで使えないよ");
+                    }
                 }
             }
             // アイテムだったらターゲットを選択する
@@ -612,17 +617,22 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // アイテムの残りが0だったら
                 if (players[0].Items[selectedItemIndex].ItemCount == 0)
                 {
-                    Debug.Log("使えないよ");
+                    Debug.Log("アイテムがないから使えないよ");
                 }
                 else
                 {
                     Item item = players[0].Items[selectedItemIndex];
-                    // アイテムの効果発動
-                    players[selectedItemTargetIndex].TakeHeal(item);
-                    players[selectedItemTargetIndex].playerUI.UpdateHpSp();
-
-                    // アイテムの数を減らす
-                    players[0].Items[selectedItemIndex].ItemCount--;
+                    // アイテムの効果発動 体力が満タンでなければ
+                    if (players[selectedItemTargetIndex].TakeHeal(item) == true)
+                    {
+                        players[selectedItemTargetIndex].playerUI.UpdateHpSp();
+                        // アイテムの数を減らす
+                        players[0].Items[selectedItemIndex].ItemCount--;
+                    }
+                    else
+                    {
+                        Debug.Log("体力が満タンで使えないよ");
+                    }
                 }
             }
         }
