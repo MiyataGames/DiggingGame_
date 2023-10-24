@@ -32,8 +32,7 @@ public class ItemCellView : EnhancedScrollerCellView
     // データを再読み込みすることなくUIを更新することができます。
     public override void RefreshCellView()
     {
-        Debug.Log("更新");
-        //base.RefreshCellView();
+        base.RefreshCellView();
         if (itemCellData.isSelected == true)
         {
             selectedIcon.SetActive(true);

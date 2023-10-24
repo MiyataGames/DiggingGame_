@@ -474,7 +474,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         for (int i = 0; i < itemCellData.Count; i++)
         {
             itemCellData[i].isSelected = (i == selectedItemIndex);
+            Debug.Log("itemCellData" + itemCellData[i].isSelected + ":selectedItemIndex" + selectedItemIndex);
         }
+        // 見た目の更新
+        itemPanel.RefreshActiveCellViews();
     }
     private void CellButtonClicked(int selectedItemIndex)
     {
