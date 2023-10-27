@@ -26,6 +26,7 @@ public class Enemy_TypeA : FieldEnemy
     private bool waitFlag = false; //待機中か
     private bool leftFlag = true; //左方向を向いているか
     private bool jumpFlag = false;
+    private bool veloResetFlag = true;
     private Vector3 moveStartPos; //移動開始位置
     private Vector3 previousPos; //前フレームの位置
 
@@ -42,14 +43,6 @@ public class Enemy_TypeA : FieldEnemy
     {
         base.Update();
 
-        if (leftFlag == true)
-        {
-            vx = -speed;
-        }
-        else
-        {
-            vx = speed;
-        }
     }
 
     protected override void FixedUpdate()
@@ -59,7 +52,10 @@ public class Enemy_TypeA : FieldEnemy
 
     public override void FieldMove()
     {
-        if (hitWallCheck() || WalkDistanceCheck()) //壁に当たる、もしくは移動可能量を上回ったら
+        bool isHitWall = hitWallCheck();
+        bool isOverStepDis = WalkDistanceCheck();
+
+        if (isHitWall || isOverStepDis) //壁に当たる、もしくは移動可能量を上回ったら
         {
             moveFlag = false; //いったん待機
 
@@ -67,19 +63,13 @@ public class Enemy_TypeA : FieldEnemy
             {
                 StartCoroutine(Wait(1, () => //1秒後に方向転換するコルーチンを発火
                 {
-                    Vector3 myScale = transform.localScale;
-                    myScale = new Vector3(-myScale.x, myScale.y, myScale.z);
-                    transform.localScale = myScale;
-
-                    leftFlag = !leftFlag; //方向転換
-                    waitFlag = false; //待機解除
-                    moveStartPos = transform.position; //移動開始位置をリセット
+                    Flip(); //キャラの左右反転
                 }));
 
                 waitFlag = true; //待機フラグをtrue
             }
         }
-        else if (StopCheck() == true && waitFlag == false)
+        else if (StopCheck() == true && waitFlag == false) //壁に当たってない＆＆移動可能距離内なのに止まってたら
         {
             moveFlag = true;
             jumpFlag = true;
@@ -89,16 +79,36 @@ public class Enemy_TypeA : FieldEnemy
             moveFlag = true;
         }
 
+        if (moveFlag == true)
+        {
+
+        }
+
+        Debug.Log(moveFlag);
         if (moveFlag)
         {
+            if (leftFlag == true)
+            {
+                vx = -speed;
+            }
+            else
+            {
+                vx = speed;
+            }
+
             rb.velocity = new Vector2(vx, rb.velocity.y);
             if (jumpFlag == true)
             {
                 rb.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
                 jumpFlag = false;
             }
+        }else{
+            vx = 0;
+            vy = 0;
+            rb.velocity = new Vector2(vx, rb.velocity.y);
         }
 
+        Debug.Log(rb.velocity);
         //Debug.Log(Vector2.Distance(transform.position,previousPos));
         previousPos = transform.position;
     }
@@ -106,6 +116,17 @@ public class Enemy_TypeA : FieldEnemy
     protected override void Search()
     {
         base.Search();
+    }
+
+    private void Flip()
+    {
+        Vector3 myScale = transform.localScale;
+        myScale = new Vector3(-myScale.x, myScale.y, myScale.z);
+        transform.localScale = myScale;
+
+        leftFlag = !leftFlag; //方向転換
+        waitFlag = false; //待機解除
+        moveStartPos = transform.position; //移動開始位置をリセット
     }
 
     private bool hitWallCheck()
@@ -124,8 +145,8 @@ public class Enemy_TypeA : FieldEnemy
 
         Ray2D ray = new Ray2D(transform.position, rayDir); //レイを作成
         int layerMask = ~(1 << 9); //レイヤーマスクを指定(自分と当たらないように)
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, 1.0f, layerMask); //レイを発射
-        Debug.DrawRay(ray.origin, ray.direction * 1.0f, Color.green, 0.015f);
+        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, 0.7f, layerMask); //レイを発射
+        Debug.DrawRay(ray.origin, ray.direction * 0.7f, Color.green, 0.015f);
 
         //障害物があればtrueを返す
         if (hit)
@@ -143,7 +164,9 @@ public class Enemy_TypeA : FieldEnemy
 
     private bool WalkDistanceCheck()
     {
-        float dis = Vector2.Distance(this.transform.position, moveStartPos);
+        float dis = Math.Abs(this.transform.position.x - moveStartPos.x);
+        //Debug.Log(dis);
+        //Debug.Log(dis > stepDis);
 
         if (dis > stepDis)
         { //ステップ距離より移動量が大きければ
