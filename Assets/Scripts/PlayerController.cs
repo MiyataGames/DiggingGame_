@@ -12,6 +12,7 @@ public enum GameStatus
     MENU,
     ITEM,
     STATUS,
+    SYSTEM,
 }
 
 public enum ItemUseStatus
@@ -61,7 +62,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     [SerializeField] private GameObject[] playerUIs;
     private List<Player> players;
-
+    // セーブシステム
+    [SerializeField] SaveLoadController saveLoadCtrl;
     // メニュー画面 =======================
     private int currentMenuCommandNum;
     // アイテム関係 ======================
@@ -175,8 +177,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         else if (currentGameStatus == GameStatus.STATUS)
         {
             HandleStatusSelect();
-
-
+        }
+        else if (currentGameStatus == GameStatus.SYSTEM)
+        {
+            HandleSystemSelect();
         }
     }
 
@@ -245,9 +249,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         if (currentMenuCommandNum == (int)MenuCommand.STATUS)
         {
+            menu.ActivateMenuPanel(false);
             menu.ActivateStatusPanel(true);
             currentGameStatus = GameStatus.STATUS;
             InitStatus();
+        }
+        if (currentMenuCommandNum == (int)MenuCommand.SYSTEM)
+        {
+            menu.ActivateSystemPanel(true);
+            menu.ActivateMenuPanel(false);
+            currentGameStatus = GameStatus.SYSTEM;
         }
     }
     private void HandleItemSelect()
@@ -408,6 +419,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // アイテム画面を閉じてメニュー画面を開く
             menu.ActivateMenuPanel(true);
             menu.ActivateStatusPanel(false);
+            currentGameStatus = GameStatus.MENU;
+        }
+    }
+
+    void HandleSystemSelect()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // システム画面を閉じてメニュー画面を開く
+            menu.ActivateMenuPanel(true);
+            menu.ActivateSystemPanel(false);
             currentGameStatus = GameStatus.MENU;
         }
     }
@@ -580,7 +602,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // 全体アイテムだったら
             if (healItemBase.IsAll)
             {
-                Debug.Log("全体");
                 // アイテムを使う
                 // アイテムの残りが0だったら
                 if (players[0].Items[selectedItemIndex].ItemCount == 0)
@@ -611,7 +632,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // アイテムだったらターゲットを選択する
             else
             {
-                Debug.Log("個別");
                 selectedItemTargetIndex = selectStatusIndex;
                 // アイテムを使う
                 // アイテムの残りが0だったら
@@ -638,6 +658,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
     #endregion
+    // システム関係　=======================
+    // マウスでセーブを選択
+    public void SaveButton()
+    {
+        saveLoadCtrl.Save();
+    }
+
+    public void LoadButton()
+    {
+        saveLoadCtrl.Load();
+    }
     private void FixedUpdate()
     {
         rb.velocity = new Vector2(vx, rb.velocity.y);
