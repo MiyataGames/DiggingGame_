@@ -50,24 +50,18 @@ public class ActivateOnSonar : MonoBehaviour
         }
     }
     
-    // private void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     if (other.CompareTag("EditorOnly"))
-    //     {
-    //         FlashHlight = true;
-    //     }
-    //     if (other.CompareTag("Finish") && FlashHlight == true)
-    //     {
-    //         if (spriteRenderer != null)
-    //         {
-    //             spriteRenderer.enabled = false; // SpriteRenderer を非アクティベートにする
-    //         }
-    //         if (light2DComponent != null && lightBlinkCoroutine == null)
-    //         {
-    //             lightBlinkCoroutine = StartCoroutine(BlinkingLight());
-    //         }
-    //     }
-    // }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("EditorOnly"))
+        {
+            FlashHlight = true;
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.enabled = true; // SpriteRenderer を非アクティベートにする
+                Debug.Log("wwwww");
+            }
+        }
+    }
 
     private void OnTriggerExit2D(Collider2D other)
     {
@@ -89,20 +83,22 @@ public class ActivateOnSonar : MonoBehaviour
             }
         }
     }
+private IEnumerator BlinkingLight()
+{
+    float duration = 2f;  // 2秒間の点滅
+    float elapsed = 0f;
 
-    private IEnumerator BlinkingLight()
+    while (elapsed < duration)
     {
-        float duration = 3f;
-        float elapsed = 0f;
+        float intensity = Mathf.PingPong(elapsed * 5f, 1f);
+        light2DComponent.intensity = intensity;
 
-        while (elapsed < duration)
-        {
-            float intensity = Mathf.PingPong(elapsed * 5f, 1f);
-            light2DComponent.intensity = intensity;
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        lightBlinkCoroutine = null;  // 点滅が終了したら変数をリセット
+        elapsed += Time.deltaTime;
+        yield return null;
     }
+
+    light2DComponent.intensity = 0f;  // 点滅が終了したらライトをオフにする
+    lightBlinkCoroutine = null;  // 点滅が終了したら変数をリセット
+}
+
 }
