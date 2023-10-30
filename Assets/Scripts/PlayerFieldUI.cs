@@ -12,7 +12,7 @@ public class PlayerFieldUI : MonoBehaviour
     [SerializeField] private Text statusPlayerSpText;
     [SerializeField] private Text statusPlayerMaxSpText;
     [SerializeField] private Image statusIconImage;
-    [SerializeField] private GameObject frame;
+    [SerializeField] public GameObject frame;
 
     [SerializeField] private HPBar playerHpBar;
     [SerializeField] private SPBar playerSpBar;
@@ -21,20 +21,20 @@ public class PlayerFieldUI : MonoBehaviour
     {
         this.player = player;
         statusPlayerNameText.text = player.PlayerBase.PlayerName;
-        statusPlayerHpText.text = player.currentHp.ToString() + " / ";
+        statusPlayerHpText.text = player.CurrentHp.ToString() + " / ";
         statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
-        statusPlayerSpText.text = player.currentSp.ToString() + " / ";
+        statusPlayerSpText.text = player.CurrentSp.ToString() + " / ";
         statusPlayerMaxSpText.text = player.currentMaxSp.ToString();
         statusIconImage.sprite = player.PlayerBase.PlayerFaceIcon;
     }
 
     public void UpdateHpSp()
     {
-        playerHpBar.SetHp((float)player.currentHp, player.currentMaxHp);
-        playerSpBar.SetSp((float)player.currentSp, player.currentMaxSp);
-        statusPlayerHpText.text = player.currentHp.ToString() + " / ";
+        playerHpBar.SetHp((float)player.CurrentHp, player.currentMaxHp);
+        playerSpBar.SetSp((float)player.CurrentSp, player.currentMaxSp);
+        statusPlayerHpText.text = player.CurrentHp.ToString() + " / ";
         statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
-        statusPlayerSpText.text = player.currentSp.ToString() + " / ";
+        statusPlayerSpText.text = player.CurrentSp.ToString() + " / ";
         statusPlayerMaxSpText.text = player.currentMaxSp.ToString();
     }
 

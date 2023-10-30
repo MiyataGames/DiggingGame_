@@ -8,20 +8,22 @@ public delegate void StatusSelectButtonClickedDelegate(int statusIndex);
 public class PlayerStatusUIsManager : MonoBehaviour
 {
     private int playersCount = 0;
+    bool prevIsAllSelect = false;
     [SerializeField] private GameObject playerUIPrefab;
     [SerializeField] private GameObject playerStatusUIsManager;
     private List<PlayerFieldUI> playerFieldUIs;
 
     public StatusSelectButtonClickedDelegate statusSelectButtonClickedDelegate;
-    public void SetUpPlayerStatusUI(List<Player> players)
+    public void SetUpPlayerStatusUI(List<Player> players, bool isAllSelect)
     {
         // プレイヤーの人数が変わったときだけ更新する
-        if (players.Count != playersCount)
+        if (players.Count != playersCount || prevIsAllSelect != isAllSelect)
         {
+            prevIsAllSelect = isAllSelect;
             // 動作確認まだ
             for (int i = 0; i < playersCount; i++)
             {
-                Destroy(playerFieldUIs[i]);
+                Destroy(playerFieldUIs[i].gameObject);
             }
             playerFieldUIs = new List<PlayerFieldUI>();
             // ステータス画面のPrefabをInstantiateする
@@ -41,11 +43,18 @@ public class PlayerStatusUIsManager : MonoBehaviour
                 Button button = playerFieldUIObject.GetComponent<Button>();
                 int buttonIndex = i;
                 button.onClick.AddListener(() => OnClickStatus(buttonIndex));
-                EventTrigger eventTrigger = playerFieldUIObject.GetComponent<EventTrigger>();
-                EventTrigger.Entry entry = new EventTrigger.Entry();
-                entry.eventID = EventTriggerType.PointerEnter;
-                entry.callback.AddListener((eventDate) => selectStatus(buttonIndex));
-                eventTrigger.triggers.Add(entry);
+                if (isAllSelect == false)
+                {
+                    EventTrigger eventTrigger = playerFieldUIObject.GetComponent<EventTrigger>();
+                    EventTrigger.Entry entry = new EventTrigger.Entry();
+                    entry.eventID = EventTriggerType.PointerEnter;
+                    entry.callback.AddListener((eventDate) => selectStatus(buttonIndex));
+                    eventTrigger.triggers.Add(entry);
+                }
+            }
+            if (isAllSelect == true)
+            {
+                selectStatusAll();
             }
         }
         playersCount = players.Count;
@@ -62,12 +71,15 @@ public class PlayerStatusUIsManager : MonoBehaviour
     }
 
     // 全選択
-    public void selectStatusAll(int index)
+    public void selectStatusAll()
     {
+        Debug.Log("フレームをオン");
         // フレームをオン
         for (int i = 0; i < playerFieldUIs.Count; i++)
         {
+            Debug.Log(i + "番目");
             playerFieldUIs[i].SetActivateSelectedFrame(true);
+            Debug.Log("アクティブか" + playerFieldUIs[i].frame.activeSelf);
         }
     }
     // ステータス画面を開いているとき、キャラクターを選んだときに呼ばれる関数

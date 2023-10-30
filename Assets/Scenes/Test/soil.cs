@@ -39,8 +39,8 @@ public class soil : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        //Debug.Log("hit");
-        if (other.gameObject.tag == "scop")//スコップタグがついているか
+        //        Debug.Log("hit");
+        if (other.gameObject.tag == "scop")
         {
             foreach (ContactPoint2D point in other.contacts)//取得したすべての衝突オブジェクトに対して
             {
