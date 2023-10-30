@@ -58,10 +58,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public static GameStatus currentGameStatus;
 
     // プレイヤー 仮
-    [SerializeField] private PlayerBase[] playerBase;
+    //[SerializeField] private PlayerBase[] playerBasies;
 
-    [SerializeField] private GameObject[] playerUIs;
-    private List<Player> players;
+    //[SerializeField] private GameObject[] playerUIs;
+    [SerializeField] Party party;
     // セーブシステム
     [SerializeField] SaveLoadController saveLoadCtrl;
     // メニュー画面 =======================
@@ -93,22 +93,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        players = new List<Player>();
         currentGameStatus = GameStatus.DIGGING;
         currentMenuCommandNum = 0;
         currentItemNum = 0;
         selectedItemIndex = 0;
         selectedStatusIndex = 0;
         selectedItemTargetIndex = 0;
-        Player player = new Player(playerBase[0], 1);
-        players.Add(player);
-        player = new Player(playerBase[1], 1);
-        players.Add(player);
-
+        party.Setup();
         menu.menuSelectButtonClickedDelegate = SelectMenuButton;
         menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
+        // saveLoadCtrl.Load();
     }
 
     // Update is called once per frame
@@ -170,14 +165,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             HandleMenuSelect();
         }
+        // アイテムを選択中だったら
         else if (currentGameStatus == GameStatus.ITEM)
         {
             HandleItemSelect();
         }
+        // ステータスを選択中だったら
         else if (currentGameStatus == GameStatus.STATUS)
         {
             HandleStatusSelect();
         }
+        // システムを選択中だったら
         else if (currentGameStatus == GameStatus.SYSTEM)
         {
             HandleSystemSelect();
@@ -373,9 +371,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // 0のものをアイテムリストから除外する
-                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                if (party.Players[0].Items[selectedItemIndex].ItemCount == 0)
                 {
-                    players[0].Items.RemoveAt(selectedItemIndex);
+                    party.Players[0].Items.RemoveAt(selectedItemIndex);
                     if (selectedItemIndex != 0)
                     {
                         selectedItemIndex--;
@@ -449,14 +447,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void LoadItemData()
     {
         itemCellData = new List<ItemCellData>();
-        for (int i = 0; i < players[0].Items.Count; i++)
+        for (int i = 0; i < party.Players[0].Items.Count; i++)
         {
             // Debug.Log(players[0].Items[i].ItemBase.ItemName);
             itemCellData.Add(new ItemCellData()
             {
                 isSelected = i == selectedItemIndex,// 選択されているか
-                itemText = players[0].Items[i].ItemBase.ItemName,
-                itemCountText = players[0].Items[i].ItemCount.ToString()
+                itemText = party.Players[0].Items[i].ItemBase.ItemName,
+                itemCountText = party.Players[0].Items[i].ItemCount.ToString()
             });
         }
         itemPanel.ReloadData();
@@ -507,12 +505,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         itemPanel.RefreshActiveCellViews();
         Debug.Log("アイテムを使うよ");
         // 使うアイテムの情報を保持
-        Item item = players[0].Items[selectedItemIndex];
+        Item item = party.Players[0].Items[selectedItemIndex];
 
         // 回復アイテムだったら
         if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
         {
-            HealItemBase healItem = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
+            HealItemBase healItem = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             // アイテムパネルを消す
             menu.ActivateItemPanel(false);
             // ステータス画面を開く
@@ -536,26 +534,26 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             Item newItem = other.GetComponent<Item>();
             // 同じアイテムがあるか検索
-            if (players[0].Items.Count > 0)
+            if (party.Players[0].Items.Count > 0)
             {
-                for (int i = 0; i < players[0].Items.Count; i++)
+                for (int i = 0; i < party.Players[0].Items.Count; i++)
                 {
-                    if (newItem.ItemBase.Id == players[0].Items[i].ItemBase.Id)
+                    if (newItem.ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)
                     {
                         // あったら個数を増やして破棄
-                        players[0].Items[i].ItemCount++;
+                        party.Players[0].Items[i].ItemCount++;
                         Destroy(other.gameObject);
                         return;
                     }
                 }
             }
             // なければ新しく追加する
-            players[0].Items.Add(other.GetComponent<Item>());
-            players[0].Items[players[0].Items.Count - 1].ItemCount++;
-            Debug.Log(players[0].Items[0].ItemBase.ItemName);
+            party.Players[0].Items.Add(other.GetComponent<Item>());
+            party.Players[0].Items[party.Players[0].Items.Count - 1].ItemCount++;
+            Debug.Log(party.Players[0].Items[0].ItemBase.ItemName);
             Destroy(other.gameObject);
             // idが早い順に並べる
-            players[0].Items.Sort((x, y) => y.Id - x.Id);
+            party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
         }
         LoadItemData();
     }
@@ -567,15 +565,15 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // ステータス選択画面だったら
         if (currentGameStatus == GameStatus.STATUS)
         {
-            playerStatusUIsManager.SetUpPlayerStatusUI(players, false);
+            playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, false);
             playerStatusUIsManager.selectStatus(selectedStatusIndex);
         }
         else if (currentGameStatus == GameStatus.ITEM)
         {
             // ここ
-            HealItemBase healItemBase = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
+            HealItemBase healItemBase = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             Debug.Log("healItemIsAll" + healItemBase.IsAll);
-            playerStatusUIsManager.SetUpPlayerStatusUI(players, healItemBase.IsAll);
+            playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, healItemBase.IsAll);
             if (healItemBase.IsAll == false)
             {
                 playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
@@ -597,31 +595,31 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         else if (currentGameStatus == GameStatus.ITEM)
         {
             List<bool> usedItem = new List<bool>();
-            HealItemBase healItemBase = players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
+            HealItemBase healItemBase = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             Debug.Log("えらばれているのは" + selectedItemIndex);
             // 全体アイテムだったら
             if (healItemBase.IsAll)
             {
                 // アイテムを使う
                 // アイテムの残りが0だったら
-                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                if (party.Players[0].Items[selectedItemIndex].ItemCount == 0)
                 {
                     Debug.Log("アイテムがないから使えないよ");
                 }
                 else
                 {
-                    Item item = players[0].Items[selectedItemIndex];
+                    Item item = party.Players[0].Items[selectedItemIndex];
                     // アイテムの効果発動
-                    for (int i = 0; i < players.Count; i++)
+                    for (int i = 0; i < party.Players.Count; i++)
                     {
                         // 全員falseだったらアイテムを使わない
-                        usedItem.Add(players[i].TakeHeal(item));
-                        players[i].playerUI.UpdateHpSp();
+                        usedItem.Add(party.Players[i].TakeHeal(item));
+                        party.Players[i].playerUI.UpdateHpSp();
                     }
                     // アイテムの数を減らす
                     if (usedItem.All(value => value == true))
                     {
-                        players[0].Items[selectedItemIndex].ItemCount--;
+                        party.Players[0].Items[selectedItemIndex].ItemCount--;
                     }
                     else
                     {
@@ -635,19 +633,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 selectedItemTargetIndex = selectStatusIndex;
                 // アイテムを使う
                 // アイテムの残りが0だったら
-                if (players[0].Items[selectedItemIndex].ItemCount == 0)
+                if (party.Players[0].Items[selectedItemIndex].ItemCount == 0)
                 {
                     Debug.Log("アイテムがないから使えないよ");
                 }
                 else
                 {
-                    Item item = players[0].Items[selectedItemIndex];
+                    Item item = party.Players[0].Items[selectedItemIndex];
                     // アイテムの効果発動 体力が満タンでなければ
-                    if (players[selectedItemTargetIndex].TakeHeal(item) == true)
+                    if (party.Players[selectedItemTargetIndex].TakeHeal(item) == true)
                     {
-                        players[selectedItemTargetIndex].playerUI.UpdateHpSp();
+                        party.Players[selectedItemTargetIndex].playerUI.UpdateHpSp();
                         // アイテムの数を減らす
-                        players[0].Items[selectedItemIndex].ItemCount--;
+                        party.Players[0].Items[selectedItemIndex].ItemCount--;
                     }
                     else
                     {

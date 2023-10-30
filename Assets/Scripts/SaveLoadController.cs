@@ -5,11 +5,16 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine.Tilemaps;
+using Unity.Mathematics;
 
 public class SaveLoadController : MonoBehaviour
 {
     [SerializeField] Tilemap tileMap;
     [SerializeField] TileScriptableObject tileSB;
+    [SerializeField] Party party;
+
+    // ロード用
+    [SerializeField] GameObject playerObj;
 
     const string SAVE_FILE = "tilemap.json";
     const string DATA_DIR = "Assets/StreamingAssets/data";
@@ -18,13 +23,24 @@ public class SaveLoadController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // パーティオブジェクトを探す
+
         //Save();
         //Load();
     }
 
     public void Save()
     {
-        var data = new SaveTileMapData();
+        var data = new SaveData();
+        // プレイヤーの情報の保存
+        data.playerPosition.Add(playerObj.transform.position.x);
+        data.playerPosition.Add(playerObj.transform.position.y);
+        // プレイヤーのパラメータの保存
+        for (int i = 0; i < party.Players.Count; i++)
+        {
+            data.playerDatas.Add(JsonUtility.ToJson(party.Players[i]));
+        }
+        // タイルマップの保存
         // タイルマップの原点とサイズをタイルが存在する境界まで圧縮する　タイルマップの存在する範囲だけに境界を小さくする
         tileMap.CompressBounds();
         // タイルが存在する範囲をしれる
@@ -72,14 +88,14 @@ public class SaveLoadController : MonoBehaviour
 
     public void Load()
     {
+        // タイルマップの生成
         tileMap.ClearAllTiles();
-
         FileStream stream = File.Open(saveDataPath, FileMode.Open);
         StreamReader reader = new StreamReader(stream);
         var json = reader.ReadToEnd();
         reader.Close();
         stream.Close();
-        SaveTileMapData data = JsonUtility.FromJson<SaveTileMapData>(json);
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
         int xDeff = int.Parse(data.origin[0]);
         int yDeff = int.Parse(data.origin[1]);
         for (int y = 0; y < data.mapData.Count; y++)
@@ -91,12 +107,20 @@ public class SaveLoadController : MonoBehaviour
                 tileMap.SetTile(new Vector3Int(xDeff + x, yDeff + y, 0), tileSB.tileDataList.Single(t => t.head == xlist[x]).tile);
             }
         }
+        // プレイヤーオブジェクトの移動
+        //Instantiate(playerObj, new Vector3(data.playerPosition[0], data.playerPosition[1], 0), quaternion.identity);
+        playerObj.transform.position = new Vector3(data.playerPosition[0], data.playerPosition[1], 0);
+        // プレイヤー本体の生成
+        // party.LoadPlayerSetUp(data.playerDatas);
     }
 
     [Serializable]
-    public class SaveTileMapData
+    public class SaveData
     {
+        public List<float> playerPosition = new List<float>();
         public List<string> origin = new List<string>();
         public List<string> mapData = new List<string>();
+        // プレイヤーのパラメータ
+        public List<string> playerDatas = new List<string>();
     }
 }

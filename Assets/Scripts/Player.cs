@@ -1,22 +1,33 @@
+
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : Character
 {
+    public int playerID;
+    public int level;
+    public int currentHP;
+    public int currentSP;
+    public int atk;
+    public int def;
+    public int agi;
+
     public PlayerBase PlayerBase { get; set; }
 
     // UI
     public PlayerFieldUI playerUI;
-
     // パラメータ
-    public int Level { get; set; }
+    public int Level { get => level; }
 
-    public int currentHp { get; set; }
-    public int currentSp { get; set; }
-    public int Atk { get; set; }
-    public int Def { get; set; }
-    public int Agi { get; set; }
+    public int CurrentHp { get => currentHP; set => currentHP = value; }
+    public int CurrentSp { get => currentSP; set => currentSP = value; }
+    public int Atk { get => atk; set => atk = value; }
+    public int Def { get => def; set => def = value; }
+    public int Agi { get => agi; set => agi = value; }
+    public List<Item> items;
 
     // レベルに応じたHPを返す
     public int currentMaxHp
@@ -31,15 +42,18 @@ public class Player : Character
     }
 
     // Start is called before the first frame update
-    public List<Item> Items { get; set; }
+    public List<Item> Items { get => items; set => items = value; }
 
     public Player(PlayerBase pBase, int level)
     {
         isPlayer = true;
         PlayerBase = pBase;
+        playerID = pBase.PlayerId;
+        Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
-        currentHp = 3;
-        currentSp = currentMaxSp;
+        this.level = level;
+        CurrentHp = 3;
+        CurrentSp = currentMaxSp;
         Atk = PlayerBase.PlayerMaxAtk;
         Def = PlayerBase.PlayerMaxDef;
         Agi = PlayerBase.PlayerMaxAgi;
@@ -47,21 +61,31 @@ public class Player : Character
         Items = new List<Item>();
     }
 
+    public void OverridePlayer(int level, int currentHp, int currentSp, int atk, int def, int agi)
+    {
+        this.level = level;
+        CurrentHp = currentHp;
+        CurrentSp = currentSp;
+        Atk = atk;
+        Def = def;
+        Agi = agi;
+    }
+
     public bool TakeHeal(Item healItem)
     {
-        if (currentHp == currentMaxHp)
+        if (CurrentHp == currentMaxHp)
         {
             return false;
         }
         HealItemBase healItemBase = healItem.ItemBase as HealItemBase;
-        if (currentHp + healItemBase.HealPoint > currentMaxHp)
+        if (CurrentHp + healItemBase.HealPoint > currentMaxHp)
         {
-            currentHp = currentMaxHp;
+            CurrentHp = currentMaxHp;
         }
         else
         {
             Debug.Log(currentMaxHp);
-            currentHp += healItemBase.HealPoint;
+            CurrentHp += healItemBase.HealPoint;
         }
         //Debug.Log(currentHp);
         return true;
