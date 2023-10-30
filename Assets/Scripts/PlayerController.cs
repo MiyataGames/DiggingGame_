@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private Rigidbody2D rb;
     private float vx;
     private float vy;
+    private float minVelocityY = -9.0f;
+    private float maxVelocityY = 10.0f;
     private bool pushFlag;
     private bool jumpFlag;
     private bool groundFlag;
@@ -669,18 +671,22 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     }
     private void FixedUpdate()
     {
-        rb.velocity = new Vector2(vx, rb.velocity.y);
-
         if (jumpFlag == true)
         {
             rb.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
             jumpFlag = false;
         }
+
+        float velocityY = Mathf.Clamp(rb.velocity.y, minVelocityY, maxVelocityY);
+        rb.velocity = new Vector2(vx, velocityY);
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        groundFlag = true;
+        if (other.gameObject.layer != 10)
+        {
+            groundFlag = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
