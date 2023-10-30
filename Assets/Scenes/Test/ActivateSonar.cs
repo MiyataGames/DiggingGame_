@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+// シフトボタンを押したらソナーが使えるスクリプト
 public class ActivateSonar : MonoBehaviour
 {
     public GameObject targetGameObject; // アクティブにする対象のゲームオブジェクト

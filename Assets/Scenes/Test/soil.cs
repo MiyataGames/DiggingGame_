@@ -38,7 +38,7 @@ public class soil : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        Debug.Log("hit");
+        // Debug.Log("hit");
         if (other.gameObject.tag == "scop")
         {
             foreach (ContactPoint2D point in other.contacts)
