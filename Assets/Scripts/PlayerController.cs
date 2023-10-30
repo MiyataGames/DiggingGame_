@@ -593,13 +593,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             jumpFlag = false;
         }
 
-        float velocityY = Mathf.Clamp(rb.velocity.y,minVelocityY,maxVelocityY);
+        float velocityY = Mathf.Clamp(rb.velocity.y, minVelocityY, maxVelocityY);
         rb.velocity = new Vector2(vx, velocityY);
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        groundFlag = true;
+        if (other.gameObject.layer != 10)
+        {
+            groundFlag = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)

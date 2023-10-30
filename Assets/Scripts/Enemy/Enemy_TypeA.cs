@@ -84,7 +84,7 @@ public class Enemy_TypeA : FieldEnemy
 
         }
 
-        Debug.Log(moveFlag);
+        //Debug.Log(moveFlag);
         if (moveFlag)
         {
             if (leftFlag == true)
@@ -108,7 +108,7 @@ public class Enemy_TypeA : FieldEnemy
             rb.velocity = new Vector2(vx, rb.velocity.y);
         }
 
-        Debug.Log(rb.velocity);
+        //Debug.Log(rb.velocity);
         //Debug.Log(Vector2.Distance(transform.position,previousPos));
         previousPos = transform.position;
     }
@@ -144,7 +144,7 @@ public class Enemy_TypeA : FieldEnemy
         }
 
         Ray2D ray = new Ray2D(transform.position, rayDir); //レイを作成
-        int layerMask = ~(1 << 9); //レイヤーマスクを指定(自分と当たらないように)
+        int layerMask = ~(1 << 10); //レイヤーマスクを指定(自分と当たらないように)
         RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, 0.7f, layerMask); //レイを発射
         Debug.DrawRay(ray.origin, ray.direction * 0.7f, Color.green, 0.015f);
 
