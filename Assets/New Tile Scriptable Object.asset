@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7a83985bdc27184087865a5f318f347, type: 3}
-  m_Name: Potion2
+  m_Script: {fileID: 11500000, guid: 5459dec5eee8f6b4c98107667c5580ed, type: 3}
+  m_Name: New Tile Scriptable Object
   m_EditorClassIdentifier: 
-  itemName: "\u56DE\u5FA9\u85AC"
-  description: 
-  id: 1
-  itemType: 2
-  isAll: 1
-  healPoint: 10
+  tileDataList:
+  - head: a
+    tile: {fileID: 11400000, guid: f507f9c2862ce4846baef785fb27a5f1, type: 2}
+  - head: 
+    tile: {fileID: 0}
