@@ -33,7 +33,7 @@ public class ActivateOnSonar : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("EditorOnly"))
+        if (other.CompareTag("Respawn"))
         {
             FlashHlight = true;
         }
@@ -52,7 +52,7 @@ public class ActivateOnSonar : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("EditorOnly"))
+        if (other.CompareTag("Respawn"))
         {
             FlashHlight = true;
             if (spriteRenderer != null)
@@ -65,7 +65,7 @@ public class ActivateOnSonar : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("EditorOnly"))
+        if (other.CompareTag("Respawn"))
         {
             FlashHlight = false;
         }
