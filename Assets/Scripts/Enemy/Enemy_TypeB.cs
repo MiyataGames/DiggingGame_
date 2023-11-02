@@ -272,7 +272,7 @@ public class Enemy_TypeB : FieldEnemy
                 {//サーチ（視界）内にいるか確認
                     Debug.Log("視界の範囲内");
 
-                    LayerMask layerMask = ~(1 << 10); //レイヤーマスクを指定(自分と視界のコリジョンに当たらないように)
+                    LayerMask layerMask = ~(1 << 10) & ~(1<<11); //レイヤーマスクを指定(自分と視界のコリジョンに当たらないように)
                     RaycastHit2D hit = Physics2D.Raycast(transform.position, toPlayer.normalized, toPlayer.magnitude, layerMask);//プレイヤーへレイを飛ばす
                     Debug.DrawRay(transform.position, toPlayer.normalized * toPlayer.magnitude, Color.red, 0.015f);
 

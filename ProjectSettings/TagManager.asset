@@ -9,6 +9,9 @@ TagManager:
   - invisibleitems
   - flashlight
   - sonar
+  - ground
+  - digObject
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -21,7 +24,7 @@ TagManager:
   - Charactor
   - Enemy
   - EnemyFieldOfVision
-  - 
+  - SonorAndFlight
   - 
   - 
   - 
