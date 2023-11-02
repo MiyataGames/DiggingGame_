@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
 
-    private Rigidbody2D rb;
+     [SerializeField] private Rigidbody2D rb;
     private float vx;
     private float vy;
     private float minVelocityY = -9.0f;
@@ -557,6 +557,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // idが早い順に並べる
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
         }
+
+        // else if (other.tag == "Finish")
+        // {
+        //     Debug.Log("wwwwww");
+        // }
         LoadItemData();
     }
     #endregion
