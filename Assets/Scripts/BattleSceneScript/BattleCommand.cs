@@ -9,21 +9,22 @@ public class BattleCommand : MonoBehaviour
     [SerializeField] GameObject battleCommandPanel;
     [SerializeField] GameObject skillCommandPanel;
     //[SerializeField] GameObject itemCommandPanel;
-    [SerializeField] TextMeshProUGUI dialogText;
+    //[SerializeField] TextMeshProUGUI dialogText;
     [SerializeField] GameObject[] battleCommandSelectArrow;
-    [SerializeField] GameObject[] skillSelectArrow;
+    //[SerializeField] GameObject[] skillSelectArrow;
 
-    // テキストを変更するための関数
-    public void SetDialog(string dialog)
-    {
-        dialogText.text = dialog;
-    }
+    /*
+        // テキストを変更するための関数
+        public void SetDialog(string dialog)
+        {
+            dialogText.text = dialog;
+        }
 
-    // 1秒表示する
-    public void EnableDialogText(bool enabled)
-    {
-        dialogText.enabled = enabled;
-    }
+        // 1秒表示する
+        public void EnableDialogText(bool enabled)
+        {
+            dialogText.enabled = enabled;
+        }*/
 
     // メインパネルをオンオフする関数
     public void ActivateBattleCommandPanel(bool activate)
@@ -43,6 +44,7 @@ public class BattleCommand : MonoBehaviour
     {
         skillCommandPanel.SetActive(activate);
     }
+    /*
     // スキルパネルの矢印
     public void ActivateSkillSelectArrow(int skillNum)
     {
@@ -51,5 +53,5 @@ public class BattleCommand : MonoBehaviour
             skillSelectArrow[i].SetActive(false);
         }
         skillSelectArrow[skillNum].SetActive(true);
-    }
+    }*/
 }
