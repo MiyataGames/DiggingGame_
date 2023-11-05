@@ -30,8 +30,8 @@ public class PlayerFieldUI : MonoBehaviour
 
     public void UpdateHpSp()
     {
-        playerHpBar.SetHp((float)player.CurrentHp, player.currentMaxHp);
-        playerSpBar.SetSp((float)player.CurrentSp, player.currentMaxSp);
+        playerHpBar.SetHP((float)player.CurrentHp, player.currentMaxHp);
+        playerSpBar.SetSP((float)player.CurrentSp, player.currentMaxSp);
         statusPlayerHpText.text = player.CurrentHp.ToString() + " / ";
         statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
         statusPlayerSpText.text = player.CurrentSp.ToString() + " / ";

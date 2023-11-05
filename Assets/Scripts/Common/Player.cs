@@ -16,12 +16,13 @@ public class Player : Character
     public int agi;
 
     public PlayerBase PlayerBase { get; set; }
+    public BattlePlayerUI PlayerUI { get; set; }
 
     // UI
     public PlayerFieldUI playerUI;
     // パラメータ
     public int Level { get => level; }
-
+    public List<EnemySkill> Skills { get; set; }//スキル
     public int CurrentHp { get => currentHP; set => currentHP = value; }
     public int CurrentSp { get => currentSP; set => currentSP = value; }
     public int Atk { get => atk; set => atk = value; }
@@ -59,6 +60,21 @@ public class Player : Character
         Agi = PlayerBase.PlayerMaxAgi;
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
+        Skills = new List<EnemySkill>();
+        /*
+        // 覚える技のレベル以上なら所持ペルソナのスキルをskillsに追加
+        foreach (LearnableSkill learablePlayerSkill in PlayerBase.learablePlayerSkill)
+        {
+            if (Level >= learablePlayerSkill.Level)
+            {
+                Skills.Add(new EnemySkill(learablePlayerSkill.SkillBase));
+            }
+            // 8つ以上はだめ
+            if (Skills.Count >= 8)
+            {
+                break;
+            }
+        }*/
     }
 
     public void OverridePlayer(int level, int currentHp, int currentSp, int atk, int def, int agi)
@@ -71,7 +87,7 @@ public class Player : Character
         Agi = agi;
     }
 
-    public bool TakeHeal(Item healItem)
+    public bool TakeHealWithItem(Item healItem)
     {
         if (CurrentHp == currentMaxHp)
         {
@@ -89,5 +105,44 @@ public class Player : Character
         }
         //Debug.Log(currentHp);
         return true;
+    }
+
+    public bool TakeDamage(EnemySkill enemySkill, Enemy enemy)
+    {
+        /*
+        float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
+        float a = (2 * enemy.Level + 10) / 250f;
+        float d = a * enemySkill.skillBase.Power * ((float)enemy.MagicPower / equipEnemy.Def) + 2;
+        */
+        int damage = enemySkill.skillBase.Power;
+
+        currentHP -= damage;
+        if (currentHP <= 0)
+        {
+            currentHP = 0;
+            return true;
+        }
+        return false;
+    }
+    public void TakeHeal(EnemySkill playerSkill, Player player)
+    {
+        /*
+                float modifiers = Random.Range(0.85f, 1.0f);
+                float a = (2 * player.Level + 10) / 250f;
+                float d = a * playerSkill.skillBase.Power * ((float)player.equipEnemy.MagicPower) + 2;
+                // 与えるダメージの2.5倍
+                int healHP = Mathf.FloorToInt(d * modifiers * 2.5f);*/
+        int healHP = playerSkill.skillBase.Power;
+
+        currentHP += healHP;
+        if (currentHP > currentMaxHp)
+        {
+            currentHP = currentMaxHp;
+        }
+    }
+
+    public void UseSp(EnemySkill playerSkill)
+    {
+        currentSP -= playerSkill.skillBase.Sp;
     }
 }

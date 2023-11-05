@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
 
-     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
     private float vx;
     private float vy;
     private float minVelocityY = -9.0f;
@@ -362,7 +362,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     Item item = players[0].Items[selectedItemIndex];
                     // アイテムの効果発動
-                    players[selectedItemTargetIndex].TakeHeal(item);
+                    players[selectedItemTargetIndex].TakeHealWithItem(item);
                     players[selectedItemTargetIndex].playerUI.UpdateHpSp();
 
                     // アイテムの数を減らす
@@ -620,7 +620,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     for (int i = 0; i < party.Players.Count; i++)
                     {
                         // 全員falseだったらアイテムを使わない
-                        usedItem.Add(party.Players[i].TakeHeal(item));
+                        usedItem.Add(party.Players[i].TakeHealWithItem(item));
                         party.Players[i].playerUI.UpdateHpSp();
                     }
                     // アイテムの数を減らす
@@ -648,7 +648,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     Item item = party.Players[0].Items[selectedItemIndex];
                     // アイテムの効果発動 体力が満タンでなければ
-                    if (party.Players[selectedItemTargetIndex].TakeHeal(item) == true)
+                    if (party.Players[selectedItemTargetIndex].TakeHealWithItem(item) == true)
                     {
                         party.Players[selectedItemTargetIndex].playerUI.UpdateHpSp();
                         // アイテムの数を減らす

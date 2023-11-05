@@ -9,7 +9,7 @@ public class SPBar : MonoBehaviour
     [SerializeField] private Text spText;
     [SerializeField] private Text maxSpText;
 
-    public void SetSp(float hp, float maxHp)
+    public void SetSP(float hp, float maxHp)
     {
         spBar.GetComponent<Image>().fillAmount = hp / maxHp;
         spText.text = hp.ToString();
