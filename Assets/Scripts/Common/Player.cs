@@ -1,6 +1,3 @@
-
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +11,14 @@ public class Player : Character
     public int atk;
     public int def;
     public int agi;
+    public GameObject PlayerBattleSprite { get; set; }
 
     public PlayerBase PlayerBase { get; set; }
     public BattlePlayerUI PlayerUI { get; set; }
 
     // UI
     public PlayerFieldUI playerUI;
+    public BattlePlayerUI battlePlayerUI;
     // パラメータ
     public int Level { get => level; }
     public List<EnemySkill> Skills { get; set; }//スキル
@@ -50,7 +49,7 @@ public class Player : Character
         isPlayer = true;
         PlayerBase = pBase;
         playerID = pBase.PlayerId;
-        Debug.Log("ID" + playerID);
+        //        Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
         this.level = level;
         CurrentHp = 3;

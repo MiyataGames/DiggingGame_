@@ -16,23 +16,20 @@ public class BattlePlayerUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentMaxHpText;
     [SerializeField] private TextMeshProUGUI currentMaxSpText;
     [SerializeField] private GameObject selectedArrow;
-    [SerializeField] private GameObject weakImage;
-    [SerializeField] private GameObject invalidImage;
 
     [SerializeField] private Transform playerPos;
-    [SerializeField] private Transform playerPersonaPos;
 
     private Player player;
 
     // プレイヤーの詳しいステータス画面
     //[SerializeField] private GameObject playerDiscriptionPanel;
 
-    [SerializeField] private Image[] statusSlots;
-    [SerializeField] private Sprite[] statusSprites;
-    [SerializeField] private TextMeshProUGUI[] statusTexts;
-
+    /*
+        [SerializeField] private Image[] statusSlots;
+        [SerializeField] private Sprite[] statusSprites;
+        [SerializeField] private Text[] statusTexts;
+    */
     public GameObject SelectedArrow { get => selectedArrow; }
-    public Transform PlayerPersonaPos { get => playerPersonaPos; }
     public Transform PlayerPos { get => playerPos; set => playerPos = value; }
 
     public void SetPlayerData(Player player)

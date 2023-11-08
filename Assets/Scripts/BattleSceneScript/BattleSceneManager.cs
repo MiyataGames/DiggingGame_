@@ -63,6 +63,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField]
     private Player[] selectedPlayers;
 
+
     /// スキル関係==================================
     private List<SkillCellData> skillDatas;
 
@@ -101,12 +102,19 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         battleState = BattleState.INIT_BATTLE;
     }
 
-    public void HandleUpdate()
+    void Start()
+    {
+        StartBattle();
+    }
+
+    public void Update()
     {
         if (battleState == BattleState.INIT_BATTLE)
         {
+            PrepareInitBattle();
             //InitBattle();
         }
+        /*
         else if (battleState == BattleState.PREPARE_BATTLE)
         {
             // プレイヤーが走ってくる
@@ -154,7 +162,44 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 EnemyEndInput();
             }
+        }*/
+    }
+
+
+    // あとでGameManagerに移植する
+    private List<Player> players;
+    private List<Enemy> enemies;
+    [SerializeField] PlayerUnit playerUnit;
+    [SerializeField] EnemyUnit enemyUnit;
+    bool firstBattle = true;
+    void PrepareInitBattle()
+    {
+        // playersとenemiesのリストを用意する
+        players = new List<Player>();
+        enemies = new List<Enemy>();
+
+        // 1レベルのプレイヤーを生成する
+        if (firstBattle == true)
+        {
+            playerUnit.SetUpFirst(1);
+            firstBattle = false;
         }
+        else
+        {
+            playerUnit.SetUp();
+        }
+        // enemyのセットアップ1~3レベルの敵を生成
+        enemyUnit.SetUp(1, 3);
+        // playersにソートされたplayerをいれる
+        for (int i = 0; i < playerUnit.Players.Length; i++)
+        {
+            players.Add(playerUnit.Players[i]);
+        }
+        for (int i = 0; i < enemyUnit.Enemies.Length; i++)
+        {
+            enemies.Add(enemyUnit.Enemies[i]);
+        }
+        InitBattle(players, enemies);
     }
 
     // 戦闘が始まる前に一回だけ実行する===========================
@@ -190,8 +235,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             activeEnemies.Add(enemies[i]);
         }
 
-        // キャラクターが持ち場につく
-        battleState = BattleState.PREPARE_BATTLE;
 
         Dictionary<Character, int> agiCharaDictionary = new Dictionary<Character, int>();
 
@@ -243,6 +286,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // 一番早いキャラクターが動くキャラクターturnCharacter
         turnCharacterIndex = 0;
         turnCharacter = characters[turnCharacterIndex];
+
+        // キャラクターが持ち場につく
+        battleState = BattleState.PREPARE_BATTLE;
+        Debug.Log("初期化完了");
     }
 
     /*
@@ -415,7 +462,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         //turnPlayer.EquipEnemy.EnemyAnimator = playerPersona.GetComponent<Animator>();
 
         Vector3 targetPos = turnPlayer.PlayerUI.PlayerPos.position;
-        targetPos = new Vector3(turnPlayer.PlayerUI.PlayerPos.position.x, turnPlayer.PlayerUI.PlayerPersonaPos.position.y - turnPlayer.PlayerUI.PlayerPos.position.y, turnPlayer.PlayerUI.PlayerPos.position.z);
+        //targetPos = new Vector3(turnPlayer.PlayerUI.PlayerPos.position.x, turnPlayer.PlayerUI.PlayerPersonaPos.position.y - turnPlayer.PlayerUI.PlayerPos.position.y, turnPlayer.PlayerUI.PlayerPos.position.z);
 
         // EnhancedScrollerのデリゲートを指定する
         // デリゲートを設定することで、スクロールビューが必要な情報を取得
@@ -671,7 +718,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 if (playerSkill.skillBase.SkillRecieveEffect != null)
                 {
-                    Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyModel.transform.position, activeEnemies[selectedTargetIndex].EnemyModel.transform.rotation);
+                    Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemySprite.transform.position, activeEnemies[selectedTargetIndex].EnemySprite.transform.rotation);
                 }
                 isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeDamage(playerSkill, activePlayers[0]);
                 // アニメーションやUI表示
@@ -693,7 +740,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     // i番目の敵のモデルを消す
                     //activeEnemies[i].EnemyModel.SetActive(false);
-                    Destroy(activeEnemies[i].EnemyModel);
+                    Destroy(activeEnemies[i].EnemySprite);
                     // i番目の敵のUIを消す
                     activeEnemies[i].EnemyUI.UnActiveUIPanel();
                     // i番目の敵のisDyingをtrueにする

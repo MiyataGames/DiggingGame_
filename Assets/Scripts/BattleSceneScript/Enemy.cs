@@ -12,8 +12,8 @@ public class Enemy : Character
     public EnemyBase EnemyBase { get => enemyBase; }
 
     public int Level { get => level; }
-    public GameObject EnemyModel { get; set; }
-    public Animator EnemyAnimator { get; set; }
+    public GameObject EnemySprite { get; set; }
+    // public Animator EnemyAnimator { get; set; }
 
     public BattleEnemyUI EnemyUI { get; set; }
 
