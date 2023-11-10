@@ -539,8 +539,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // Item newItem = other.GetComponent<Item>();
 
             // FieldItemコンポーネントからItemインスタンスを取得
-            //Item newItem = other.GetComponent<FieldItem>().item;
+
+            // フィールドアイテムのアイテムプロパティからItemインスタンスを取得
             FieldItem fieldItemComponent = other.GetComponent<FieldItem>();
+            // Item newItem = other.GetComponent<FieldItem>().item;
             Item newItem = fieldItemComponent.item;
             // 同じアイテムがあるか検索
             // if (party.Players[0].Items.Count > 0)

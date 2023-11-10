@@ -10,16 +10,16 @@ public enum ItemType
     WEAPON
 }
 
+// アイテム
 public class Item
 {
-    [SerializeField] private ItemBase itemBase;
+    private ItemBase itemBase;
     private int itemCount = 0;
     private int id;
 
     public Item(ItemBase iBase)
     {
         ItemBase = iBase;
-
         id = iBase.Id;
     }
 
