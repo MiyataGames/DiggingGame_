@@ -21,8 +21,8 @@ public class ItemEntry
 [CreateAssetMenu(menuName = "Base/ShopBase")]
 public class ShopBase: ScriptableObject
 {
-    //[SerializeField] private List<ItemBase> availableItems;   
-    [SerializeField] private List<ItemEntry> availableItems;
-    //public List<ItemBase> AvailableItems { get { return availableItems; } }
-    public List<ItemEntry> AvailableItems { get { return availableItems; } }
+    //[SerializeField] private List<ItemBase> shopItems;   
+    [SerializeField] private List<ItemEntry> shopItems;
+    //public List<ItemBase> AvailableItems { get { return shopItems; } }
+    public List<ItemEntry> ShopItems { get { return shopItems; } }
 }

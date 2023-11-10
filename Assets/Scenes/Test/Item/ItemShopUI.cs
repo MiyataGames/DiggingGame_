@@ -9,7 +9,7 @@ public class ItemShopUI : MonoBehaviour
     // ボタンが押されたときに呼ばれるメソッド
     public void DisplayItems()
     {
-        foreach (var itemEntry in shopBase.AvailableItems)
+        foreach (var itemEntry in shopBase.ShopItems)
         {
             Debug.Log($"アイテム名: {itemEntry.item.name}, 数量: {itemEntry.quantity}");
         }

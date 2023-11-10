@@ -6,6 +6,7 @@ public class FieldShop : MonoBehaviour
 {
     public ShopBase shopBase;
     private List<ItemEntry> shopItems = new List<ItemEntry>(); // アイテムリスト
+      private ShopManager shopManager = new ShopManager(); // ShopManager
 
     void Start()
     {
@@ -13,9 +14,10 @@ public class FieldShop : MonoBehaviour
         DisplayShopItems();
     }
 
+// ショップの在庫データを初期化して、FieldShop インスタンスそれぞれで独自に管理できるようにする。
     private void InitializeShopItems()
     {
-        foreach (var itemEntry in shopBase.AvailableItems)
+        foreach (var itemEntry in shopBase.ShopItems)
         {
             shopItems.Add(itemEntry);
         }
