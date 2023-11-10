@@ -89,6 +89,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
 
+    
+
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
 
     // Start is called before the first frame update
@@ -534,24 +536,50 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // 衝突したのがアイテムだったら
         if (other.tag == "Item")
         {
-            Item newItem = other.GetComponent<FieldItem>();
+            // Item newItem = other.GetComponent<Item>();
+
+            // FieldItemコンポーネントからItemインスタンスを取得
+            //Item newItem = other.GetComponent<FieldItem>().item;
+             FieldItem fieldItemComponent = other.GetComponent<FieldItem>();
+             Item newItem = fieldItemComponent.item;
             // 同じアイテムがあるか検索
-            if (party.Players[0].Items.Count > 0)
-            {
-                for (int i = 0; i < party.Players[0].Items.Count; i++)
-                {
-                    if (newItem.ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)
-                    {
-                        // あったら個数を増やして破棄
-                        party.Players[0].Items[i].ItemCount++;
-                        Destroy(other.gameObject);
-                        return;
-                    }
-                }
-            }
+            // if (party.Players[0].Items.Count > 0)
+            // {
+            //     for (int i = 0; i < party.Players[0].Items.Count; i++)
+            //     {
+            //         if (newItem.ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)
+            //         {
+            //             // あったら個数を増やして破棄
+            //             party.Players[0].Items[i].ItemCount++;
+            //             Destroy(other.gameObject);
+            //             return;
+            //         }
+            //     }
+            // }
+                bool itemExists = false;
+    for (int i = 0; i < party.Players[0].Items.Count; i++)
+    {
+        if (newItem.ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)
+        {
+            // あったら個数を増やして破棄
+            party.Players[0].Items[i].ItemCount++;
+            Destroy(other.gameObject);
+            itemExists = true;
+            break;
+        }
+    }
+    
             // なければ新しく追加する
-            party.Players[0].Items.Add(other.GetComponent<Item>());
-            party.Players[0].Items[party.Players[0].Items.Count - 1].ItemCount++;
+            // party.Players[0].Items.Add(other.GetComponent<Item>());
+            // party.Players[0].Items[party.Players[0].Items.Count - 1].ItemCount++;
+            if (!itemExists)
+    {
+        party.Players[0].Items.Add(newItem);
+        newItem.ItemCount = 1;
+        Destroy(other.gameObject);
+    }
+
+
             // Debug.Log(party.Players[0].Items[0].ItemBase.ItemName);
             Destroy(other.gameObject);
             // idが早い順に並べる
