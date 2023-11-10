@@ -114,11 +114,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             PrepareInitBattle();
             //InitBattle();
         }
-        /*
         else if (battleState == BattleState.PREPARE_BATTLE)
         {
             // プレイヤーが走ってくる
-            //PrepareBattle();
+            PrepareBattle();
         }
         else if (battleState == BattleState.PLAYER_ACTION_SELECT)
         {
@@ -162,7 +161,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 EnemyEndInput();
             }
-        }*/
+        }
     }
 
 
@@ -292,16 +291,18 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("初期化完了");
     }
 
-    /*
+    
         private void PrepareBattle()
         {
+            /*
             bool[] prepareEnd = new bool[activePlayers.Count];
 
             // 指定の位置に移動する
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                prepareEnd[i] = PreparePlayerPosition(speed, activePlayers[i].PlayerUI.PlayerPos, activePlayers[i].PlayerModel, activePlayers[i].PlayerAnimator);
+                prepareEnd[i] = PreparePlayerPosition(speed, activePlayers[i].battlePlayerUI.PlayerPos, activePlayers[i].PlayerModel, activePlayers[i].PlayerAnimator);
             }
+            
             // 全員が移動し終わったら
             if (prepareEnd.All(val => val == true))
             {
@@ -315,7 +316,19 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 }
                 inputSkillStatement = InputSkillStatement.INIT_SKILL;
             }
-        }*/
+            */
+
+                if (turnCharacter.isPlayer)
+                {
+                    battleState = BattleState.PLAYER_MOVE;
+                }
+                else
+                {
+                    battleState = BattleState.ENEMY_MOVE;
+                }
+                inputSkillStatement = InputSkillStatement.INIT_SKILL;
+
+        }
 
     private bool PreparePlayerPosition(float playerSpeed, Transform playerTargetPos, GameObject playerModel, Animator playerAnimator)
     {
@@ -454,15 +467,15 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void InitSkill()
     {
-        Debug.Log("PlayerInitSkill");
+        Debug.Log("---PlayerInitSkill---");
         // スキルパネルを表示
         battleCommand.ActivateSkillCommandPanel(true);
         Player turnPlayer = (Player)TurnCharacter;
         // アニメーターの取得
         //turnPlayer.EquipEnemy.EnemyAnimator = playerPersona.GetComponent<Animator>();
 
-        Vector3 targetPos = turnPlayer.PlayerUI.PlayerPos.position;
-        //targetPos = new Vector3(turnPlayer.PlayerUI.PlayerPos.position.x, turnPlayer.PlayerUI.PlayerPersonaPos.position.y - turnPlayer.PlayerUI.PlayerPos.position.y, turnPlayer.PlayerUI.PlayerPos.position.z);
+        //Vector3 targetPos = turnPlayer.battlePlayerUI.PlayerPos.position;
+        //targetPos = new Vector3(turnPlayer.battlePlayerUI.PlayerPos.position.x, turnPlayer.battlePlayerUI.PlayerPersonaPos.position.y - turnPlayer.battlePlayerUI.PlayerPos.position.y, turnPlayer.battlePlayerUI.PlayerPos.position.z);
 
         // EnhancedScrollerのデリゲートを指定する
         // デリゲートを設定することで、スクロールビューが必要な情報を取得
@@ -504,14 +517,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 selectedPlayers = new Player[activePlayers.Count];
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
-                    activePlayers[i].PlayerUI.SetActiveSelectedArrow(true);
+                    activePlayers[i].battlePlayerUI.SetActiveSelectedArrow(true);
                     selectedPlayers[i] = activePlayers[i];
                 }
             }
             //　対象が単体だったら
             else
             {
-                activePlayers[selectedTargetIndex].PlayerUI.SetActiveSelectedArrow(true);
+                activePlayers[selectedTargetIndex].battlePlayerUI.SetActiveSelectedArrow(true);
                 Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
             }
         }
@@ -620,10 +633,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     for (int i = 0; i < activePlayers.Count; i++)
                     {
                         bool isActiveSelectedArrow = (i == selectedTargetIndex);
-                        activePlayers[i].PlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                        activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
                     }
 
-                    activePlayers[selectedTargetIndex].PlayerUI.SelectedArrow.SetActive(true);
+                    activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
 
                     selectedPlayers = new Player[1];
                     selectedPlayers[0] = activePlayers[selectedTargetIndex];
@@ -640,7 +653,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
                     Debug.Log(i + "," + activePlayers.Count);
-                    activePlayers[i].PlayerUI.SelectedArrow.SetActive(false);
+                    activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
                 }
                 inputSkillStatement = InputSkillStatement.END_INPUT;
             }
@@ -650,7 +663,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void PlayerEndSkillInput()
     {
         Debug.Log("PlayerEndInput()");
-
         StartCoroutine(PerformPlayerSkill());
     }
 
@@ -668,7 +680,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("名前" + player.PlayerBase.PlayerName + "発動スキル" + playerSkill.skillBase.SkillName);
         // 消費SP分減らす
         player.UseSp(playerSkill);
-        player.PlayerUI.UpdateHpSp();
+        Debug.Log(player.battlePlayerUI);
+        player.battlePlayerUI.UpdateHpSp();
         // 攻撃魔法だったら
         if (playerSkill.skillBase.IsAttackSkill)
         {
@@ -811,7 +824,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // HPSPの反映
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
-                    activePlayers[i].PlayerUI.UpdateHpSp();
+                    activePlayers[i].battlePlayerUI.UpdateHpSp();
                 }
             }
             else//対象が単体だったら
@@ -830,7 +843,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // HPSPの反映
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
-                    activePlayers[i].PlayerUI.UpdateHpSp();
+                    activePlayers[i].battlePlayerUI.UpdateHpSp();
                 }
             }
             NextTurn();
@@ -966,7 +979,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     isDying[i] = activePlayers[i].TakeDamage(enemySkill, (Enemy)TurnCharacter);
 
                     // HPSPの反映
-                    activePlayers[i].PlayerUI.UpdateHpSp();
+                    activePlayers[i].battlePlayerUI.UpdateHpSp();
                 }
             }
             else// 単体選択なら
@@ -981,7 +994,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 //activePlayers[selectedTargetIndex].PlayerAnimator.Play(hashDamage);
 
                 //battlePlayerUIs[selectedTargetIndex].UpdateHpSp();
-                activePlayers[selectedTargetIndex].PlayerUI.UpdateHpSp();
+                activePlayers[selectedTargetIndex].battlePlayerUI.UpdateHpSp();
             }
 
             Debug.Log("EnemySkill　1秒まつ");

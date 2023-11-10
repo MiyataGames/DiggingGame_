@@ -22,3 +22,8 @@ MonoBehaviour:
   playerMaxAtk: 100
   playerMaxDef: 100
   playerMaxAgi: 100
+  learnablePlayerSkills:
+  - skillBase: {fileID: 11400000, guid: a8904af21f11e80458fcba9ef109bebb, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: e8e986e80ef6d034c90e1096a245b187, type: 2}
+    level: 0

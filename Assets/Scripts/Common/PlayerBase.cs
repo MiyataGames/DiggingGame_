@@ -18,6 +18,9 @@ public class PlayerBase : ScriptableObject
     [SerializeField] private int playerMaxDef;// 防御力
     [SerializeField] private int playerMaxAgi;// 素早さ
 
+    // 覚えるスキル
+    [SerializeField] private List<LearnableSkill> learnablePlayerSkills;
+
     public int PlayerId { get => playerId; }
     public string PlayerName { get => playerName; }
     public Sprite PlayerFaceIcon { get => playerFaceIcon; }
@@ -29,4 +32,5 @@ public class PlayerBase : ScriptableObject
     public int PlayerMaxAtk { get => playerMaxAtk; }
     public int PlayerMaxDef { get => playerMaxDef; }
     public int PlayerMaxAgi { get => playerMaxAgi; }
+    public List<LearnableSkill> LearnablePlayerSkills { get => learnablePlayerSkills; }
 }

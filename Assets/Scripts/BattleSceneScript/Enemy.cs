@@ -127,10 +127,11 @@ public class Enemy : Character
 
     public bool TakeDamage(EnemySkill playerSkill, Player player)
     {
-        /*
+        
         // クリティカル
         // 相性
         float effectiveness = 1;// 効果量
+        /*
         if (isEffective(playerSkill))
         {
             effectiveness = 1.5f;
@@ -142,11 +143,10 @@ public class Enemy : Character
         else if (isInvalid(playerSkill))
         {
             effectiveness = 0;
-        }
-
+        }*/
         float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
         float a = (2 * player.Level + 10) / 250f;
-        float d = a * playerSkill.skillBase.Power * ((float)player.EquipEnemy.MagicPower / Def) + 2;
+        float d = a * playerSkill.skillBase.Power * ((float)player.Atk / Def) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
 
         Hp -= damage;
@@ -155,7 +155,7 @@ public class Enemy : Character
             Hp = 0;
             return true;
         }
-        */
+        
         return false;
     }
 

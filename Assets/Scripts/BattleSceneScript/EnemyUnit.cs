@@ -41,7 +41,7 @@ public class EnemyUnit : MonoBehaviour
             {
                 enemies[j] = enemy.Key;
                 // モデルを生成
-                //enemies[j].EnemyModel = Instantiate(enemies[j].EnemyBase.EnemyModel, enemyPos3[j].transform);
+                enemies[j].EnemySprite = Instantiate(enemies[j].EnemyBase.EnemySprite, enemyPos3[j].transform.position,Quaternion.identity,enemyPos3[j].transform);
                 // アニメーターをいれる
                 // enemies[j].EnemyAnimator = enemies[j].EnemyModel.GetComponent<Animator>();
                 // EnemyUIのオブジェクトをみつける

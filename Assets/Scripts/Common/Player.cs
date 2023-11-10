@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class Player : Character
 {
     public int playerID;
@@ -60,9 +60,9 @@ public class Player : Character
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
         Skills = new List<EnemySkill>();
-        /*
+        
         // 覚える技のレベル以上なら所持ペルソナのスキルをskillsに追加
-        foreach (LearnableSkill learablePlayerSkill in PlayerBase.learablePlayerSkill)
+        foreach (LearnableSkill learablePlayerSkill in PlayerBase.LearnablePlayerSkills)
         {
             if (Level >= learablePlayerSkill.Level)
             {
@@ -73,7 +73,7 @@ public class Player : Character
             {
                 break;
             }
-        }*/
+        }
     }
 
     public void OverridePlayer(int level, int currentHp, int currentSp, int atk, int def, int agi)

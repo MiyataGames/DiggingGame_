@@ -10,15 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f8b5c3de90623a479327c46692b7549, type: 3}
-  m_Name: Usagi2
+  m_Name: Usagi1
   m_EditorClassIdentifier: 
-  enemyName: "\u3046\u3055\u304E2"
+  enemyName: "\u3046\u3055\u304E"
   description: 
-  enemyModel: {fileID: 3513077936018562752, guid: 1dc80677e0cdd1148924246916d5d09d, type: 3}
+  enemySprite: {fileID: 3513077936018562752, guid: 08deaff167cfa2745abe31b685fc3aea, type: 3}
   maxHp: 10
   physicPower: 10
   magicPower: 10
   def: 10
-  agi: 11
+  agi: 10
   luck: 10
-  learnableEnemySkills: []
+  learnableEnemySkills:
+  - skillBase: {fileID: 11400000, guid: e8e986e80ef6d034c90e1096a245b187, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: a8904af21f11e80458fcba9ef109bebb, type: 2}
+    level: 0
