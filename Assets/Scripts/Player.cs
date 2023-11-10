@@ -49,7 +49,7 @@ public class Player : Character
         isPlayer = true;
         PlayerBase = pBase;
         playerID = pBase.PlayerId;
-        Debug.Log("ID" + playerID);
+        // Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
         this.level = level;
         CurrentHp = 3;

@@ -534,7 +534,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // 衝突したのがアイテムだったら
         if (other.tag == "Item")
         {
-            Item newItem = other.GetComponent<Item>();
+            Item newItem = other.GetComponent<FieldItem>();
             // 同じアイテムがあるか検索
             if (party.Players[0].Items.Count > 0)
             {
@@ -552,10 +552,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // なければ新しく追加する
             party.Players[0].Items.Add(other.GetComponent<Item>());
             party.Players[0].Items[party.Players[0].Items.Count - 1].ItemCount++;
-            Debug.Log(party.Players[0].Items[0].ItemBase.ItemName);
+            // Debug.Log(party.Players[0].Items[0].ItemBase.ItemName);
             Destroy(other.gameObject);
             // idが早い順に並べる
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
+                        for (int i = 0; i < party.Players[0].Items.Count; i++){
+                var item = party.Players[0].Items[i];
+                Debug.Log($"Item Name: {item.ItemBase.ItemName}, Item Count: {item.ItemCount}");
+                }
         }
 
         // else if (other.tag == "Finish")

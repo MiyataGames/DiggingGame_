@@ -202,7 +202,7 @@ public class Enemy_TypeB : FieldEnemy
         if (hit)
         {
             isHit = true;
-            Debug.Log(hit.collider.gameObject);
+            // Debug.Log(hit.collider.gameObject);
         }
         else
         {

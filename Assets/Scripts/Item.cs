@@ -10,7 +10,7 @@ public enum ItemType
     WEAPON
 }
 
-public class Item : MonoBehaviour
+public class Item
 {
     [SerializeField] private ItemBase itemBase;
     private int itemCount = 0;
