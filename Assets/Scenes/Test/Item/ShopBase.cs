@@ -9,12 +9,13 @@ using UnityEngine;
 public class ItemEntry
 {
     public ItemBase item;
-    public int quantity;
+    // ショップの個数今はいらないのでコメントアウト
+    //public int quantity;
 
-    public ItemEntry(ItemBase item, int quantity)
+    public ItemEntry(ItemBase item)
     {
         this.item = item;
-        this.quantity = quantity;
+        // this.quantity = quantity;
     }
 }
 
