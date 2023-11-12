@@ -17,9 +17,7 @@ MonoBehaviour:
   power: 10
   sp: 5
   accuracy: 100
-  isAll: 0
-  isAttackSkill: 1
-  isHeal: 0
-  isRevival: 0
-  isEffective: 0
+  skillCategory: 0
+  skillTargetKind: 1
+  skillTargetNum: 0
   skillRecieveEffect: {fileID: 0}

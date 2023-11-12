@@ -291,44 +291,44 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("初期化完了");
     }
 
-    
-        private void PrepareBattle()
+
+    private void PrepareBattle()
+    {
+        /*
+        bool[] prepareEnd = new bool[activePlayers.Count];
+
+        // 指定の位置に移動する
+        for (int i = 0; i < activePlayers.Count; i++)
         {
-            /*
-            bool[] prepareEnd = new bool[activePlayers.Count];
-
-            // 指定の位置に移動する
-            for (int i = 0; i < activePlayers.Count; i++)
-            {
-                prepareEnd[i] = PreparePlayerPosition(speed, activePlayers[i].battlePlayerUI.PlayerPos, activePlayers[i].PlayerModel, activePlayers[i].PlayerAnimator);
-            }
-            
-            // 全員が移動し終わったら
-            if (prepareEnd.All(val => val == true))
-            {
-                if (turnCharacter.isPlayer)
-                {
-                    battleState = BattleState.PLAYER_MOVE;
-                }
-                else
-                {
-                    battleState = BattleState.ENEMY_MOVE;
-                }
-                inputSkillStatement = InputSkillStatement.INIT_SKILL;
-            }
-            */
-
-                if (turnCharacter.isPlayer)
-                {
-                    battleState = BattleState.PLAYER_MOVE;
-                }
-                else
-                {
-                    battleState = BattleState.ENEMY_MOVE;
-                }
-                inputSkillStatement = InputSkillStatement.INIT_SKILL;
-
+            prepareEnd[i] = PreparePlayerPosition(speed, activePlayers[i].battlePlayerUI.PlayerPos, activePlayers[i].PlayerModel, activePlayers[i].PlayerAnimator);
         }
+
+        // 全員が移動し終わったら
+        if (prepareEnd.All(val => val == true))
+        {
+            if (turnCharacter.isPlayer)
+            {
+                battleState = BattleState.PLAYER_MOVE;
+            }
+            else
+            {
+                battleState = BattleState.ENEMY_MOVE;
+            }
+            inputSkillStatement = InputSkillStatement.INIT_SKILL;
+        }
+        */
+
+        if (turnCharacter.isPlayer)
+        {
+            battleState = BattleState.PLAYER_MOVE;
+        }
+        else
+        {
+            battleState = BattleState.ENEMY_MOVE;
+        }
+        inputSkillStatement = InputSkillStatement.INIT_SKILL;
+
+    }
 
     private bool PreparePlayerPosition(float playerSpeed, Transform playerTargetPos, GameObject playerModel, Animator playerAnimator)
     {
@@ -489,43 +489,51 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void InitTarget(EnemySkill playerSkill)
     {
         selectedTargetIndex = 0;
-        // 攻撃スキルだったら
-        if (playerSkill.skillBase.IsAttackSkill)
+        // 敵への効果だったら
+        if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
-            // 全体攻撃だったら
-            if (playerSkill.skillBase.IsAll)
+            // 攻撃だったら
+            if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
             {
-                selectedEnemies = new Enemy[activeEnemies.Count];
-                for (int i = 0; i < activeEnemies.Count; i++)
+                // 全体攻撃だったら
+                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
-                    activeEnemies[i].EnemyUI.SelectedArrow.SetActive(true);
-                    selectedEnemies[i] = activeEnemies[i];
+                    selectedEnemies = new Enemy[activeEnemies.Count];
+                    for (int i = 0; i < activeEnemies.Count; i++)
+                    {
+                        activeEnemies[i].EnemyUI.SelectedArrow.SetActive(true);
+                        selectedEnemies[i] = activeEnemies[i];
+                    }
+                }
+                //　単体攻撃だったら
+                else
+                {
+                    activeEnemies[selectedTargetIndex].EnemyUI.SelectedArrow.SetActive(true);
+                    Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
                 }
             }
-            //　単体攻撃だったら
-            else
-            {
-                activeEnemies[selectedTargetIndex].EnemyUI.SelectedArrow.SetActive(true);
-                Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
-            }
-        }// 回復スキルだったら味方側が対象になる
-        else if (playerSkill.skillBase.IsHeal)
+        }// プレイヤー側が対象だったら
+        else if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
-            // 対象が全体だったら
-            if (playerSkill.skillBase.IsAll)
+            // 回復スキルだったら
+            if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.HEAL)
             {
-                selectedPlayers = new Player[activePlayers.Count];
-                for (int i = 0; i < activePlayers.Count; i++)
+                // 対象が全体だったら
+                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
-                    activePlayers[i].battlePlayerUI.SetActiveSelectedArrow(true);
-                    selectedPlayers[i] = activePlayers[i];
+                    selectedPlayers = new Player[activePlayers.Count];
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        activePlayers[i].battlePlayerUI.SetActiveSelectedArrow(true);
+                        selectedPlayers[i] = activePlayers[i];
+                    }
                 }
-            }
-            //　対象が単体だったら
-            else
-            {
-                activePlayers[selectedTargetIndex].battlePlayerUI.SetActiveSelectedArrow(true);
-                Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
+                //　対象が単体だったら
+                else
+                {
+                    activePlayers[selectedTargetIndex].battlePlayerUI.SetActiveSelectedArrow(true);
+                    Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
+                }
             }
         }
     }
@@ -535,128 +543,157 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         bool selectionChanged = false;
 
-        // 攻撃魔法だったら
-        if (skill.skillBase.IsAttackSkill)
+        // 対象が敵だったら
+        if (skill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
-            // 敵が単体だったら
-            if (skill.skillBase.IsAll == false)
+            // 攻撃だったら
+            if (skill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
             {
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                // 敵が単体だったら
+                if (skill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.SINGLE)
                 {
-                    if (selectedTargetIndex > 0)
+                    if (Input.GetKeyDown(KeyCode.LeftArrow))
                     {
-                        selectedTargetIndex--;
-                    }
-                    else
-                    {
-                        selectedTargetIndex = 0;
-                    }
-                    selectionChanged = true;
+                        if (selectedTargetIndex > 0)
+                        {
+                            selectedTargetIndex--;
+                        }
+                        else
+                        {
+                            selectedTargetIndex = 0;
+                        }
+                        selectionChanged = true;
 
-                    Debug.Log("selectedTargetIndex左-" + selectedTargetIndex);
+                        Debug.Log("selectedTargetIndex左-" + selectedTargetIndex);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.RightArrow))
+                    {
+                        if (selectedTargetIndex < activeEnemies.Count - 1)
+                        {
+                            selectedTargetIndex++;
+                        }
+                        selectionChanged = true;
+
+                        Debug.Log("selectedTargetIndexみぎ+" + selectedTargetIndex);
+                    }
+
+                    if (selectionChanged == true)
+                    {
+                        for (int i = 0; i < activeEnemies.Count; i++)
+                        {
+                            bool isActiveSelectedArrow = (i == selectedTargetIndex);
+                            activeEnemies[i].EnemyUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                        }
+
+                        activeEnemies[selectedTargetIndex].EnemyUI.SelectedArrow.SetActive(true);
+
+                        selectedEnemies = new Enemy[1];
+                        selectedEnemies[0] = activeEnemies[selectedTargetIndex];
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                else
                 {
-                    if (selectedTargetIndex < activeEnemies.Count - 1)
-                    {
-                        selectedTargetIndex++;
-                    }
-                    selectionChanged = true;
-
-                    Debug.Log("selectedTargetIndexみぎ+" + selectedTargetIndex);
+                    selectedEnemies = new Enemy[activeEnemies.Count];
+                    selectedEnemies = activeEnemies.ToArray();
                 }
 
-                if (selectionChanged == true)
+                if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    // 選択矢印を消す
                     for (int i = 0; i < activeEnemies.Count; i++)
                     {
-                        bool isActiveSelectedArrow = (i == selectedTargetIndex);
-                        activeEnemies[i].EnemyUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                        Debug.Log(i + "," + activeEnemies.Count);
+                        activeEnemies[i].EnemyUI.SelectedArrow.SetActive(false);
                     }
-
-                    activeEnemies[selectedTargetIndex].EnemyUI.SelectedArrow.SetActive(true);
-
-                    selectedEnemies = new Enemy[1];
-                    selectedEnemies[0] = activeEnemies[selectedTargetIndex];
+                    inputSkillStatement = InputSkillStatement.END_INPUT;
                 }
-            }
-            else
-            {
-                selectedEnemies = new Enemy[activeEnemies.Count];
-                selectedEnemies = activeEnemies.ToArray();
-            }
 
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                // 選択矢印を消す
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    Debug.Log(i + "," + activeEnemies.Count);
-                    activeEnemies[i].EnemyUI.SelectedArrow.SetActive(false);
-                }
-                inputSkillStatement = InputSkillStatement.END_INPUT;
+
             }
         }
-        // 回復魔法だったら
-        else if (skill.skillBase.IsHeal)
+        //プレイヤーが対象だったら
+        else if (skill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
-            // 対象が単体だったら
-            if (skill.skillBase.IsAll == false)
+            // 回復魔法だったら
+            if (skill.skillBase.SkillCategory == SKILL_CATEGORY.HEAL)
             {
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                // 対象が単体だったら
+                if (skill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.SINGLE)
                 {
-                    if (selectedTargetIndex > 0)
+                    if (Input.GetKeyDown(KeyCode.RightArrow))
                     {
-                        selectedTargetIndex--;
-                    }
-                    else
-                    {
-                        selectedTargetIndex = 0;
-                    }
-                    selectionChanged = true;
+                        if (selectedTargetIndex > 0)
+                        {
+                            selectedTargetIndex--;
+                        }
+                        else
+                        {
+                            selectedTargetIndex = 0;
+                        }
+                        selectionChanged = true;
 
-                    Debug.Log("selectedTargetIndex左-" + selectedTargetIndex);
+                        Debug.Log("selectedTargetIndex左-" + selectedTargetIndex);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    {
+                        if (selectedTargetIndex < activePlayers.Count - 1)
+                        {
+                            selectedTargetIndex++;
+                        }
+                        selectionChanged = true;
+
+                        Debug.Log("selectedTargetIndexみぎ+" + selectedTargetIndex);
+                    }
+
+                    if (selectionChanged == true)
+                    {
+                        for (int i = 0; i < activePlayers.Count; i++)
+                        {
+                            bool isActiveSelectedArrow = (i == selectedTargetIndex);
+                            activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                        }
+
+                        activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
+
+                        selectedPlayers = new Player[1];
+                        selectedPlayers[0] = activePlayers[selectedTargetIndex];
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                else
                 {
-                    if (selectedTargetIndex < activePlayers.Count - 1)
-                    {
-                        selectedTargetIndex++;
-                    }
-                    selectionChanged = true;
-
-                    Debug.Log("selectedTargetIndexみぎ+" + selectedTargetIndex);
+                    selectedPlayers = new Player[activeEnemies.Count];
+                    selectedPlayers = activePlayers.ToArray();
                 }
-
-                if (selectionChanged == true)
+                if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    // 選択矢印を消す
                     for (int i = 0; i < activePlayers.Count; i++)
                     {
-                        bool isActiveSelectedArrow = (i == selectedTargetIndex);
-                        activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                        Debug.Log(i + "," + activePlayers.Count);
+                        activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
                     }
-
-                    activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
-
-                    selectedPlayers = new Player[1];
-                    selectedPlayers[0] = activePlayers[selectedTargetIndex];
+                    inputSkillStatement = InputSkillStatement.END_INPUT;
                 }
             }
-            else
+        }
+
+        // escキーを押したら戻る
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            inputSkillStatement = InputSkillStatement.SKILL_SELECT;// スキル選択状態に戻す
+            // ターゲット選択矢印を非表示にする
+            for (int i = 0; i < activePlayers.Count; i++)
             {
-                selectedPlayers = new Player[activeEnemies.Count];
-                selectedPlayers = activePlayers.ToArray();
+                activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
             }
-            if (Input.GetKeyDown(KeyCode.Return))
+
+            // 選択矢印を消す
+            for (int i = 0; i < activeEnemies.Count; i++)
             {
-                // 選択矢印を消す
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    Debug.Log(i + "," + activePlayers.Count);
-                    activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
-                }
-                inputSkillStatement = InputSkillStatement.END_INPUT;
+                activeEnemies[i].EnemyUI.SelectedArrow.SetActive(false);
             }
+            // スキルパネルを表示する
+            battleCommand.ActivateSkillCommandPanel(true);
         }
     }
 
@@ -682,171 +719,182 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         player.UseSp(playerSkill);
         Debug.Log(player.battlePlayerUI);
         player.battlePlayerUI.UpdateHpSp();
-        // 攻撃魔法だったら
-        if (playerSkill.skillBase.IsAttackSkill)
+        if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
-            // ダメージ決定　
-            bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
-
-            /*
-            // ターンのプレイヤーのスキル発動モーション
-            player.PlayerAnimator.Play(hashSkill);
-            yield return null;// ステートの反映
-            // ターンのプレイヤーのペルソナのスキル発動モーション
-            player.EquipEnemy.EnemyAnimator.Play(hashAttack);
-            yield return null;// ステートの反映
-            yield return new WaitForAnimation(player.PlayerAnimator, 0);
-            player.PlayerAnimator.SetBool("SkillToIdle", true);
-            player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
-            */
-            // 全体攻撃だったら
-            if (playerSkill.skillBase.IsAll)
+            // 攻撃魔法だったら
+            if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
             {
-                // アニメーションやUI表示
-                for (int i = 0; i < activeEnemies.Count; i++)
+                // 攻撃魔法だったら
+                if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
                 {
-                    // 敵にスキル発動モーション
+                    // ダメージ決定　
+                    bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
 
+                    /*
+                    // ターンのプレイヤーのスキル発動モーション
+                    player.PlayerAnimator.Play(hashSkill);
+                    yield return null;// ステートの反映
+                    // ターンのプレイヤーのペルソナのスキル発動モーション
+                    player.EquipEnemy.EnemyAnimator.Play(hashAttack);
+                    yield return null;// ステートの反映
+                    yield return new WaitForAnimation(player.PlayerAnimator, 0);
+                    player.PlayerAnimator.SetBool("SkillToIdle", true);
+                    player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
+                    */
+                    // 全体攻撃だったら
+                    if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                    {
+                        // アニメーションやUI表示
+                        for (int i = 0; i < activeEnemies.Count; i++)
+                        {
+                            // 敵にスキル発動モーション
+
+                        }
+                        for (int i = 0; i < activeEnemies.Count; i++)
+                        {
+                            // ダメージモーション　敵のアニメーターにダメージのステート追加
+                            // activeEnemies[i].EnemyAnimator.Play(hashDamage);
+
+                        }
+
+                        for (int i = 0; i < activeEnemies.Count; i++)
+                        {
+                            // ダメージ　
+                            isDying[i] = activeEnemies[i].TakeDamage(playerSkill, (Player)TurnCharacter);
+                        }
+
+                        // HPSPの反映
+                        for (int i = 0; i < activeEnemies.Count; i++)
+                        {
+                            activeEnemies[i].EnemyUI.UpdateHp();
+                        }
+                    }
+                    else//単体攻撃だったら
+                    {
+                        if (playerSkill.skillBase.SkillRecieveEffect != null)
+                        {
+                            Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemySprite.transform.position, activeEnemies[selectedTargetIndex].EnemySprite.transform.rotation);
+                        }
+                        isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeDamage(playerSkill, activePlayers[0]);
+                        // アニメーションやUI表示
+
+                        // ダメージモーション
+                        // activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
+
+                        // HPSPの反映
+                        for (int i = 0; i < activeEnemies.Count; i++)
+                        {
+                            activeEnemies[i].EnemyUI.UpdateHp();
+                        }
+                    }
+
+                    for (int i = 0; i < activeEnemies.Count; i++)
+                    {
+                        // 戦闘不能な敵を消す
+                        if (isDying[i] == true)
+                        {
+                            // i番目の敵のモデルを消す
+                            //activeEnemies[i].EnemyModel.SetActive(false);
+                            Destroy(activeEnemies[i].EnemySprite);
+                            // i番目の敵のUIを消す
+                            activeEnemies[i].EnemyUI.UnActiveUIPanel();
+                            // i番目の敵のisDyingをtrueにする
+                            characters.Find(value => value == activeEnemies[i]).isDying = true;
+                        }
+                    }
+                    // 全員戦闘不能ならメッセージ
+                    // 戦闘不能の敵を検索してリムーブする
+                    List<Enemy> deadEnemies = activeEnemies.FindAll(value => value.isDying == true);
+                    for (int i = 0; i < deadEnemies.Count; i++)
+                    {
+                        activeEnemies.Remove(deadEnemies[i]);
+                    }
+
+                    Debug.Log("EnemySkill　1秒まつ");
+                    yield return new WaitForSeconds(1);
+                    // 全員瀕死になったら戦闘不能
+                    if (isDying.All(value => value == true))
+                    {
+                        Debug.Log("戦闘不能");
+
+                        battleState = BattleState.BUSY;
+                        yield return new WaitForSeconds(0.7f);
+                        // 3Dモデルの削除
+                        for (int i = 0; i < activePlayers.Count; i++)
+                        {
+                            //Destroy(activePlayers[i].PlayerModel);
+                        }
+                        //フィールドのシーンに戻る
+                        //gameManager.EndBattle();
+                    }
+                    else// 一体でも生き残っていれば
+                    {
+                        NextTurn();
+                    }
                 }
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    // ダメージモーション　敵のアニメーターにダメージのステート追加
-                    // activeEnemies[i].EnemyAnimator.Play(hashDamage);
-
-                }
-
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    // ダメージ　
-                    isDying[i] = activeEnemies[i].TakeDamage(playerSkill, (Player)TurnCharacter);
-                }
-
-                // HPSPの反映
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    activeEnemies[i].EnemyUI.UpdateHp();
-                }
-            }
-            else//単体攻撃だったら
-            {
-                if (playerSkill.skillBase.SkillRecieveEffect != null)
-                {
-                    Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemySprite.transform.position, activeEnemies[selectedTargetIndex].EnemySprite.transform.rotation);
-                }
-                isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeDamage(playerSkill, activePlayers[0]);
-                // アニメーションやUI表示
-
-                // ダメージモーション
-                // activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
-
-                // HPSPの反映
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    activeEnemies[i].EnemyUI.UpdateHp();
-                }
-            }
-
-            for (int i = 0; i < activeEnemies.Count; i++)
-            {
-                // 戦闘不能な敵を消す
-                if (isDying[i] == true)
-                {
-                    // i番目の敵のモデルを消す
-                    //activeEnemies[i].EnemyModel.SetActive(false);
-                    Destroy(activeEnemies[i].EnemySprite);
-                    // i番目の敵のUIを消す
-                    activeEnemies[i].EnemyUI.UnActiveUIPanel();
-                    // i番目の敵のisDyingをtrueにする
-                    characters.Find(value => value == activeEnemies[i]).isDying = true;
-                }
-            }
-            // 全員戦闘不能ならメッセージ
-            // 戦闘不能の敵を検索してリムーブする
-            List<Enemy> deadEnemies = activeEnemies.FindAll(value => value.isDying == true);
-            for (int i = 0; i < deadEnemies.Count; i++)
-            {
-                activeEnemies.Remove(deadEnemies[i]);
-            }
-
-            Debug.Log("EnemySkill　1秒まつ");
-            yield return new WaitForSeconds(1);
-            // 全員瀕死になったら戦闘不能
-            if (isDying.All(value => value == true))
-            {
-                Debug.Log("戦闘不能");
-
-                battleState = BattleState.BUSY;
-                yield return new WaitForSeconds(0.7f);
-                // 3Dモデルの削除
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    //Destroy(activePlayers[i].PlayerModel);
-                }
-                //フィールドのシーンに戻る
-                //gameManager.EndBattle();
-            }
-            else// 一体でも生き残っていれば
-            {
-                NextTurn();
             }
         }
-        // 回復魔法だったら
-        else if (playerSkill.skillBase.IsHeal)
+        // 味方への魔法だったら
+        else if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
-            // ターンのプレイヤーのスキル発動モーション
-            /*
-            player.PlayerAnimator.Play(hashSkill);
-            yield return null;// ステートの反映
-            yield return new WaitForAnimation(player.PlayerAnimator, 0);
-            player.PlayerAnimator.SetBool("SkillToIdle", true);
-            player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
-*/
-            // 全体回復だったら
-            if (playerSkill.skillBase.IsAll)
+            // 回復魔法だったら
+            if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.HEAL)
             {
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    // 味方にスキル発動モーション
-                    //Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[i].PlayerModel.transform.position, activePlayers[i].PlayerModel.transform.rotation);
-                }
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    // 回復モーション 
-                }
-                // 一体（回）分だけ待つ
-                //yield return new WaitForAnimation(activePlayers[0].PlayerAnimator, 0);
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    // 回復
-                    activePlayers[i].TakeHeal(playerSkill, (Player)TurnCharacter);
-                }
-
-                // HPSPの反映
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    activePlayers[i].battlePlayerUI.UpdateHpSp();
-                }
-            }
-            else//対象が単体だったら
-            {
-                //Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerModel.transform.position, activePlayers[selectedTargetIndex].PlayerModel.transform.rotation);
-                // ここ
-                activePlayers[selectedTargetIndex].TakeHeal(playerSkill, activePlayers[selectedTargetIndex]);
-
-                // 回復モーション
+                // ターンのプレイヤーのスキル発動モーション
                 /*
-                activePlayers[selectedTargetIndex].PlayerAnimator.Play(hashHeal);
-                activePlayers[selectedTargetIndex].PlayerAnimator.SetBool("HealToIdle", true);
+                player.PlayerAnimator.Play(hashSkill);
                 yield return null;// ステートの反映
-                yield return new WaitForAnimation(activePlayers[selectedTargetIndex].PlayerAnimator, 0);
-                */
-                // HPSPの反映
-                for (int i = 0; i < activePlayers.Count; i++)
+                yield return new WaitForAnimation(player.PlayerAnimator, 0);
+                player.PlayerAnimator.SetBool("SkillToIdle", true);
+                player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
+    */
+                // 全体回復だったら
+                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
-                    activePlayers[i].battlePlayerUI.UpdateHpSp();
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        // 味方にスキル発動モーション
+                        //Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[i].PlayerModel.transform.position, activePlayers[i].PlayerModel.transform.rotation);
+                    }
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        // 回復モーション 
+                    }
+                    // 一体（回）分だけ待つ
+                    //yield return new WaitForAnimation(activePlayers[0].PlayerAnimator, 0);
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        // 回復
+                        activePlayers[i].TakeHeal(playerSkill, (Player)TurnCharacter);
+                    }
+
+                    // HPSPの反映
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        activePlayers[i].battlePlayerUI.UpdateHpSp();
+                    }
                 }
+                else//対象が単体だったら
+                {
+                    //Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerModel.transform.position, activePlayers[selectedTargetIndex].PlayerModel.transform.rotation);
+                    // ここ
+                    activePlayers[selectedTargetIndex].TakeHeal(playerSkill, activePlayers[selectedTargetIndex]);
+
+                    // 回復モーション
+                    /*
+                    activePlayers[selectedTargetIndex].PlayerAnimator.Play(hashHeal);
+                    activePlayers[selectedTargetIndex].PlayerAnimator.SetBool("HealToIdle", true);
+                    yield return null;// ステートの反映
+                    yield return new WaitForAnimation(activePlayers[selectedTargetIndex].PlayerAnimator, 0);
+                    */
+                    // HPSPの反映
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        activePlayers[i].battlePlayerUI.UpdateHpSp();
+                    }
+                }
+                NextTurn();
             }
-            NextTurn();
         }
     }
 
@@ -912,7 +960,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         //Debug.Log("EnemyTargetSelect()");
         // ターゲットをランダムで選択
         // 単体だったら Random.Range(min,max) 最大値を含まない
-        if (enemySkill.skillBase.IsAttackSkill)
+        // 敵が自分自身でなければ
+        if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
             selectedTargetIndex = Random.Range(0, activePlayers.Count);
         }
@@ -935,153 +984,161 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Enemy tmpenemy2 = (Enemy)turnCharacter;
         Debug.Log("名前" + tmpenemy2.EnemyBase.EnemyName + "発動スキル" + enemySkill.skillBase.SkillName);
         battleState = BattleState.BUSY;
-        // 攻撃魔法だったら
-        if (enemySkill.skillBase.IsAttackSkill)
+        // プレイヤー側を攻撃するなら
+        if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
-            // デバッグのためのやつ
-            Enemy enemy = (Enemy)characters[turnCharacterIndex];
-            //dialogBox.SetMessage(enemy.EnemyBase.EnemyName + "EnemyTurn " + enemySkill.skillBase.SkillName);
-            Debug.Log("======" + enemy.EnemyBase.EnemyName + "EnemyTurn " + enemySkill.skillBase.SkillName + "======");
-
-            // ダメージ決定 修正 playerUnit.Players.Length→ activePlayers.Count
-            bool[] isDying = new bool[activePlayers.FindAll(value => value.isDying == false).Count];
-
-            // ターン中の敵のスキル発動モーション
-            /*
-            enemy.EnemyAnimator.Play(hashAttack);
-            yield return null;// ステートの反映
-            yield return new WaitForAnimation(enemy.EnemyAnimator, 0);
-            */
-
-            // 全体選択なら
-            if (enemySkill.skillBase.IsAll)
+            // 攻撃魔法なら
+            if (enemySkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
             {
-                for (int i = 0; i < activePlayers.Count; i++)
+                // デバッグのためのやつ
+                Enemy enemy = (Enemy)characters[turnCharacterIndex];
+                //dialogBox.SetMessage(enemy.EnemyBase.EnemyName + "EnemyTurn " + enemySkill.skillBase.SkillName);
+                Debug.Log("======" + enemy.EnemyBase.EnemyName + "EnemyTurn " + enemySkill.skillBase.SkillName + "======");
+
+                // ダメージ決定 修正 playerUnit.Players.Length→ activePlayers.Count
+                bool[] isDying = new bool[activePlayers.FindAll(value => value.isDying == false).Count];
+
+                // ターン中の敵のスキル発動モーション
+                /*
+                enemy.EnemyAnimator.Play(hashAttack);
+                yield return null;// ステートの反映
+                yield return new WaitForAnimation(enemy.EnemyAnimator, 0);
+                */
+
+                // 全体選択なら
+                if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
-                    // 敵にスキル発動モーション
-                    //Instantiate(enemySkill.skillBase.SkillRecieveEffect, activePlayers[i].PlayerModel.transform.position, activePlayers[i].PlayerModel.transform.rotation);
-
-                }
-
-                // アニメーションやUI表示
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    // ダメージモーション　敵のアニメーターにダメージのステート追加
-                    //activePlayers[i].PlayerAnimator.Play(hashDamage);
-                    //yield return null;// ステートの反映
-
-                }
-                // 一体（回）分だけ待つ
-                //yield return new WaitForAnimation(activePlayers[0].PlayerAnimator, 0);
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    // 修正　activeEnemies[0]
-                    isDying[i] = activePlayers[i].TakeDamage(enemySkill, (Enemy)TurnCharacter);
-
-                    // HPSPの反映
-                    activePlayers[i].battlePlayerUI.UpdateHpSp();
-                }
-            }
-            else// 単体選択なら
-            {
-                isDying[selectedTargetIndex] = activePlayers[selectedTargetIndex].TakeDamage(enemySkill, activeEnemies[0]);
-
-                // アニメーションやUI表示
-
-                //Instantiate(enemySkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerModel.transform.position, activePlayers[selectedTargetIndex].PlayerModel.transform.rotation);
-
-                // ダメージモーション
-                //activePlayers[selectedTargetIndex].PlayerAnimator.Play(hashDamage);
-
-                //battlePlayerUIs[selectedTargetIndex].UpdateHpSp();
-                activePlayers[selectedTargetIndex].battlePlayerUI.UpdateHpSp();
-            }
-
-            Debug.Log("EnemySkill　1秒まつ");
-            yield return new WaitForSeconds(1);
-            // 全員戦闘不能ならメッセージ
-            for (int i = 0; i < isDying.Length; i++)
-            {
-                // 戦闘不能なら
-                if (isDying[i] == true)
-                {
-                    // 戦闘不能モーション
-
-                    // リムーブ
-                    //characters[i].isDying = true; // 戦闘不能
-                    characters.Find(value => value == activePlayers[i]).isDying = true;
-
-                    // デバッグよう
-                    Player faintedPlayer = (Player)characters.Find(value => value == activePlayers[i]);
-                    Debug.Log(faintedPlayer.PlayerBase.PlayerName + "は戦闘不能" + faintedPlayer.isDying);
-                    activePlayers.Remove(faintedPlayer);
-                    for (int j = 0; j < activePlayers.Count; j++)
+                    for (int i = 0; i < activePlayers.Count; i++)
                     {
-                        Debug.Log("残りの敵" + activePlayers[j].PlayerBase.PlayerName); ;
+                        // 敵にスキル発動モーション
+                        //Instantiate(enemySkill.skillBase.SkillRecieveEffect, activePlayers[i].PlayerModel.transform.position, activePlayers[i].PlayerModel.transform.rotation);
+
+                    }
+
+                    // アニメーションやUI表示
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        // ダメージモーション　敵のアニメーターにダメージのステート追加
+                        //activePlayers[i].PlayerAnimator.Play(hashDamage);
+                        //yield return null;// ステートの反映
+
+                    }
+                    // 一体（回）分だけ待つ
+                    //yield return new WaitForAnimation(activePlayers[0].PlayerAnimator, 0);
+                    for (int i = 0; i < activePlayers.Count; i++)
+                    {
+                        // 修正　activeEnemies[0]
+                        isDying[i] = activePlayers[i].TakeDamage(enemySkill, (Enemy)TurnCharacter);
+
+                        // HPSPの反映
+                        activePlayers[i].battlePlayerUI.UpdateHpSp();
                     }
                 }
-            }
+                else// 単体選択なら
+                {
+                    isDying[selectedTargetIndex] = activePlayers[selectedTargetIndex].TakeDamage(enemySkill, activeEnemies[0]);
 
-            if (isDying.All(value => value == true))
-            {
-                Debug.Log("戦闘不能");
-                yield return new WaitForSeconds(0.7f);
-            }
-            else
-            {
-                NextTurn();
+                    // アニメーションやUI表示
+
+                    //Instantiate(enemySkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerModel.transform.position, activePlayers[selectedTargetIndex].PlayerModel.transform.rotation);
+
+                    // ダメージモーション
+                    //activePlayers[selectedTargetIndex].PlayerAnimator.Play(hashDamage);
+
+                    //battlePlayerUIs[selectedTargetIndex].UpdateHpSp();
+                    activePlayers[selectedTargetIndex].battlePlayerUI.UpdateHpSp();
+                }
+
+                Debug.Log("EnemySkill　1秒まつ");
+                yield return new WaitForSeconds(1);
+                // 全員戦闘不能ならメッセージ
+                for (int i = 0; i < isDying.Length; i++)
+                {
+                    // 戦闘不能なら
+                    if (isDying[i] == true)
+                    {
+                        // 戦闘不能モーション
+
+                        // リムーブ
+                        //characters[i].isDying = true; // 戦闘不能
+                        characters.Find(value => value == activePlayers[i]).isDying = true;
+
+                        // デバッグよう
+                        Player faintedPlayer = (Player)characters.Find(value => value == activePlayers[i]);
+                        Debug.Log(faintedPlayer.PlayerBase.PlayerName + "は戦闘不能" + faintedPlayer.isDying);
+                        activePlayers.Remove(faintedPlayer);
+                        for (int j = 0; j < activePlayers.Count; j++)
+                        {
+                            Debug.Log("残りの敵" + activePlayers[j].PlayerBase.PlayerName); ;
+                        }
+                    }
+                }
+
+                if (isDying.All(value => value == true))
+                {
+                    Debug.Log("戦闘不能");
+                    yield return new WaitForSeconds(0.7f);
+                }
+                else
+                {
+                    NextTurn();
+                }
             }
         }
-        // 回復魔法だったら
-        else if (enemySkill.skillBase.IsHeal)
+        // 対象が自分自身だったら
+        else if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
-            Enemy enemy = (Enemy)characters[turnCharacterIndex];
-            // 入力側のスキルのアニメーションを再生
-            /*
-            enemy.EnemyAnimator.Play(hashSkill);
-            yield return null;// ステートの反映
-            yield return new WaitForAnimation(enemy.EnemyAnimator, 0);
-            */
-
-            // 全体選択なら
-            if (enemySkill.skillBase.IsAll)
+            // 回復魔法だったら
+            if (enemySkill.skillBase.SkillCategory == SKILL_CATEGORY.HEAL)
             {
+                Enemy enemy = (Enemy)characters[turnCharacterIndex];
+                // 入力側のスキルのアニメーションを再生
                 /*
-                // 受ける側のスキルのアニメーションを再生
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    activeEnemies[i].EnemyAnimator.Play(hashHeal);
-                    yield return null;// ステートの反映
-                    Instantiate(enemySkill.skillBase.SkillRecieveEffect, activeEnemies[i].EnemyModel.transform.position, activeEnemies[i].EnemyModel.transform.rotation);
-                }
+                enemy.EnemyAnimator.Play(hashSkill);
+                yield return null;// ステートの反映
+                yield return new WaitForAnimation(enemy.EnemyAnimator, 0);
                 */
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    // 回復する
-                    activeEnemies[i].TakeHeal(enemySkill);
-                    activeEnemies[i].EnemyUI.UpdateHp();
-                }
-                //yield return new WaitForAnimation(activeEnemies[0].EnemyAnimator, 0);
-            }
-            else
-            {
-                //Instantiate(enemySkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyModel.transform.position, activeEnemies[selectedTargetIndex].EnemyModel.transform.rotation);
-                // ここ
-                activeEnemies[selectedTargetIndex].TakeHeal(enemySkill);
 
-                // 回復モーション
-                //activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashHeal);
-                //activeEnemies[selectedTargetIndex].EnemyAnimator.SetBool("HealToIdle", true);
-                //yield return null;// ステートの反映
-                //yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
-
-                // HPの反映
-                for (int i = 0; i < activeEnemies.Count; i++)
+                // 全体選択なら
+                if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
-                    activeEnemies[i].EnemyUI.UpdateHp();
+                    /*
+                    // 受ける側のスキルのアニメーションを再生
+                    for (int i = 0; i < activeEnemies.Count; i++)
+                    {
+                        activeEnemies[i].EnemyAnimator.Play(hashHeal);
+                        yield return null;// ステートの反映
+                        Instantiate(enemySkill.skillBase.SkillRecieveEffect, activeEnemies[i].EnemyModel.transform.position, activeEnemies[i].EnemyModel.transform.rotation);
+                    }
+                    */
+                    for (int i = 0; i < activeEnemies.Count; i++)
+                    {
+                        // 回復する
+                        activeEnemies[i].TakeHeal(enemySkill);
+                        activeEnemies[i].EnemyUI.UpdateHp();
+                    }
+                    //yield return new WaitForAnimation(activeEnemies[0].EnemyAnimator, 0);
                 }
+                else
+                {
+                    //Instantiate(enemySkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyModel.transform.position, activeEnemies[selectedTargetIndex].EnemyModel.transform.rotation);
+                    // ここ
+                    activeEnemies[selectedTargetIndex].TakeHeal(enemySkill);
+
+                    // 回復モーション
+                    //activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashHeal);
+                    //activeEnemies[selectedTargetIndex].EnemyAnimator.SetBool("HealToIdle", true);
+                    //yield return null;// ステートの反映
+                    //yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
+
+                    // HPの反映
+                    for (int i = 0; i < activeEnemies.Count; i++)
+                    {
+                        activeEnemies[i].EnemyUI.UpdateHp();
+                    }
+                }
+                NextTurn();
             }
-            NextTurn();
         }
     }
 
@@ -1160,6 +1217,16 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 // 選択できないよ
             }
+        }
+        // escキーを押したら戻る
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            inputSkillStatement = InputSkillStatement.INIT_SKILL;// スキルを選択初期状態に戻す
+            // スキルパネルを非表示にする
+            battleCommand.ActivateSkillCommandPanel(false);
+            // メインパネルを表示する
+            battleCommand.ActivateBattleCommandPanel(true);
+            battleState = BattleState.PLAYER_ACTION_SELECT;
         }
 
         // 選択中
