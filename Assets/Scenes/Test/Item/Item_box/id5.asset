@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: id5
   description: 
+  price: 400
   id: 5
   itemType: 0

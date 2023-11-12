@@ -23,7 +23,13 @@ public class Item
         id = iBase.Id;
     }
 
+   // ItemBase オブジェクトの Price プロパティにアクセスする
+    public int Price
+    {
+        get => itemBase.Price; // 修正点
+    }
     public ItemBase ItemBase { get => itemBase; set => itemBase = value; }
     public int ItemCount { get => itemCount; set => itemCount = value; }
+    
     public int Id { get => id; }
 }
