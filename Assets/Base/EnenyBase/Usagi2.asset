@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: "\u3046\u3055\u304E2"
   description: 
-  enemySprite: {fileID: 3513077936018562752, guid: 1dc80677e0cdd1148924246916d5d09d, type: 3}
+  enemyPrefab: {fileID: 3513077936018562752, guid: 1dc80677e0cdd1148924246916d5d09d, type: 3}
   maxHp: 10
   physicPower: 10
   magicPower: 10

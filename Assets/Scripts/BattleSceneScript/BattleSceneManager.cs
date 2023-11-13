@@ -773,7 +773,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     {
                         if (playerSkill.skillBase.SkillRecieveEffect != null)
                         {
-                            Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemySprite.transform.position, activeEnemies[selectedTargetIndex].EnemySprite.transform.rotation);
+                            Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.position, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.rotation);
                         }
                         isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeDamage(playerSkill, activePlayers[0]);
                         // アニメーションやUI表示
@@ -795,7 +795,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                         {
                             // i番目の敵のモデルを消す
                             //activeEnemies[i].EnemyModel.SetActive(false);
-                            Destroy(activeEnemies[i].EnemySprite);
+                            Destroy(activeEnemies[i].EnemyPrefab);
                             // i番目の敵のUIを消す
                             activeEnemies[i].EnemyUI.UnActiveUIPanel();
                             // i番目の敵のisDyingをtrueにする

@@ -259,14 +259,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a56daf5e3358de409d5b98dd680fe87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerNameText: {fileID: 612841060372628774}
-  playerLevelText: {fileID: 2305612823651915921}
+  playerNameText: {fileID: 0}
+  playerLevelText: {fileID: 0}
   playerHpBar: {fileID: 6956740340349388473}
   playerSpBar: {fileID: 422466432412324168}
-  hpText: {fileID: 2730783975542733811}
-  spText: {fileID: 8372932105218817961}
-  currentMaxHpText: {fileID: 7968364672219582583}
-  currentMaxSpText: {fileID: 4394244894216003415}
+  hpText: {fileID: 0}
+  spText: {fileID: 0}
+  currentMaxHpText: {fileID: 0}
+  currentMaxSpText: {fileID: 0}
   selectedArrow: {fileID: 2997957883112070139}
   playerPos: {fileID: 0}
 --- !u!1 &2997957883112070139
@@ -511,8 +511,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spBar: {fileID: 2997957883786501586}
-  spText: {fileID: 8372932105218817961}
-  maxSpText: {fileID: 4394244894216003415}
 --- !u!1 &2997957884123633630
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,8 +779,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpBar: {fileID: 2997957884699441341}
-  hpText: {fileID: 2730783975542733811}
-  maxHpText: {fileID: 7968364672219582583}
 --- !u!1 &3355210908037223015
 GameObject:
   m_ObjectHideFlags: 0

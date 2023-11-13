@@ -12,7 +12,7 @@ public class Enemy : Character
     public EnemyBase EnemyBase { get => enemyBase; }
 
     public int Level { get => level; }
-    public GameObject EnemySprite { get; set; }
+    public GameObject EnemyPrefab { get; set; }
     // public Animator EnemyAnimator { get; set; }
 
     public BattleEnemyUI EnemyUI { get; set; }
@@ -127,7 +127,7 @@ public class Enemy : Character
 
     public bool TakeDamage(EnemySkill playerSkill, Player player)
     {
-        
+
         // クリティカル
         // 相性
         float effectiveness = 1;// 効果量
@@ -155,7 +155,7 @@ public class Enemy : Character
             Hp = 0;
             return true;
         }
-        
+
         return false;
     }
 

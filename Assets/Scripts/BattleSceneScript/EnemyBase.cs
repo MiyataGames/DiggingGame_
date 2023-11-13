@@ -12,7 +12,7 @@ public class EnemyBase : ScriptableObject
     [SerializeField] private string description;
 
     // モデル
-    [SerializeField] private GameObject enemySprite;
+    [SerializeField] private GameObject enemyPrefab;
 
     // ステータス
     [SerializeField] private int maxHp;
@@ -35,7 +35,7 @@ public class EnemyBase : ScriptableObject
     public List<LearnableSkill> LearableEnemySkills { get => learnableEnemySkills; }
     public string EnemyName { get => enemyName; }
     public string Description { get => description; }
-    public GameObject EnemySprite { get => enemySprite; }
+    public GameObject EnemyPrefab { get => enemyPrefab; }
 }
 
 // 覚える技：どのレベルで何を覚えるのか

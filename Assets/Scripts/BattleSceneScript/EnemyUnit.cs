@@ -7,9 +7,11 @@ public class EnemyUnit : MonoBehaviour
 {
     [SerializeField]
     private EnemyBase[] enemyBasies;
+    [SerializeField]
+    GameObject enemyCanvas;
 
     [SerializeField]
-    private GameObject[] enemyPos3;
+    private GameObject[] enemyPos9;
 
     private Enemy[] enemies;
 
@@ -37,17 +39,35 @@ public class EnemyUnit : MonoBehaviour
         // 敵の数が3体だったら
         if (enemyNum == 3)
         {
+            List<int> positions = new List<int>();
+            int positionIndex;
             foreach (var enemy in agiEnemyDic.OrderByDescending(c => c.Value))
             {
+                positionIndex = Random.Range(0, enemyPos9.Length - 1);
+                // 敵を生成する位置をきめる
+                // 前に生成した敵と同じ位置だったら
+                Debug.Log("positionIndexは" + positionIndex);
+                while (positions.Any(value => value == positionIndex))
+                {
+                    Debug.Log("もう一度ふりなおすよ");
+                    // ふりなおす
+                    positionIndex = Random.Range(0, enemyPos9.Length - 1);
+                    Debug.Log("positionIndexは" + positionIndex);
+
+                }
+                positions.Add(positionIndex);
+                Debug.Log("positionsに加えたよ" + positionIndex);
+                Debug.Log("今のリストは" + string.Join(",", positions));
                 enemies[j] = enemy.Key;
-                // モデルを生成
-                enemies[j].EnemySprite = Instantiate(enemies[j].EnemyBase.EnemySprite, enemyPos3[j].transform.position,Quaternion.identity,enemyPos3[j].transform);
+                // 敵のモデルを生成
+                enemies[j].EnemyPrefab = Instantiate(enemies[j].EnemyBase.EnemyPrefab, enemyPos9[positionIndex].transform.position, Quaternion.identity, enemyPos9[positionIndex].transform);
                 // アニメーターをいれる
                 // enemies[j].EnemyAnimator = enemies[j].EnemyModel.GetComponent<Animator>();
                 // EnemyUIのオブジェクトをみつける
                 //enemies[j].EnemyUIObject = enemyPos3[j].transform.Find("Child/EnemyCanvas").gameObject;
-                // EnemyUIをいれる
-                enemies[j].EnemyUI = enemyPos3[j].transform.Find("EnemyCanvas").gameObject.GetComponent<BattleEnemyUI>();
+                // EnemyUIをEnemyPosの子オブジェクトに生成
+                Vector3 uiPosition = new Vector3(enemyPos9[positionIndex].transform.position.x, enemyPos9[positionIndex].transform.position.y + 2.5f, enemyPos9[positionIndex].transform.position.z + 1);
+                enemies[j].EnemyUI = Instantiate(enemyCanvas, uiPosition, Quaternion.identity, enemyPos9[positionIndex].transform).gameObject.GetComponent<BattleEnemyUI>();
                 // EnemyUIのセットアップ
                 enemies[j].EnemyUI.SetEnemyData(enemies[j]);
                 // EnemyUIのパネルを表示する
