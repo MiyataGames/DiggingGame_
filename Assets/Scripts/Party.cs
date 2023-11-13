@@ -25,7 +25,7 @@ public class Party : MonoBehaviour
         for (int i = 0; i < playerBasies.Length; i++)
         {
             Player player = new Player(playerBasies[i], 1);
-            Debug.Log(player.level);
+            Debug.Log(player.Level);
             players.Add(player);
         }
     }

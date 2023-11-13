@@ -4,13 +4,15 @@ using UnityEngine;
 [System.Serializable]
 public class Player : Character
 {
-    public int playerID;
-    public int level;
-    public int currentHP;
-    public int currentSP;
-    public int atk;
-    public int def;
-    public int agi;
+    int playerID;
+    int level;
+    int currentHP;
+    int currentSP;
+    int atk;
+    int def;
+    int agi;
+    // 状態異常
+    public Condition Status { get; private set; }
     public GameObject PlayerBattleSprite { get; set; }
 
     public PlayerBase PlayerBase { get; set; }
@@ -60,7 +62,7 @@ public class Player : Character
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
         Skills = new List<EnemySkill>();
-        
+
         // 覚える技のレベル以上なら所持ペルソナのスキルをskillsに追加
         foreach (LearnableSkill learablePlayerSkill in PlayerBase.LearnablePlayerSkills)
         {

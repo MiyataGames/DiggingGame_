@@ -21,6 +21,20 @@ public enum SKILL_TARGET_NUM
     SINGLE,
     ALL
 }
+
+public enum STATUS
+{
+    // 攻撃力
+    ATTACK,
+    // 防御力
+    DEFENSE,
+    // スピード
+    SPEED,
+    // 命中率
+    ACCURACY,
+    // 回避率
+    EVASION
+}
 [CreateAssetMenu]
 public class SkillBase : ScriptableObject
 {
