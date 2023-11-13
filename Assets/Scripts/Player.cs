@@ -14,6 +14,8 @@ public class Player : Character
     public int atk;
     public int def;
     public int agi;
+    // 所持金
+    public int gold;
 
     public PlayerBase PlayerBase { get; set; }
 
@@ -27,6 +29,8 @@ public class Player : Character
     public int Atk { get => atk; set => atk = value; }
     public int Def { get => def; set => def = value; }
     public int Agi { get => agi; set => agi = value; }
+    // プレイヤーの所持金
+    public int Gold { get => gold; set => gold = value; }
     public List<Item> items;
 
     // レベルに応じたHPを返す
@@ -59,6 +63,8 @@ public class Player : Character
         Agi = PlayerBase.PlayerMaxAgi;
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
+        // 1000Gold持たせておく
+        gold = 1000;
     }
 
     public void OverridePlayer(int level, int currentHp, int currentSp, int atk, int def, int agi)

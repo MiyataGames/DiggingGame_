@@ -9,25 +9,29 @@ public class FieldShop : MonoBehaviour
     public ShopBase shopBase;
     public GameObject shopItemButtonPrefab; // ボタンのプレファブ
     private List<ItemEntry> shopItems = new List<ItemEntry>();
+    private PlayerController playerController;
+
     private ItemEntry selectedItemEntry;
-
-
     public Canvas ShopHud;
     public Canvas BuyHud;
     public Canvas SellHud;
     public Canvas CommandHud;
 
     public TextMeshProUGUI itemNameField ;
+    public TextMeshProUGUI moneyField ;
     public TextMeshProUGUI itemPriceField;
     public TextMeshProUGUI quantityField;
     int quantity = 1;
     int totalPrice ;
 
     int choiceId = -1;
-
-
+     [SerializeField] Party party;
+    
     void Start()
-    {
+    { 
+        // GameManagerに後で移す
+        party.Setup();
+        party = party.GetComponent<Party>();
         InitializeShopItems();
         CreateShopButtons();
     }
@@ -80,22 +84,28 @@ public class FieldShop : MonoBehaviour
         // アイテムがクリックされたときの処理
         // Debug.Log($"Item clicked: {item.item.ItemName}");
 
-        itemNameField.text = itemEntry.item.ItemName;
-        itemPriceField.text = (itemEntry.item.Price * quantity).ToString();
-        quantityField.text = quantity.ToString();
+        itemNameField.text = "Name: " +itemEntry.item.ItemName;
+        itemPriceField.text = "price: "+(itemEntry.item.Price * quantity).ToString();
+        quantityField.text = "quantity: " +quantity.ToString();
 
         choiceId = itemEntry.item.Id;
     }
+
+    // 選択したアイテムの個数を+1する
     public void UpButtonClick()
     {
         quantity++;
         OnItemButtonClick(selectedItemEntry);
     }
+
+    // 選択したアイテムの個数を-1する
     public void DownButtonClick()
     {
         quantity--;
         OnItemButtonClick(selectedItemEntry);
     }
+
+    // 購入 or 売却画面から選択画面に戻る
     public void ReturnButtonClick()
     {
         // アイテムがクリックされたときの処理
@@ -103,21 +113,27 @@ public class FieldShop : MonoBehaviour
         BuyHud.enabled = false;
         SellHud.enabled = false;
     }
+
+    // 購入画面の表示
     public void OnBuyButtonClick()
     {
         selectedItemEntry = shopItems[0];
-        itemPriceField.text = selectedItemEntry.item.Price.ToString();
-        Debug.Log("s");
+        moneyField.text = "pocket: " + party.Players[0].gold.ToString()+"Gold";
+        itemPriceField.text ="price: " +  selectedItemEntry.item.Price.ToString();
         CommandHud.enabled = false;
         BuyHud.enabled = true;
         
     }
+
+    // 売却画面の表示
     public void OnSellButtonClick()
     {
         Debug.Log("sle");
         CommandHud.enabled = false;
         SellHud.enabled = true;
     }
+
+    // 選択からゲーム画面に戻る
     public void OnEndButtonClick()
     {
         Debug.Log("end");
