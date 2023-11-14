@@ -698,6 +698,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             }
         }
     }
+
+    // ショップでの購入処理：一旦ShopFieldに書いていく
+    // public void OnClickPurchase()
+    // {
+
+    // }
     #endregion
     // システム関係　=======================
     // マウスでセーブを選択

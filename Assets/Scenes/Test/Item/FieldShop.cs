@@ -21,10 +21,15 @@ public class FieldShop : MonoBehaviour
     public TextMeshProUGUI moneyField ;
     public TextMeshProUGUI itemPriceField;
     public TextMeshProUGUI quantityField;
+    
     int quantity = 1;
     int totalPrice ;
 
     int choiceId = -1;
+
+    //なぞ
+    public Item item;
+
      [SerializeField] Party party;
     
     void Start()
@@ -43,9 +48,12 @@ public class FieldShop : MonoBehaviour
     private void InitializeShopItems()
     {
         foreach (var itemEntry in shopBase.ShopItems)
-        {
-            shopItems.Add(itemEntry);
-        }
+    {
+        // itemEntry.item は ItemBase オブジェクトです
+        Item newItem = new Item(itemEntry.item); // Itemオブジェクトを作成
+        ItemEntry newShopItemEntry = new ItemEntry(newItem.ItemBase); // 新しいItemEntryを作成
+        shopItems.Add(newShopItemEntry); // ItemEntryをリストに追加
+    }
     }
 
     private void CreateShopButtons()
@@ -87,6 +95,7 @@ public class FieldShop : MonoBehaviour
         itemNameField.text = "Name: " +itemEntry.item.ItemName;
         itemPriceField.text = "price: "+(itemEntry.item.Price * quantity).ToString();
         quantityField.text = "quantity: " +quantity.ToString();
+         moneyField.text = "pocket: " + party.Players[0].gold.ToString()+"Gold";
 
         choiceId = itemEntry.item.Id;
     }
@@ -138,5 +147,14 @@ public class FieldShop : MonoBehaviour
     {
         Debug.Log("end");
         ShopHud.enabled = false;
+    }
+    
+    // 購入する
+    public void OnClickPurchase()
+    {
+        party.Players[0].gold = party.Players[0].gold - (selectedItemEntry.item.Price*quantity);
+        party.Players[0].Items.Add(); // 修正され
+        Debug.Log(party.Players[0].gold);
+        OnItemButtonClick(selectedItemEntry);
     }
 }
