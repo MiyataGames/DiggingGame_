@@ -11,11 +11,12 @@ public enum ItemType
 }
 
 // アイテム
+[System.Serializable]
 public class Item
 {
-    private ItemBase itemBase;
-    private int itemCount = 0;
-    private int id;
+    [SerializeField]private ItemBase itemBase;
+    [SerializeField]private int itemCount = 0;
+    [SerializeField]private int id;
 
     public Item(ItemBase iBase)
     {

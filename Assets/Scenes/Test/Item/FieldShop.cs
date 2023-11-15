@@ -8,10 +8,10 @@ public class FieldShop : MonoBehaviour
 {
     public ShopBase shopBase;
     public GameObject shopItemButtonPrefab; // ボタンのプレファブ
-    private List<ItemEntry> shopItems = new List<ItemEntry>();
+    private List<Item> shopItems = new List<Item>();
     private PlayerController playerController;
 
-    private ItemEntry selectedItemEntry;
+    private Item selectedItemEntry;
     public Canvas ShopHud;
     public Canvas BuyHud;
     public Canvas SellHud;
@@ -47,12 +47,15 @@ public class FieldShop : MonoBehaviour
     // }
     private void InitializeShopItems()
     {
-        foreach (var itemEntry in shopBase.ShopItems)
+        foreach (var newItem in shopBase.ShopItems)
     {
-        // itemEntry.item は ItemBase オブジェクトです
-        Item newItem = new Item(itemEntry.item); // Itemオブジェクトを作成
-        ItemEntry newShopItemEntry = new ItemEntry(newItem.ItemBase); // 新しいItemEntryを作成
+        // Item.item は ItemBase オブジェクトです
+        /*
+        Item newItem = new Item(newItemBase); // Itemオブジェクトを作成
+        Item newShopItemEntry = new Item(newItem.ItemBase); // 新しいItemEntryを作成
         shopItems.Add(newShopItemEntry); // ItemEntryをリストに追加
+        */
+        shopItems.Add(newItem);
     }
     }
 
@@ -61,12 +64,12 @@ public class FieldShop : MonoBehaviour
         int buttonSpacing = -40; // ボタン間の間隔
         int currentY = 130; // 現在のY位置
 
-        foreach (var itemEntry in shopItems)
+        foreach (var item in shopItems)
         {
             GameObject buttonObj = Instantiate(shopItemButtonPrefab);
-            buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + itemEntry.item.ItemName + ", Price: " + itemEntry.item.Price;
+            buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + item.ItemBase.ItemName + ", Price: " + item.Price;
 
-            buttonObj.GetComponent<Button>().onClick.AddListener(() => OnItemButtonClick(itemEntry));
+            buttonObj.GetComponent<Button>().onClick.AddListener(() => OnItemButtonClick(item));
 
             // ボタンの位置を設定
             RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
@@ -79,12 +82,13 @@ public class FieldShop : MonoBehaviour
         }
     }
 
-    public void OnItemButtonClick(ItemEntry itemEntry)
+    public void OnItemButtonClick(Item item)
     {
-        selectedItemEntry = itemEntry;
+        selectedItemEntry = item;
 
         // 初期化
-        if (choiceId != itemEntry.item.Id)
+        
+        if (choiceId != item.Id)
         {
             quantity = 1;
         }
@@ -92,12 +96,12 @@ public class FieldShop : MonoBehaviour
         // アイテムがクリックされたときの処理
         // Debug.Log($"Item clicked: {item.item.ItemName}");
 
-        itemNameField.text = "Name: " +itemEntry.item.ItemName;
-        itemPriceField.text = "price: "+(itemEntry.item.Price * quantity).ToString();
+        itemNameField.text = "Name: " +item.ItemBase.ItemName;
+        itemPriceField.text = "price: "+(item.Price * quantity).ToString();
         quantityField.text = "quantity: " +quantity.ToString();
          moneyField.text = "pocket: " + party.Players[0].gold.ToString()+"Gold";
 
-        choiceId = itemEntry.item.Id;
+        choiceId = item.Id;
     }
 
     // 選択したアイテムの個数を+1する
@@ -128,7 +132,7 @@ public class FieldShop : MonoBehaviour
     {
         selectedItemEntry = shopItems[0];
         moneyField.text = "pocket: " + party.Players[0].gold.ToString()+"Gold";
-        itemPriceField.text ="price: " +  selectedItemEntry.item.Price.ToString();
+        itemPriceField.text ="price: " +  selectedItemEntry.Price.ToString();
         CommandHud.enabled = false;
         BuyHud.enabled = true;
         
@@ -152,8 +156,7 @@ public class FieldShop : MonoBehaviour
     // 購入する
     public void OnClickPurchase()
     {
-        party.Players[0].gold = party.Players[0].gold - (selectedItemEntry.item.Price*quantity);
-        party.Players[0].Items.Add(); // 修正され
+        party.Players[0].gold = party.Players[0].gold - (selectedItemEntry.Price*quantity);
         Debug.Log(party.Players[0].gold);
         OnItemButtonClick(selectedItemEntry);
     }
