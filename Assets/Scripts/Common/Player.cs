@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 [System.Serializable]
 public class Player : Character
 {
     int playerID;
-    int level;
-    int currentHP;
-    int currentSP;
-    int atk;
-    int def;
-    int agi;
-    // 状態異常
-    public Condition Status { get; private set; }
+
     public GameObject PlayerBattleSprite { get; set; }
 
     public PlayerBase PlayerBase { get; set; }
@@ -21,26 +15,18 @@ public class Player : Character
     // UI
     public PlayerFieldUI playerUI;
     public BattlePlayerUI battlePlayerUI;
-    // パラメータ
-    public int Level { get => level; }
-    public List<EnemySkill> Skills { get; set; }//スキル
-    public int CurrentHp { get => currentHP; set => currentHP = value; }
-    public int CurrentSp { get => currentSP; set => currentSP = value; }
-    public int Atk { get => atk; set => atk = value; }
-    public int Def { get => def; set => def = value; }
-    public int Agi { get => agi; set => agi = value; }
     public List<Item> items;
 
     // レベルに応じたHPを返す
     public int currentMaxHp
     {
-        get { return Mathf.FloorToInt((PlayerBase.PlayerMaxHp * Level) / 100f) + 10; }
+        get { return Mathf.FloorToInt((PlayerBase.PlayerMaxHp * level) / 100f) + 10; }
     }
 
     // レベルに応じたSPを返す
     public int currentMaxSp
     {
-        get { return Mathf.FloorToInt((PlayerBase.PlayerMaxSp * Level) / 100f) + 30; }
+        get { return Mathf.FloorToInt((PlayerBase.PlayerMaxSp * level) / 100f) + 30; }
     }
 
     // Start is called before the first frame update
@@ -54,11 +40,11 @@ public class Player : Character
         //        Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
         this.level = level;
-        CurrentHp = 3;
-        CurrentSp = currentMaxSp;
-        Atk = PlayerBase.PlayerMaxAtk;
-        Def = PlayerBase.PlayerMaxDef;
-        Agi = PlayerBase.PlayerMaxAgi;
+        currentHP = 3;
+        currentSP = currentMaxSp;
+        atk = PlayerBase.PlayerMaxAtk;
+        def = PlayerBase.PlayerMaxDef;
+        agi = PlayerBase.PlayerMaxAgi;
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
         Skills = new List<EnemySkill>();
@@ -66,7 +52,7 @@ public class Player : Character
         // 覚える技のレベル以上なら所持ペルソナのスキルをskillsに追加
         foreach (LearnableSkill learablePlayerSkill in PlayerBase.LearnablePlayerSkills)
         {
-            if (Level >= learablePlayerSkill.Level)
+            if (level >= learablePlayerSkill.Level)
             {
                 Skills.Add(new EnemySkill(learablePlayerSkill.SkillBase));
             }
@@ -78,33 +64,41 @@ public class Player : Character
         }
     }
 
-    public void OverridePlayer(int level, int currentHp, int currentSp, int atk, int def, int agi)
+    /// <summary>
+    /// レベルに応じた初期値を設定する関数
+    /// </summary>
+    public override void InitStatusValue(int level)
+    {
+
+    }
+
+    public void OverridePlayer(int level, int currentHP, int currentSP, int atk, int def, int agi)
     {
         this.level = level;
-        CurrentHp = currentHp;
-        CurrentSp = currentSp;
-        Atk = atk;
-        Def = def;
-        Agi = agi;
+        currentHP = currentHP;
+        currentSP = currentSP;
+        atk = atk;
+        def = def;
+        agi = agi;
     }
 
     public bool TakeHealWithItem(Item healItem)
     {
-        if (CurrentHp == currentMaxHp)
+        if (currentHP == currentMaxHp)
         {
             return false;
         }
         HealItemBase healItemBase = healItem.ItemBase as HealItemBase;
-        if (CurrentHp + healItemBase.HealPoint > currentMaxHp)
+        if (currentHP + healItemBase.HealPoint > currentMaxHp)
         {
-            CurrentHp = currentMaxHp;
+            currentHP = currentMaxHp;
         }
         else
         {
             Debug.Log(currentMaxHp);
-            CurrentHp += healItemBase.HealPoint;
+            currentHP += healItemBase.HealPoint;
         }
-        //Debug.Log(currentHp);
+        //Debug.Log(currentHP);
         return true;
     }
 
@@ -112,8 +106,8 @@ public class Player : Character
     {
         /*
         float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
-        float a = (2 * enemy.Level + 10) / 250f;
-        float d = a * enemySkill.skillBase.Power * ((float)enemy.MagicPower / equipEnemy.Def) + 2;
+        float a = (2 * enemy.level + 10) / 250f;
+        float d = a * enemySkill.skillBase.Power * ((float)enemy.MagicPower / equipEnemy.def) + 2;
         */
         int damage = enemySkill.skillBase.Power;
 
@@ -129,7 +123,7 @@ public class Player : Character
     {
         /*
                 float modifiers = Random.Range(0.85f, 1.0f);
-                float a = (2 * player.Level + 10) / 250f;
+                float a = (2 * player.level + 10) / 250f;
                 float d = a * playerSkill.skillBase.Power * ((float)player.equipEnemy.MagicPower) + 2;
                 // 与えるダメージの2.5倍
                 int healHP = Mathf.FloorToInt(d * modifiers * 2.5f);*/

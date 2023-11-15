@@ -492,9 +492,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // 敵への効果だったら
         if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
-            // 攻撃だったら
-            if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
-            {
                 // 全体攻撃だったら
                 if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
@@ -511,13 +508,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     activeEnemies[selectedTargetIndex].EnemyUI.SelectedArrow.SetActive(true);
                     Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
                 }
-            }
         }// プレイヤー側が対象だったら
         else if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
-            // 回復スキルだったら
-            if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.HEAL)
-            {
                 // 対象が全体だったら
                 if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
@@ -534,7 +527,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     activePlayers[selectedTargetIndex].battlePlayerUI.SetActiveSelectedArrow(true);
                     Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
                 }
-            }
         }
     }
 
@@ -691,6 +683,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         Debug.Log("PlayerEndInput()");
         StartCoroutine(PerformPlayerSkill());
+        // PerformPlayerSkill();
     }
 
     // 全体攻撃のモーションを変更中
@@ -820,17 +813,23 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // ステータス変化魔法だったら
         else if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.STATUS)
         {
+            SkillStatusBase skillBase = playerSkill.skillBase as SkillStatusBase;
             // 対象が敵だったら
             if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
             {
                 // 効果が全体だったら
                 if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
+                    // 敵全体のステータスが変化する
+                    for(int i = 0;i < activeEnemies.Count; i++)
+					{
+                        activeEnemies[i].ChangeStatus(skillBase.TargetStatus, skillBase.SkillStatusKind);
+					}
 
                 }// 効果が単体だったら
                 else
                 {
-
+                    activeEnemies[selectedTargetIndex].ChangeStatus(skillBase.TargetStatus, skillBase.SkillStatusKind);
                 }
 
             }
@@ -1096,18 +1095,21 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // ステータス変化魔法だったら
         else if (enemySkill.skillBase.SkillCategory == SKILL_CATEGORY.STATUS)
         {
-            
+            SkillStatusBase skillBase = enemySkill.skillBase as SkillStatusBase;
             // 対象が敵だったら
             if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
             {
                 // 効果が全体だったら
                 if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
                 {
-
+                    for(int i = 0;i < activePlayers.Count; i++)
+					{
+                        activePlayers[i].ChangeStatus(skillBase.TargetStatus, skillBase.SkillStatusKind);
+					}
                 }// 効果が単体だったら
                 else
                 {
-
+                    activePlayers[selectedTargetIndex].ChangeStatus(skillBase.TargetStatus, skillBase.SkillStatusKind);
                 }
 
             }
@@ -1240,7 +1242,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (Input.GetKeyDown(KeyCode.Return))
         {
             // 技決定の処理
-            if (turnPlayer.CurrentSp >= turnPlayer.Skills[selectedSkillIndex].skillBase.Sp)
+            // SPが足りない
+            if (turnPlayer.currentSP < turnPlayer.Skills[selectedSkillIndex].skillBase.Sp)
+            {
+                // 選択できないよ
+                return;
+            }
+            else
             {
                 // UIを非表示
                 battleCommand.ActivateSkillCommandPanel(false);
@@ -1249,10 +1257,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("activePlayers" + activePlayers.Count + "selectedTargetIndex" + selectedTargetIndex);
 
                 inputSkillStatement = ChangeInputSkillStatement();
-            }
-            else
-            {
-                // 選択できないよ
             }
         }
         // escキーを押したら戻る

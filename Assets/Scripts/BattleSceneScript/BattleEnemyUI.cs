@@ -26,15 +26,15 @@ public class BattleEnemyUI : MonoBehaviour
         this.enemy = enemy;
         enemyNameText.text = enemy.EnemyBase.EnemyName;
         enemyLevelText.text = "Lv." + enemy.Level.ToString();
-        enemyHpBar.SetHP(enemy.Hp, enemy.MaxHp);
+        enemyHpBar.SetHP(enemy.currentHP, enemy.currentMaxHp);
         //weakImage.SetActive(false);
     }
 
     public void UpdateHp()
     {
-        Debug.Log("enemyName" + enemy.EnemyBase.EnemyName + "hp" + enemy.Hp + "maxhp" + enemy.MaxHp);
+        Debug.Log("enemyName" + enemy.EnemyBase.EnemyName + "hp" + enemy.currentHP + "maxhp" + enemy.currentMaxHp);
         // コルーチンの中でStartCoroutineは省略可能
-        enemyHpBar.SetHP((float)enemy.Hp, enemy.MaxHp);
+        enemyHpBar.SetHP((float)enemy.currentHP, enemy.currentMaxHp);
         //enemyHpBar.SetHP((float)enemy.Hp,enemy.MaxHp);
     }
 

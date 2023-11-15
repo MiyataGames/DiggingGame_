@@ -6,7 +6,6 @@ using UnityEngine;
 public class Enemy : Character
 {
     [SerializeField] private EnemyBase enemyBase;
-    [SerializeField] private int level;
 
     // ベースとなるデータ
     public EnemyBase EnemyBase { get => enemyBase; }
@@ -17,16 +16,12 @@ public class Enemy : Character
 
     public BattleEnemyUI EnemyUI { get; set; }
 
-    // 使える技
-    public List<EnemySkill> Skills { get; set; }
+    // レベルに応じたHPを返す
+    public int currentMaxHp
+    {
+        get { return Mathf.FloorToInt((EnemyBase.MaxHp * level) / 100f) + 10; }
+    }
 
-    [SerializeField] private int physicPower;// 力
-    [SerializeField] private int magicPower;// 魔
-    [SerializeField] private int def;// 耐
-    [SerializeField] private int agi;// 速
-    [SerializeField] private int luck; // 運
-
-    public int Hp { get; set; }
 
     // コンストラクタ:生成時の初期設定
     public Enemy(EnemyBase eBase, int eLevel)
@@ -35,7 +30,7 @@ public class Enemy : Character
         isPlayer = false;
         enemyBase = eBase;
         level = eLevel;
-        Hp = MaxHp;
+        currentHP = currentMaxHp;
         //		agi = eBase.Agi;
         Skills = new List<EnemySkill>();
         // 覚える技のレベル以上ならslillsに追加
@@ -53,26 +48,13 @@ public class Enemy : Character
         }
     }
 
-    // Levelに応じたステータスを返すもの:プロパティ
-    public int MaxHp
-    {
-        get { return Mathf.FloorToInt((EnemyBase.MaxHp * Level) / 100f) + 10; }
-    }
+    /// <summary>
+    /// レベルに応じた初期値を設定する関数
+    /// </summary>
+    public override void InitStatusValue(int level)
+	{
 
-    public int PhysicPower
-    { get { return Mathf.FloorToInt((EnemyBase.PhysicPower * Level) / 100f) + 5; } }
-
-    public int MagicPower
-    { get { return Mathf.FloorToInt((EnemyBase.MagicPower * Level) / 100f) + 5; } }
-
-    public int Def
-    { get { return Mathf.FloorToInt((EnemyBase.Def * Level) / 100f) + 5; } }
-
-    public int Agi
-    { get { return Mathf.FloorToInt((EnemyBase.Agi * Level) / 100f) + 5; } }
-
-    public int Luck
-    { get { return Mathf.FloorToInt((EnemyBase.Luck * Level) / 100f) + 5; } }
+	}
 
     /*
         public bool isEffective(EnemySkill playerSkill)
@@ -145,14 +127,14 @@ public class Enemy : Character
             effectiveness = 0;
         }*/
         float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
-        float a = (2 * player.Level + 10) / 250f;
-        float d = a * playerSkill.skillBase.Power * ((float)player.Atk / Def) + 2;
+        float a = (2 * player.level + 10) / 250f;
+        float d = a * playerSkill.skillBase.Power * ((float)player.atk / def) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
 
-        Hp -= damage;
-        if (Hp <= 0)
+        currentHP -= damage;
+        if (currentHP <= 0)
         {
-            Hp = 0;
+            currentHP = 0;
             return true;
         }
 

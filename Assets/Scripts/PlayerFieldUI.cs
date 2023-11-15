@@ -21,20 +21,20 @@ public class PlayerFieldUI : MonoBehaviour
     {
         this.player = player;
         statusPlayerNameText.text = player.PlayerBase.PlayerName;
-        statusPlayerHpText.text = player.CurrentHp.ToString() + " / ";
+        statusPlayerHpText.text = player.currentHP.ToString() + " / ";
         statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
-        statusPlayerSpText.text = player.CurrentSp.ToString() + " / ";
+        statusPlayerSpText.text = player.currentSP.ToString() + " / ";
         statusPlayerMaxSpText.text = player.currentMaxSp.ToString();
         statusIconImage.sprite = player.PlayerBase.PlayerFaceIcon;
     }
 
     public void UpdateHpSp()
     {
-        playerHpBar.SetHP((float)player.CurrentHp, player.currentMaxHp);
-        playerSpBar.SetSP((float)player.CurrentSp, player.currentMaxSp);
-        statusPlayerHpText.text = player.CurrentHp.ToString() + " / ";
+        playerHpBar.SetHP((float)player.currentHP, player.currentMaxHp);
+        playerSpBar.SetSP((float)player.currentSP, player.currentMaxSp);
+        statusPlayerHpText.text = player.currentHP.ToString() + " / ";
         statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
-        statusPlayerSpText.text = player.CurrentSp.ToString() + " / ";
+        statusPlayerSpText.text = player.currentSP.ToString() + " / ";
         statusPlayerMaxSpText.text = player.currentMaxSp.ToString();
     }
 

@@ -13,3 +13,17 @@ public enum ConditionID
     Freeze,    // こおり
     Confusion, // 混乱
 }
+
+public enum STATUS
+{
+    // 攻撃力
+    ATTACK,
+    // 防御力
+    DEFENSE,
+    // スピード
+    SPEED,
+    // 命中率
+    ACCURACY,
+    // 回避率
+    EVASION
+}
