@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: id1
   m_EditorClassIdentifier: 
   itemName: id1
-  description: 
-  price: 100
-  id: 1
+  description: fffffffff
+  price: 40
+  id: 0
   itemType: 0

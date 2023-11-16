@@ -15,8 +15,8 @@ public enum ItemType
 public class Item
 {
     [SerializeField]private ItemBase itemBase;
-    [SerializeField]private int itemCount = 0;
-    [SerializeField]private int id;
+private int itemCount = 0;
+private int id;
 
     public Item(ItemBase iBase)
     {

@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: ItemShop1
   m_EditorClassIdentifier: 
   shopItems:
-  - item: {fileID: 11400000, guid: cf2abff6cdbeed6419f75b75928a6f7b, type: 2}
-  - item: {fileID: 11400000, guid: 15355bee06436674cb58e71413c45f81, type: 2}
-  - item: {fileID: 11400000, guid: 71ac2d08aba41924c8283f48bb4e5fbf, type: 2}
-  - item: {fileID: 11400000, guid: 4b6abbdb38e4de144b3932c16f556c58, type: 2}
-  - item: {fileID: 11400000, guid: 0a43afc2d9c33ac4487866883e08d750, type: 2}
-  - item: {fileID: 11400000, guid: 71ac2d08aba41924c8283f48bb4e5fbf, type: 2}
+  - itemBase: {fileID: 11400000, guid: cf2abff6cdbeed6419f75b75928a6f7b, type: 2}
+  - itemBase: {fileID: 11400000, guid: 15355bee06436674cb58e71413c45f81, type: 2}
+  - itemBase: {fileID: 11400000, guid: 452d1e61243255846960ea4cebcfc660, type: 2}
+  - itemBase: {fileID: 11400000, guid: 4b6abbdb38e4de144b3932c16f556c58, type: 2}
+  - itemBase: {fileID: 11400000, guid: 71ac2d08aba41924c8283f48bb4e5fbf, type: 2}
