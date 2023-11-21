@@ -704,6 +704,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // {
 
     // }
+
+    // Itemリストにアイテムを追加
+    public void AddItem()
+    {
+        
+    } 
     #endregion
     // システム関係　=======================
     // マウスでセーブを選択
