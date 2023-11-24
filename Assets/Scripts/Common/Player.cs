@@ -36,12 +36,16 @@ public class Player : Character
     {
         isPlayer = true;
         PlayerBase = pBase;
+        characterName = PlayerBase.name;
         playerID = pBase.PlayerId;
         //        Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
         this.level = level;
-        currentHP = 3;
+        currentHP = currentMaxHp;
         currentSP = currentMaxSp;
+        currentMaxAtk = PlayerBase.PlayerMaxAtk;
+        currentMaxDef = PlayerBase.PlayerMaxDef;
+        currentMaxAgi = PlayerBase.PlayerMaxAgi;
         atk = PlayerBase.PlayerMaxAtk;
         def = PlayerBase.PlayerMaxDef;
         agi = PlayerBase.PlayerMaxAgi;
@@ -101,8 +105,8 @@ public class Player : Character
         //Debug.Log(currentHP);
         return true;
     }
-
-    public bool TakeDamage(EnemySkill enemySkill, Enemy enemy)
+ 
+    public override bool TakeSkillDamage(EnemySkill enemySkill, Character character)
     {
         /*
         float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
@@ -119,6 +123,7 @@ public class Player : Character
         }
         return false;
     }
+
     public void TakeHeal(EnemySkill playerSkill, Player player)
     {
         /*

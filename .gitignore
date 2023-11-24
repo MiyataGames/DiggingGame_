@@ -73,3 +73,6 @@ crashlytics-build.properties
 
 #フォントファイルを無視する
 /[Aa]ssets/Font/*
+#visualstudioの設定フォルダを無視
+.vs/
+.vscode/

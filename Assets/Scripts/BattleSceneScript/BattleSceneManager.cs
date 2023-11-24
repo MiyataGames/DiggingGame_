@@ -8,6 +8,7 @@ public enum BattleState
 {
     INIT_BATTLE,
     PREPARE_BATTLE,
+    CHECK_CONDITION,
     PLAYER_ACTION_SELECT,
     PLAYER_MOVE,
     ENEMY_MOVE,
@@ -118,6 +119,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // プレイヤーが走ってくる
             PrepareBattle();
+        }else if(battleState == BattleState.CHECK_CONDITION)
+        {
+            // 状態異常のチェック
+            CheckCondition();
         }
         else if (battleState == BattleState.PLAYER_ACTION_SELECT)
         {
@@ -317,16 +322,18 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             inputSkillStatement = InputSkillStatement.INIT_SKILL;
         }
         */
-
-        if (turnCharacter.isPlayer)
-        {
-            battleState = BattleState.PLAYER_MOVE;
-        }
-        else
-        {
-            battleState = BattleState.ENEMY_MOVE;
-        }
-        inputSkillStatement = InputSkillStatement.INIT_SKILL;
+        // 変更 11/24
+        battleState = BattleState.CHECK_CONDITION;
+        //if (turnCharacter.isPlayer)
+        //{
+        //    
+        //    //battleState = BattleState.PLAYER_MOVE;
+        //}
+        //else
+        //{
+        //    battleState = BattleState.ENEMY_MOVE;
+        //}
+        //inputSkillStatement = InputSkillStatement.INIT_SKILL;
 
     }
 
@@ -352,6 +359,55 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         playerModel.transform.position += playerSpeed * Time.deltaTime * directionNormarized;
 
         return false;
+    }
+    // =========================状態異常をチェックする
+    private void CheckCondition()
+    {
+
+        Debug.Log("状態異常のチェックフェーズ");
+        // 状態異常の更新
+        turnCharacter.UpdateConditions();
+        // まひだったら
+        if (turnCharacter.IsCharacterParalyzed() == true)
+        {
+            float random = Random.Range(0, 1.0f);
+            // 50%の確率で動けない
+            if (random < 0.5f)
+            {
+                Debug.Log("麻痺なのでスキップ");
+                SkipTurn();
+            }
+            else
+            {
+                if (turnCharacter.isPlayer)
+                {
+                    battleState = BattleState.PLAYER_MOVE;
+                }
+                else
+                {
+                    battleState = BattleState.ENEMY_MOVE;
+                }
+                inputSkillStatement = InputSkillStatement.INIT_SKILL;
+
+            }
+        }else if (turnCharacter.IsCharacterSleeped() == true)
+        {
+            Debug.Log("睡眠中なのでスキップ");
+            SkipTurn();
+        }
+        else
+        {
+
+            if (turnCharacter.isPlayer)
+            {
+                battleState = BattleState.PLAYER_MOVE;
+            }
+            else
+            {
+                battleState = BattleState.ENEMY_MOVE;
+            }
+            inputSkillStatement = InputSkillStatement.INIT_SKILL;
+        }
     }
 
     // ==========================メインパネルからアクションを選択する
@@ -591,7 +647,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // 選択矢印を消す
                 for (int i = 0; i < activeEnemies.Count; i++)
                 {
-                    Debug.Log(i + "," + activeEnemies.Count);
                     activeEnemies[i].EnemyUI.SelectedArrow.SetActive(false);
                 }
                 inputSkillStatement = InputSkillStatement.END_INPUT;
@@ -700,12 +755,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("名前" + player.PlayerBase.PlayerName + "発動スキル" + playerSkill.skillBase.SkillName);
         // 消費SP分減らす
         player.UseSp(playerSkill);
-        Debug.Log(player.battlePlayerUI);
         player.battlePlayerUI.UpdateHpSp();
         // 攻撃魔法だったら
         if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
         {
-            // ダメージ決定　
+            // ダメージ決定　生きているキャラクター分の配列を用意
             bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
 
             /*
@@ -738,7 +792,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 for (int i = 0; i < activeEnemies.Count; i++)
                 {
                     // ダメージ　
-                    isDying[i] = activeEnemies[i].TakeDamage(playerSkill, (Player)TurnCharacter);
+                    isDying[i] = activeEnemies[i].TakeSkillDamage(playerSkill, (Player)TurnCharacter);
                 }
 
                 // HPSPの反映
@@ -753,7 +807,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.position, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.rotation);
                 }
-                isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeDamage(playerSkill, activePlayers[0]);
+                isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeSkillDamage(playerSkill, activePlayers[0]);
                 // アニメーションやUI表示
 
                 // ダメージモーション
@@ -814,6 +868,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         else if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.STATUS)
         {
             SkillStatusBase skillBase = playerSkill.skillBase as SkillStatusBase;
+
             // 対象が敵だったら
             if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
             {
@@ -846,7 +901,150 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
                 }
             }
+            NextTurn();
 
+        }
+        // 状態異常魔法+攻撃魔法だったら
+        else if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.CONDITION)
+        {
+
+            // ダメージ決定　生きているキャラクター分の配列を用意
+            bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
+            SkillConditionBase skillBase = playerSkill.skillBase as SkillConditionBase;
+            // 効果が全体だったら
+            if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+            {
+                // 敵にダメージがはいる
+                for(int i = 0; i < activeEnemies.Count; i++)
+                {
+                    isDying[i] = activeEnemies[i].TakeSkillDamage(playerSkill, (Player)TurnCharacter);
+                }
+
+                // HPSPの反映
+                for (int i = 0; i < activeEnemies.Count; i++)
+                {
+                    activeEnemies[i].EnemyUI.UpdateHp();
+                }
+
+                // 敵が確率で状態異常にかかる
+                for (int i = 0; i < activeEnemies.Count; i++)
+                {
+                    float random = Random.Range(0.0f, 1.0f);
+                    // 出た値が確率以下なら
+                    if(random <= skillBase.ConditionAttackAccuracy)
+                    {
+                        int duration = Random.Range(2, 4);
+                        StatusCondition condition = new StatusCondition(skillBase.Condition,duration);
+                        switch (skillBase.Condition)
+                        {
+                            // 毒状態
+                            case STATUS_CONDITION_TYPE.POISON:
+                                condition = new PoisonCondition(duration);
+                                break;
+                            // まひ状態
+                            case STATUS_CONDITION_TYPE.PARALYSIS:
+                                condition = new ParalysisCondition(duration);
+                                break;
+                            case STATUS_CONDITION_TYPE.BURN:
+                                condition = new BurnCondition(duration);
+                                break;
+                            case STATUS_CONDITION_TYPE.FREEZE:
+                                condition = new FreezeCondition(duration);
+                                break;
+                            case STATUS_CONDITION_TYPE.SLEEP:
+                                condition = new SleepCondition(duration);
+                                break;
+
+                        }
+                        // 状態異常にかかる　追加する方法がわからん
+                        activeEnemies[i].AddCondition(condition);
+                    }
+                }
+
+            }// 効果が単体だったら
+            else
+            {
+                // 敵にダメージがはいる
+                isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeSkillDamage(playerSkill, activePlayers[0]);
+                // HPの反映
+                activeEnemies[selectedTargetIndex].EnemyUI.UpdateHp();
+                // 敵が確率で状態異常にかかる
+                float random = Random.Range(0.0f, 1.0f);
+                // 出た値が確率以下なら
+                if (random <= skillBase.ConditionAttackAccuracy)
+                {
+                    int duration = Random.Range(2, 4);
+                    StatusCondition condition = new StatusCondition(skillBase.Condition, duration);
+                    switch (skillBase.Condition)
+                    {
+                        // 毒状態
+                        case STATUS_CONDITION_TYPE.POISON:
+                            condition = new PoisonCondition(duration);
+                            break;
+                        // まひ状態
+                        case STATUS_CONDITION_TYPE.PARALYSIS:
+                            condition = new ParalysisCondition(duration);
+                            break;
+                        case STATUS_CONDITION_TYPE.BURN:
+                            condition = new BurnCondition(duration);
+                            break;
+                        case STATUS_CONDITION_TYPE.FREEZE:
+                            condition = new FreezeCondition(duration);
+                            break;
+                        case STATUS_CONDITION_TYPE.SLEEP:
+                            condition = new SleepCondition(duration);
+                            break;
+
+                    }
+                    // 状態異常にかかる　追加する方法がわからん
+                    activeEnemies[selectedTargetIndex].AddCondition(condition);
+                    Debug.Log("状態異常追加");
+                }
+            }
+
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                // 戦闘不能な敵を消す
+                if (isDying[i] == true)
+                {
+                    // i番目の敵のモデルを消す
+                    //activeEnemies[i].EnemyModel.SetActive(false);
+                    Destroy(activeEnemies[i].EnemyPrefab);
+                    // i番目の敵のUIを消す
+                    activeEnemies[i].EnemyUI.UnActiveUIPanel();
+                    // i番目の敵のisDyingをtrueにする
+                    characters.Find(value => value == activeEnemies[i]).isDying = true;
+                }
+            }
+            // 全員戦闘不能ならメッセージ
+            // 戦闘不能の敵を検索してリムーブする
+            List<Enemy> deadEnemies = activeEnemies.FindAll(value => value.isDying == true);
+            for (int i = 0; i < deadEnemies.Count; i++)
+            {
+                activeEnemies.Remove(deadEnemies[i]);
+            }
+
+            Debug.Log("EnemySkill　1秒まつ");
+            yield return new WaitForSeconds(1);
+            // 全員瀕死になったら戦闘不能
+            if (isDying.All(value => value == true))
+            {
+                Debug.Log("戦闘不能");
+
+                battleState = BattleState.BUSY;
+                yield return new WaitForSeconds(0.7f);
+                // 3Dモデルの削除
+                for (int i = 0; i < activePlayers.Count; i++)
+                {
+                    //Destroy(activePlayers[i].PlayerModel);
+                }
+                //フィールドのシーンに戻る
+                //gameManager.EndBattle();
+            }
+            else// 一体でも生き残っていれば
+            {
+                NextTurn();
+            }
         }
         // 回復魔法だったら
         else if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.HEAL)
@@ -907,7 +1105,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             NextTurn();
         }
     }
-
+    /// <summary>
+    /// 次のターンに移行する
+    /// </summary>
     private void NextTurn()
     {
         if (turnCharacterIndex < characters.Count - 1)
@@ -934,6 +1134,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
 
         // battleStateの更新
+        /*
         if (TurnCharacter.isPlayer)
         {
             battleState = BattleState.PLAYER_MOVE;
@@ -946,9 +1147,22 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             inputSkillStatement = InputSkillStatement.INIT_SKILL;
             Debug.Log(battleState);
         }
+        */
+        battleState = BattleState.CHECK_CONDITION;
         Debug.Log("=====================" + battleState + "====================");
         //Debug.Log()
         Debug.Log("順番のキャラクター" + turnCharacterIndex + "生きてるキャラクターの数" + characters.Count(value => value.isDying == false));
+    }
+
+    /// <summary>
+    /// ターンをスキップする
+    /// </summary>
+    public void SkipTurn()
+    {
+        Debug.Log(turnCharacter.characterName + " スキップ");
+
+        // 次のターンに移行
+        NextTurn();
     }
 
     // 敵============================
@@ -1036,7 +1250,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
                     // 修正　activeEnemies[0]
-                    isDying[i] = activePlayers[i].TakeDamage(enemySkill, (Enemy)TurnCharacter);
+                    isDying[i] = activePlayers[i].TakeSkillDamage(enemySkill, (Enemy)TurnCharacter);
 
                     // HPSPの反映
                     activePlayers[i].battlePlayerUI.UpdateHpSp();
@@ -1044,7 +1258,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
             else// 単体選択なら
             {
-                isDying[selectedTargetIndex] = activePlayers[selectedTargetIndex].TakeDamage(enemySkill, activeEnemies[0]);
+                isDying[selectedTargetIndex] = activePlayers[selectedTargetIndex].TakeSkillDamage(enemySkill, activeEnemies[0]);
 
                 // アニメーションやUI表示
 

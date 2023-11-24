@@ -11,9 +11,16 @@ public class Character
 
     public bool isFainted;//気絶状態か
 
+    public string characterName;
     public int level;
+    public int currentMaxHp;
+    public int currentMaxSp;
     public int currentHP;
     public int currentSP;
+
+    public int currentMaxAtk;
+    public int currentMaxDef;
+    public int currentMaxAgi;
     public int atk;
     public int def;
     public int agi;
@@ -24,6 +31,36 @@ public class Character
     private int defChangeLevel = 0;
     private int agiChangeLevel = 0;
 
+
+    public bool isParalyzed;
+    // 状態異常リスト
+    public List<StatusCondition> conditions = new List<StatusCondition>();
+
+    /// <summary>
+    /// スキルによるダメージ 戦闘不能になったらtrueを返す
+    /// </summary>
+    /// <param name="enemySkill"></param>
+    /// <param name="character"></param>
+    /// <returns></returns>
+    public virtual bool TakeSkillDamage(EnemySkill enemySkill, Character character)
+    {
+        return false;
+    }
+    /// <summary>
+    /// 状態異常によるダメージ 戦闘不能になったらtrueを返す
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <returns></returns>
+    public bool TakeConditionDamage(int damage)
+    {
+        currentHP -= damage;
+        if (currentHP <= 0)
+        {
+            currentHP = 0;
+            return true;
+        }
+        return false;
+    }
     /// <summary>
 	/// レベルに応じた初期値を設定する関数
 	/// </summary>
@@ -32,7 +69,11 @@ public class Character
 
 	}
 
-    // ステータス変化技の関数
+    /// <summary>
+    /// // ステータス変化技の関数
+    /// </summary>
+    /// <param name="status">変化させるステータス</param>
+    /// <param name="skillStatusKind">ステータスの下降か上昇か</param>
     #region
     // 任意のステータスを任意の方向に変更する関数
     public void ChangeStatus(STATUS status, SKILL_STATUS_KIND skillStatusKind)
@@ -74,6 +115,34 @@ public class Character
                 DecreaseAgi();
                 return;
             }
+        }
+    }
+
+    public void ResetAtkStatus()
+    {
+        Debug.Log("攻撃力を戻したよ");
+        if(atkChangeLevel != 0)
+        {
+            atk = currentMaxAtk;
+            atkChangeLevel = 0;
+        }
+    }
+    public void ResetDefStatus()
+    {
+        Debug.Log("防御力を戻したよ");
+        if (defChangeLevel != 0)
+        {
+            def = currentMaxDef;
+            defChangeLevel = 0;
+        }
+    }
+    public void ResetAgiStatus()
+    {
+        Debug.Log("素早さを戻したよ");
+        if (agiChangeLevel != 0)
+        {
+            agi = currentMaxAgi;
+            agiChangeLevel = 0;
         }
     }
 
@@ -178,4 +247,89 @@ public class Character
         }
     }
     #endregion
+    // 状態異常の追加
+    public void AddCondition(StatusCondition condition)
+    {
+        conditions.Add(condition);
+        switch (condition.type)
+        {
+            case STATUS_CONDITION_TYPE.POISON:
+                Debug.Log("毒にかかった");
+                break;
+            case STATUS_CONDITION_TYPE.PARALYSIS:
+                Debug.Log("まひにかかった");
+                break;
+            case STATUS_CONDITION_TYPE.BURN:
+                ChangeStatus(STATUS.ATTACK,SKILL_STATUS_KIND.DOWN);
+                Debug.Log("やけどにかかった");
+                break;
+            case STATUS_CONDITION_TYPE.FREEZE:
+                Debug.Log("凍結にかかった");
+                break;
+            case STATUS_CONDITION_TYPE.SLEEP:
+                Debug.Log("睡眠にかかった");
+                break;
+
+        }
+    }
+
+    // 状態異常の更新
+    public void UpdateConditions()
+    {
+        for (int i = conditions.Count - 1; i >= 0; i--)
+        {
+            conditions[i].UpdateCondition(this);
+            Debug.Log("残り" + conditions[i].duration);
+            if (conditions[i].duration <= 0)
+            {
+                switch (conditions[i].type)
+                {
+                    case STATUS_CONDITION_TYPE.POISON:
+                        Debug.Log("毒が解けた");
+                        break;
+                    case STATUS_CONDITION_TYPE.PARALYSIS:
+                        Debug.Log("まひが解けた");
+                        break;
+                    case STATUS_CONDITION_TYPE.BURN:
+                        Debug.Log("やけどが解けた");
+                        break;
+                    case STATUS_CONDITION_TYPE.FREEZE:
+                        Debug.Log("凍結が解けた");
+                        break;
+                    case STATUS_CONDITION_TYPE.SLEEP:
+                        Debug.Log("睡眠が解けた");
+                        break;
+
+                }
+                conditions.RemoveAt(i);
+            }
+        }
+    }
+
+    // 麻痺状態かどうかをチェックするメソッド
+    public bool IsCharacterParalyzed()
+    {
+        foreach (var condition in conditions)
+        {
+            if (condition is ParalysisCondition)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 麻痺状態かどうかをチェックするメソッド
+    public bool IsCharacterSleeped()
+    {
+        foreach (var condition in conditions)
+        {
+            if (condition is SleepCondition)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

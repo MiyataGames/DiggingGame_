@@ -17,7 +17,7 @@ MonoBehaviour:
   playerFaceIcon: {fileID: 21300000, guid: 2829e8f2106e60e429547be87bc724c3, type: 3}
   playerBattleSceneSprite: {fileID: 8159291058656257615, guid: e62f13bd48290584d974363402ccdacb, type: 3}
   playerMaxLv: 20
-  playerMaxHp: 100
+  playerMaxHp: 10000
   playerMaxSp: 100
   playerMaxAtk: 100
   playerMaxDef: 100

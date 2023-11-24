@@ -29,8 +29,15 @@ public class Enemy : Character
         //しょきか
         isPlayer = false;
         enemyBase = eBase;
+        characterName = enemyBase.name;
         level = eLevel;
         currentHP = currentMaxHp;
+        currentMaxAtk = EnemyBase.Atk;
+        currentMaxDef = enemyBase.Def;
+        currentMaxAgi = EnemyBase.Agi;
+        atk = currentMaxAtk;
+        def = currentMaxDef;
+        agi = currentMaxAgi;
         //		agi = eBase.Agi;
         Skills = new List<EnemySkill>();
         // 覚える技のレベル以上ならslillsに追加
@@ -107,7 +114,7 @@ public class Enemy : Character
         return false;
     }
 
-    public bool TakeDamage(EnemySkill playerSkill, Player player)
+    public override bool TakeSkillDamage(EnemySkill playerSkill, Character player)
     {
 
         // クリティカル

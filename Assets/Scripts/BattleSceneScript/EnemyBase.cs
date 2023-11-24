@@ -17,7 +17,7 @@ public class EnemyBase : ScriptableObject
     // ステータス
     [SerializeField] private int maxHp;
 
-    [SerializeField] private int physicPower;// 力
+    [SerializeField] private int atk;// 力
     [SerializeField] private int magicPower;// 魔
     [SerializeField] private int def;// 耐
     [SerializeField] private int agi;// 速
@@ -28,7 +28,7 @@ public class EnemyBase : ScriptableObject
 
     public int MaxHp { get => maxHp; }
     public int Agi { get => agi; }
-    public int PhysicPower { get => physicPower; }
+    public int Atk { get => atk; }
     public int Def { get => def; }
     public int MagicPower { get => magicPower; }
     public int Luck { get => luck; }

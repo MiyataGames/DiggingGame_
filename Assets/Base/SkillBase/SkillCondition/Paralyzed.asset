@@ -9,15 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8fd49fc0ceec2d4c8ddd3776e78ea89, type: 3}
-  m_Name: Attack
+  m_Script: {fileID: 11500000, guid: 6187b7f59fc0b4322bae992fd3ba6295, type: 3}
+  m_Name: Paralyzed
   m_EditorClassIdentifier: 
-  skillName: "\u305F\u3044\u3042\u305F\u308A"
+  skillName: "\u96FB\u78C1\u6CE2"
   description: 
-  power: 1
-  sp: 0
-  accuracy: 10
-  skillCategory: 0
+  power: 0
+  sp: 5
+  accuracy: 100
+  skillCategory: 3
   skillTargetKind: 1
   skillTargetNum: 0
   skillRecieveEffect: {fileID: 0}
+  condition: 1
+  conditionAttackAccuracy: 1
