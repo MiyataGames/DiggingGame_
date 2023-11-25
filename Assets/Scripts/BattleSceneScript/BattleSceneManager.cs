@@ -178,10 +178,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 }
                 else if (inputItemStatement == InputItemStatement.TARGET_SELECT)
                 {
-
+                    HandleSelectItemTarget();
                 }
                 else if (inputItemStatement == InputItemStatement.END_INPUT)
                 {
+                    PlayerEndItemInput();
                 }
             }
         }
@@ -436,6 +437,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     battleState = BattleState.ENEMY_MOVE;
                 }
                 inputSkillStatement = InputSkillStatement.INIT_SKILL;
+                inputItemStatement = InputItemStatement.INIT_ITEM;
 
             }
         }else if (turnCharacter.IsCharacterSleeped() == true)
@@ -455,6 +457,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 battleState = BattleState.ENEMY_MOVE;
             }
             inputSkillStatement = InputSkillStatement.INIT_SKILL;
+            inputItemStatement = InputItemStatement.INIT_ITEM;
+
         }
     }
 
@@ -1605,6 +1609,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテム関係============================
     private void InitItem()
     {
+        inputItemStatement = InputItemStatement.INIT_ITEM;
         Debug.Log("---PlayerInitItem---");
         // スキルパネルを表示
         battleCommand.ActivateSkillCommandPanel(true);
@@ -1749,6 +1754,159 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    // ターゲットの選択
+    private void HandleSelectItemTarget()
+    {
+        bool selectionChanged = false;
+        HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
+
+        // 対象が単体だったら
+        if (itemBase.TargetNum == TARGET_NUM.SINGLE)
+        {
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                if (selectedTargetIndex > 0)
+                {
+                    selectedTargetIndex--;
+                }
+                else
+                {
+                    selectedTargetIndex = 0;
+                }
+                selectionChanged = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                if (selectedTargetIndex < activePlayers.Count - 1)
+                {
+                    selectedTargetIndex++;
+                }
+                selectionChanged = true;
+            }
+
+            if (selectionChanged == true)
+            {
+                for (int i = 0; i < activePlayers.Count; i++)
+                {
+                    bool isActiveSelectedArrow = (i == selectedTargetIndex);
+                    activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                }
+
+                activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
+
+                selectedPlayers = new Player[1];
+                selectedPlayers[0] = activePlayers[selectedTargetIndex];
+            }
+        }
+        else
+        {
+            selectedPlayers = new Player[activeEnemies.Count];
+            selectedPlayers = activePlayers.ToArray();
+        }
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            // 選択矢印を消す
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                Debug.Log(i + "," + activePlayers.Count);
+                activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
+            }
+            inputItemStatement = ChangeInputItemStatement();
+        }
+       
+
+        // escキーを押したら戻る
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            inputItemStatement = InputItemStatement.ITEM_SELECT;// スキル選択状態に戻す
+            // ターゲット選択矢印を非表示にする
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
+            }
+
+            // 選択矢印を消す
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyUI.SelectedArrow.SetActive(false);
+            }
+            // スキルパネルを表示する
+            battleCommand.ActivateSkillCommandPanel(true);
+        }
+    }
+
+    // アイテムの処理を実行する
+    private void PlayerEndItemInput()
+    {
+        Debug.Log("PlayerItemEndInput()");
+        StartCoroutine(PerformPlayerItem());
+        // PerformPlayerSkill();
+    }
+
+    IEnumerator PerformPlayerItem()
+    {
+        battleState = BattleState.BUSY;
+        HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
+        // 回復魔法だったら
+            // ターンのプレイヤーのスキル発動モーション
+            /*
+            player.PlayerAnimator.Play(hashSkill);
+            yield return null;// ステートの反映
+            yield return new WaitForAnimation(player.PlayerAnimator, 0);
+            player.PlayerAnimator.SetBool("SkillToIdle", true);
+            player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
+*/
+        // 全体回復だったら
+        if (itemBase.TargetNum == TARGET_NUM.ALL)
+        {
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                // 味方にスキル発動モーション
+                //Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[i].PlayerModel.transform.position, activePlayers[i].PlayerModel.transform.rotation);
+            }
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                // 回復モーション 
+            }
+            // 一体（回）分だけ待つ
+            //yield return new WaitForAnimation(activePlayers[0].PlayerAnimator, 0);
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                // 回復
+                activePlayers[i].TakeHealWithItem(mainPlayer.items[selectedItemIndex]);
+            }
+
+            // HPSPの反映
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].battlePlayerUI.UpdateHpSp();
+            }
+        }
+        else//対象が単体だったら
+        {
+            //Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerModel.transform.position, activePlayers[selectedTargetIndex].PlayerModel.transform.rotation);
+            // ここ
+            activePlayers[selectedTargetIndex].TakeHealWithItem(mainPlayer.items[selectedItemIndex]);
+
+            // 回復モーション
+            /*
+            activePlayers[selectedTargetIndex].PlayerAnimator.Play(hashHeal);
+            activePlayers[selectedTargetIndex].PlayerAnimator.SetBool("HealToIdle", true);
+            yield return null;// ステートの反映
+            yield return new WaitForAnimation(activePlayers[selectedTargetIndex].PlayerAnimator, 0);
+            */
+            // HPSPの反映
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].battlePlayerUI.UpdateHpSp();
+            }
+        }
+
+        yield return new WaitForSeconds(1);
+        NextTurn();
+
+    }
+
     /// ===================================
 
     // スキルデータの設定
@@ -1774,7 +1932,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     public int GetNumberOfCells(EnhancedScroller playerSkillPanel)
     {
-        Debug.Log((Move)currentMove);
         if ((Move)currentMove == Move.ATTACK)
         {
             return skillDatas.Count;

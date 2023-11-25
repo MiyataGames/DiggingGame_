@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a83985bdc27184087865a5f318f347, type: 3}
   m_Name: miniPotion 3
   m_EditorClassIdentifier: 
-  itemName: "\u30DF\u30CB\u30DD\u30FC\u30B7\u30E7\u30F3"
+  itemName: "\u30DF\u30CB\u30DD\u30FC\u30B7\u30E7\u30F33"
   description: 
   id: 0
   itemType: 2
-  isAll: 0
+  targetNum: 0
   healPoint: 10
