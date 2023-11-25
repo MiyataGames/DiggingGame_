@@ -25,6 +25,7 @@ public class ItemCellView : EnhancedScrollerCellView
         itemCellData = data;
         itemNameText.text = data.itemText;
         itemCountText.text = data.itemCountText;
+        RefreshCellView();
     }
 
     // UIの更新

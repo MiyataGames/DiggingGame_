@@ -13,6 +13,9 @@ public class Party : MonoBehaviour
     private List<Player> players;
     public List<Player> Players { get => players; }
 
+    // テスト用
+    public List<ItemBase> debugItemBase;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +27,7 @@ public class Party : MonoBehaviour
         players = new List<Player>();
         for (int i = 0; i < playerBasies.Length; i++)
         {
-            Player player = new Player(playerBasies[i], 1);
+            Player player = new Player(playerBasies[i], 1,debugItemBase);
             Debug.Log(player.level);
             players.Add(player);
         }

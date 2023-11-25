@@ -31,8 +31,9 @@ public class Player : Character
 
     // Start is called before the first frame update
     public List<Item> Items { get => items; set => items = value; }
+    public int PlayerID { get => playerID;}
 
-    public Player(PlayerBase pBase, int level)
+    public Player(PlayerBase pBase, int level,List<ItemBase> debugItemBase)
     {
         isPlayer = true;
         PlayerBase = pBase;
@@ -51,6 +52,16 @@ public class Player : Character
         agi = PlayerBase.PlayerMaxAgi;
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
+        // 主人公なら
+        if (playerID == 0)
+        {
+            // デバッグアイテムが入っていれば
+            for (int i = 0; i < debugItemBase.Count; i++)
+            {
+                Item item = new Item(debugItemBase[i]);
+                items.Add(item);
+            }
+        }
         Skills = new List<EnemySkill>();
 
         // 覚える技のレベル以上なら所持ペルソナのスキルをskillsに追加

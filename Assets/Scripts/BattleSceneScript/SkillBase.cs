@@ -16,7 +16,7 @@ public enum SKILL_TARGET_KIND
     FOE
 }
 
-public enum SKILL_TARGET_NUM
+public enum TARGET_NUM
 {
     SINGLE,
     ALL
@@ -38,7 +38,7 @@ public class SkillBase : ScriptableObject
 
     [SerializeField] SKILL_CATEGORY skillCategory;
     [SerializeField] SKILL_TARGET_KIND skillTargetKind;
-    [SerializeField] SKILL_TARGET_NUM skillTargetNum;
+    [SerializeField] TARGET_NUM skillTargetNum;
 
 
     /*
@@ -63,6 +63,6 @@ public class SkillBase : ScriptableObject
     //public bool IsAttackSkill { get => isAttackSkill; }
     public SKILL_CATEGORY SkillCategory { get => skillCategory; }
     public SKILL_TARGET_KIND SkillTargetKind { get => skillTargetKind; }
-    public SKILL_TARGET_NUM SkillTargetNum { get => skillTargetNum; }
+    public TARGET_NUM SkillTargetNum { get => skillTargetNum; }
 
 }

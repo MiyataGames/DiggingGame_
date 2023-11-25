@@ -572,16 +572,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // ステータス選択画面だったら
         if (currentGameStatus == GameStatus.STATUS)
         {
-            playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, false);
+            playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, TARGET_NUM.SINGLE);
             playerStatusUIsManager.selectStatus(selectedStatusIndex);
         }
         else if (currentGameStatus == GameStatus.ITEM)
         {
             // ここ
             HealItemBase healItemBase = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
-            Debug.Log("healItemIsAll" + healItemBase.IsAll);
-            playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, healItemBase.IsAll);
-            if (healItemBase.IsAll == false)
+            Debug.Log("healItemIsAll" + healItemBase.TargetNum);
+            playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, healItemBase.TargetNum);
+            if (healItemBase.TargetNum == TARGET_NUM.SINGLE)
             {
                 playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
             }
@@ -605,7 +605,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             HealItemBase healItemBase = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             Debug.Log("えらばれているのは" + selectedItemIndex);
             // 全体アイテムだったら
-            if (healItemBase.IsAll)
+            if (healItemBase.TargetNum == TARGET_NUM.ALL)
             {
                 // アイテムを使う
                 // アイテムの残りが0だったら

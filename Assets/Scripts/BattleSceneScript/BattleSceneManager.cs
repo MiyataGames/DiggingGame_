@@ -33,6 +33,15 @@ internal enum InputSkillStatement
     END_INPUT
 }
 
+// アイテムについての入力の状態遷移を表す列挙型「InputSkillStatement」を定義する
+internal enum InputItemStatement
+{
+    INIT_ITEM,
+    ITEM_SELECT,
+    TARGET_SELECT,
+    END_INPUT
+}
+
 // どこで気絶状態を戻すか問題
 // 前のターンに気絶していたかどうか
 public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
@@ -51,6 +60,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     private BattleState battleState = BattleState.BUSY;
     private InputSkillStatement inputSkillStatement;
+    InputItemStatement inputItemStatement;
 
     [SerializeField]
     private List<Character> characters;// 戦闘に参加してるキャラクター
@@ -81,6 +91,12 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     private int selectedTargetIndex;
 
+    // アイテム関係==================================
+    Player mainPlayer;
+    List<ItemCellData> itemCellDatas;
+    int selectedItemIndex;// 選択されたアイテムのインデックス
+    public EnhancedScrollerCellView itemCellViewPrefab;
+
     /*
         //アニメーション関係=============================================
         private static readonly int hashDamage = Animator.StringToHash("Base Layer.Damage");
@@ -101,6 +117,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         Application.targetFrameRate = 60;
         battleState = BattleState.INIT_BATTLE;
+
     }
 
     void Start()
@@ -130,22 +147,42 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (battleState == BattleState.PLAYER_MOVE)
         {
-            if (inputSkillStatement == InputSkillStatement.INIT_SKILL)
+            if ((Move)currentMove == Move.ATTACK)
             {
-                PlayerAction();
-            }
-            else if (inputSkillStatement == InputSkillStatement.SKILL_SELECT)
+                if (inputSkillStatement == InputSkillStatement.INIT_SKILL)
+                {
+                    PlayerAction();
+                }
+                else if (inputSkillStatement == InputSkillStatement.SKILL_SELECT)
+                {
+                    HandleSkillSelection();
+                }
+                else if (inputSkillStatement == InputSkillStatement.TARGET_SELECT)
+                {
+                    Player turnPlayer = (Player)turnCharacter;
+                    HandleSelectTarget(turnPlayer.Skills[selectedSkillIndex]);
+                }
+                else if (inputSkillStatement == InputSkillStatement.END_INPUT)
+                {
+                    PlayerEndSkillInput();
+                }
+            }else if((Move)currentMove == Move.ITEM)
             {
-                HandleSkillSelection();
-            }
-            else if (inputSkillStatement == InputSkillStatement.TARGET_SELECT)
-            {
-                Player turnPlayer = (Player)turnCharacter;
-                HandleSelectTarget(turnPlayer.Skills[selectedSkillIndex]);
-            }
-            else if (inputSkillStatement == InputSkillStatement.END_INPUT)
-            {
-                PlayerEndSkillInput();
+                if (inputItemStatement == InputItemStatement.INIT_ITEM)
+                {
+                    PlayerAction();
+                }
+                else if (inputItemStatement == InputItemStatement.ITEM_SELECT)
+                {
+                    HandleItemSelection();
+                }
+                else if (inputItemStatement == InputItemStatement.TARGET_SELECT)
+                {
+
+                }
+                else if (inputItemStatement == InputItemStatement.END_INPUT)
+                {
+                }
             }
         }
         else if (battleState == BattleState.ENEMY_MOVE)
@@ -203,6 +240,17 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             enemies.Add(enemyUnit.Enemies[i]);
         }
+
+        // 主人公を探す
+        mainPlayer = players[0];
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].PlayerID == 0)
+            {
+                mainPlayer = players[i];
+            }
+        }
+
         InitBattle(players, enemies);
     }
 
@@ -460,7 +508,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // UIの非表示
             battleCommand.ActivateBattleCommandPanel(false);
-            PlayerMove();
+            PlayerMoveInit();
         }
     }
 
@@ -478,7 +526,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // スキルとかアイテム
-    private void PlayerMove()
+    private void PlayerMoveInit()
     {
         // 気絶しているなら
         if (TurnCharacter.isFainted == true)
@@ -492,6 +540,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             InitSkill();
             inputSkillStatement = ChangeInputSkillStatement();
+        }
+        if((Move)currentMove == Move.ITEM)
+        {
+            // アイテムをロードする
+            InitItem();
+            inputItemStatement = ChangeInputItemStatement();
+
         }
     }
 
@@ -520,7 +575,31 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log(nextStatement);
         return nextStatement;
     }
+    //  アイテムの入力の状態を遷移する関数
+    private InputItemStatement ChangeInputItemStatement()
+    {
+        InputItemStatement nextStatement = inputItemStatement;
+        switch (inputItemStatement)
+        {
+            case (InputItemStatement.INIT_ITEM):
+                nextStatement = InputItemStatement.ITEM_SELECT;
+                break;
 
+            case (InputItemStatement.ITEM_SELECT):
+                nextStatement = InputItemStatement.TARGET_SELECT;
+                break;
+
+            case (InputItemStatement.TARGET_SELECT):
+                nextStatement = InputItemStatement.END_INPUT;
+                break;
+
+            case (InputItemStatement.END_INPUT):
+                Debug.Log("Statement Error");
+                break;
+        }
+        Debug.Log(nextStatement);
+        return nextStatement;
+    }
     private void InitSkill()
     {
         Debug.Log("---PlayerInitSkill---");
@@ -549,7 +628,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
                 // 全体攻撃だったら
-                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
                 {
                     selectedEnemies = new Enemy[activeEnemies.Count];
                     for (int i = 0; i < activeEnemies.Count; i++)
@@ -568,7 +647,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         else if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
                 // 対象が全体だったら
-                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
                 {
                     selectedPlayers = new Player[activePlayers.Count];
                     for (int i = 0; i < activePlayers.Count; i++)
@@ -595,7 +674,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (skill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
             // 敵が単体だったら
-            if (skill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.SINGLE)
+            if (skill.skillBase.SkillTargetNum == TARGET_NUM.SINGLE)
             {
                 if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
@@ -656,7 +735,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         else if (skill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
         {
             // 対象が単体だったら
-            if (skill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.SINGLE)
+            if (skill.skillBase.SkillTargetNum == TARGET_NUM.SINGLE)
             {
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
@@ -774,7 +853,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
             */
             // 全体攻撃だったら
-            if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+            if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
             {
                 // アニメーションやUI表示
                 for (int i = 0; i < activeEnemies.Count; i++)
@@ -873,7 +952,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
             {
                 // 効果が全体だったら
-                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
                 {
                     // 敵全体のステータスが変化する
                     for(int i = 0;i < activeEnemies.Count; i++)
@@ -892,7 +971,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             else if (playerSkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
             {
                 // 効果が全体だったら
-                if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
                 {
 
                 }// 効果が単体だったら
@@ -912,7 +991,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
             SkillConditionBase skillBase = playerSkill.skillBase as SkillConditionBase;
             // 効果が全体だったら
-            if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+            if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
             {
                 // 敵にダメージがはいる
                 for(int i = 0; i < activeEnemies.Count; i++)
@@ -1058,7 +1137,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
 */
             // 全体回復だったら
-            if (playerSkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+            if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
             {
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
@@ -1228,7 +1307,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             */
 
             // 全体選択なら
-            if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+            if (enemySkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
             {
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
@@ -1314,7 +1393,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
             {
                 // 効果が全体だったら
-                if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                if (enemySkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
                 {
                     for(int i = 0;i < activePlayers.Count; i++)
 					{
@@ -1331,7 +1410,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             else if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.SELF)
             {
                 // 効果が全体だったら
-                if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+                if (enemySkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
                 {
 
                 }// 効果が単体だったら
@@ -1354,7 +1433,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             */
 
             // 全体選択なら
-            if (enemySkill.skillBase.SkillTargetNum == SKILL_TARGET_NUM.ALL)
+            if (enemySkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
             {
                 /*
                 // 受ける側のスキルのアニメーションを再生
@@ -1523,6 +1602,153 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    // アイテム関係============================
+    private void InitItem()
+    {
+        Debug.Log("---PlayerInitItem---");
+        // スキルパネルを表示
+        battleCommand.ActivateSkillCommandPanel(true);
+        // アニメーターの取得
+        //turnPlayer.EquipEnemy.EnemyAnimator = playerPersona.GetComponent<Animator>();
+
+        //Vector3 targetPos = turnPlayer.battlePlayerUI.PlayerPos.position;
+        //targetPos = new Vector3(turnPlayer.battlePlayerUI.PlayerPos.position.x, turnPlayer.battlePlayerUI.PlayerPersonaPos.position.y - turnPlayer.battlePlayerUI.PlayerPos.position.y, turnPlayer.battlePlayerUI.PlayerPos.position.z);
+
+        // EnhancedScrollerのデリゲートを指定する
+        // デリゲートを設定することで、スクロールビューが必要な情報を取得
+        playerSkillPanel.Delegate = this;
+        // 主人公のアイテムをセットする
+        LoadItemData(mainPlayer.items);
+    }
+
+
+    // スキルパネルからアクションを選択する
+    private void HandleItemSelection()
+    {
+        ///////////// アニメーションの指定 /////////////
+        // 10秒立ったら
+        // 10秒ごとにフラフラするアニメーション
+        Player turnPlayer = (Player)TurnCharacter;
+        //turnPlayer.PlayerAnimator.SetBool("IdleToSkillIdle", true);
+        ////////////////////////////////////////////////////
+        bool selectionChanged = false;
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            // 指定された値を範囲内にクランプ（制約）するために使用されるUnityの関数です。
+            // 値が指定された範囲内にある場合はそのまま返し、範囲外の場合は範囲の最小値または最大値に
+            // 制約されます
+            selectedItemIndex = Mathf.Clamp(selectedItemIndex - 1, 0, itemCellDatas.Count - 1);
+            selectionChanged = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellDatas.Count - 1);
+            selectionChanged = true;
+        }
+        /*
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            // 右を押したらペルソナの付け替え　下++
+            if (turnPlayer.EnemyList.Count > 1)
+            {
+                if (turnPlayer.EquipPersonaIndex < turnPlayer.EnemyList.Count - 1)
+                {
+                    Debug.Log(turnPlayer.EnemyList.Count + "count:index" + turnPlayer.EquipPersonaIndex);
+                    // 装備ペルソナの変更
+                    turnPlayer.EquipPersonaIndex++;
+                    // スキルのリロード
+                    InitSkill();
+                    // UIの表示
+                    selectionChanged = true;
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (turnPlayer.EquipPersonaIndex > 0)
+            {
+                // 装備ペルソナの変更
+                turnPlayer.EquipPersonaIndex--;
+                // スキルのリロード
+                InitSkill();
+                // UIの表示
+                selectionChanged = true;
+            }
+        }*/
+
+        // アイテム決定
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            // UIを非表示
+            battleCommand.ActivateSkillCommandPanel(false);
+            // 使えるアイテムだったら
+            // 回復アイテム
+            if (mainPlayer.items[selectedItemIndex].ItemBase.itemType == ItemType.HEAL_ITEM)
+            {
+                InitItemTarget();
+                inputItemStatement = ChangeInputItemStatement();
+            }
+           
+        }
+        // escキーを押したら戻る
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            inputItemStatement = InputItemStatement.INIT_ITEM;// スキルを選択初期状態に戻す
+            // スキルパネルを非表示にする
+            battleCommand.ActivateSkillCommandPanel(false);
+            // メインパネルを表示する
+            battleCommand.ActivateBattleCommandPanel(true);
+            battleState = BattleState.PLAYER_ACTION_SELECT;
+        }
+
+        // 選択中
+        if (selectionChanged)
+        {
+            // 選択されたインデックスが更新されたから基礎データを更新する
+            for (int i = 0; i < itemCellDatas.Count; i++)
+            {
+                // 選択中のisSelectedをtrueにする
+                itemCellDatas[i].isSelected = (i == selectedItemIndex);
+            }
+
+            // アクティブセルに対してUIの更新をする
+            playerSkillPanel.RefreshActiveCellViews();
+            // 選択されたインデックスが最下部またはその先にある時
+            if (selectedItemIndex >= playerSkillPanel.EndCellViewIndex)
+            {
+                playerSkillPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
+            }
+            else if (selectedItemIndex <= playerSkillPanel.StartCellViewIndex)
+            {
+                // 選択されたインデックスが最上部またはそれ以上にある時
+                playerSkillPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
+            }
+        }
+    }
+
+    void InitItemTarget()
+    {
+        // 対象は味方のみ
+        HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
+        // 対象が全体だったら
+        if (itemBase.TargetNum == TARGET_NUM.ALL)
+        {
+            selectedPlayers = new Player[activePlayers.Count];
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].battlePlayerUI.SetActiveSelectedArrow(true);
+                selectedPlayers[i] = activePlayers[i];
+            }
+        }
+        //　対象が単体だったら
+        else
+        {
+            activePlayers[selectedTargetIndex].battlePlayerUI.SetActiveSelectedArrow(true);
+            Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
+        }
+    }
+
     /// ===================================
 
     // スキルデータの設定
@@ -1548,6 +1774,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     public int GetNumberOfCells(EnhancedScroller playerSkillPanel)
     {
+        Debug.Log((Move)currentMove);
+        if ((Move)currentMove == Move.ATTACK)
+        {
+            return skillDatas.Count;
+        }else if((Move)currentMove == Move.ITEM)
+        {
+            return itemCellDatas.Count;
+        }
         return skillDatas.Count;
     }
 
@@ -1559,11 +1793,48 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // 表示するセルを取得します
     public EnhancedScrollerCellView GetCellView(EnhancedScroller playerSkillPanel, int dataIndex, int cellIndex)
     {
-        SkillCellView cellView = playerSkillPanel.GetCellView(cellViewPrefab) as SkillCellView;
-        cellView.name = "Cell" + dataIndex.ToString();
-        cellView.SetSkillData(skillDatas[dataIndex]);
+        if ((Move)currentMove == Move.ATTACK)
+        {
+            SkillCellView cellView = playerSkillPanel.GetCellView(cellViewPrefab) as SkillCellView;
+            cellView.name = "Cell" + dataIndex.ToString();
+            cellView.SetSkillData(skillDatas[dataIndex]);
+            return cellView;
+        }
+        else if ((Move)currentMove == Move.ITEM)
+        {
+            ItemCellView cellView = playerSkillPanel.GetCellView(itemCellViewPrefab) as ItemCellView;
+            cellView.name = "Cell" + dataIndex.ToString();
+            // cellView.SetSkillData(skillDatas[dataIndex]);
+            cellView.SetData(itemCellDatas[dataIndex]);
+            return cellView;
+        }
+        // デフォルト
+        else
+        {
 
-        return cellView;
+            SkillCellView cellView = playerSkillPanel.GetCellView(cellViewPrefab) as SkillCellView;
+            cellView.name = "Cell" + dataIndex.ToString();
+            cellView.SetSkillData(skillDatas[dataIndex]);
+            return cellView;
+        }
+    }
+
+    // アイテムデータの設定
+    private void LoadItemData(List<Item> playerItemDatas)
+    {
+        // 適当なデータを設定する
+        itemCellDatas = new List<ItemCellData>();
+        for (int i = 0; i < playerItemDatas.Count; i++)
+        {
+            itemCellDatas.Add(new ItemCellData()
+            {
+                itemText = playerItemDatas[i].ItemBase.ItemName,
+                isSelected = i == selectedItemIndex,
+                itemCountText = playerItemDatas[i].ItemCount.ToString(),
+            }) ;
+        }
+        // データが揃ったのでスクローラーをリロードする
+        playerSkillPanel.ReloadData();
     }
 }
 

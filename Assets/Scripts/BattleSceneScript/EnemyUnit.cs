@@ -43,7 +43,7 @@ public class EnemyUnit : MonoBehaviour
             int positionIndex;
             foreach (var enemy in agiEnemyDic.OrderByDescending(c => c.Value))
             {
-                positionIndex = Random.Range(0, enemyPos9.Length - 1);
+                positionIndex = Random.Range(0, enemyPos9.Length);
                 // 敵を生成する位置をきめる
                 // 前に生成した敵と同じ位置だったら
                 Debug.Log("positionIndexは" + positionIndex);

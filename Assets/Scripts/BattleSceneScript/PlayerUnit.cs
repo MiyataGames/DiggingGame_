@@ -24,6 +24,10 @@ public class PlayerUnit : MonoBehaviour
     //public Transform[] PlayerBeforePos { get => playerBeforePos; }
     // [SerializeField] private GameObject resultCanvas;
 
+
+    // テスト用
+    public List<ItemBase> debugItemBase;
+
     public void SetUpFirst(int level)
     {
         int playerNum = 2;
@@ -35,7 +39,7 @@ public class PlayerUnit : MonoBehaviour
         {
             //List<Enemy> enemyList = this.gameObject.transform.Find("Player" + playerBasies[i].PlayerId + "Persona").GetComponent<PersonaParty>().EnemyList;
             // レベル１で生成
-            Player player = new Player(playerBasies[i], level);
+            Player player = new Player(playerBasies[i], level,debugItemBase);
             agiPlayerDic.Add(player, player.PlayerBase.PlayerMaxAgi);
         }
 
@@ -78,11 +82,17 @@ public class PlayerUnit : MonoBehaviour
         // 速さ順にInstantiate
         foreach (var player in agiPlayerDic.OrderByDescending(c => c.Value))
         {
+            // 死んでいるならばHP１にして復活
+            if(players[j].currentHP == 0)
+            {
+                players[j].currentHP = 1;
+            }
             players[j] = player.Key;
 
             //players[j].PlayerModel = Instantiate(players[j].PlayerBase.PlayerModel, PlayerBeforePos[j].transform);
             //players[j].PlayerAnimator = players[j].PlayerModel.GetComponent<Animator>();
 
+            players[j].PlayerBattleSprite = Instantiate(players[j].PlayerBase.PlayerBattleSceneSprite, playerPos[j].transform);
             players[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
             players[j].battlePlayerUI.SetPlayerData(players[j]);
             j++;
