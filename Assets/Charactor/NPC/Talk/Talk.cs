@@ -22,35 +22,83 @@ public class NpcTalkData{
     public int skip_id;
 }
 
+[RequireComponent(typeof(CapsuleCollider2D))]
 public class Talk : MonoBehaviour
 {
     [Header("NPC1のように入力")]
     public string npcNum;
     public NpcTalkData[] npcTalkDatas;
 
+    private Sprite[] charaImage;
+
     public int currentTextID = 0;
     private string currentCommand;
     private bool isEndOfTalk = false;
 
-    [SerializeField] private GameObject talkDialog;
-    [SerializeField] private GameObject choosedialog;
-    [SerializeField] private Button readNext;
-    [SerializeField] TextMeshProUGUI massage;
-    [SerializeField] TextMeshProUGUI nameText;
-    [SerializeField] TextMeshProUGUI yMassage;
-    [SerializeField] Button yButton;
-    [SerializeField] TextMeshProUGUI nMassage;
-    [SerializeField] Button nButton;
+    [SerializeField] private GameObject talkDialog; //会話用ダイアログ
+    [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
+    [SerializeField] private Button readNext; //次の会話を表示するボタン
+    [SerializeField] TextMeshProUGUI massage; //メインテキスト
+    [SerializeField] TextMeshProUGUI nameText; //名前用テキスト
+    [SerializeField] TextMeshProUGUI yMassage; //肯定選択肢テキスト
+    [SerializeField] Button yButton; //肯定ボタン
+    [SerializeField] TextMeshProUGUI nMassage; //否定選択肢テキスト
+    [SerializeField] Button nButton; //否定ボタン
+    [SerializeField] Image image;//キャラ画像
+    private bool isPlayerInErea = false; //エリア内にプレイヤーがいるかのフラグ
+    private bool isTalkingNow = false; //会話中かフラグ
+    private bool isCanNextText = true;
 
     void Awake(){
         //テキストファイルの読み込ませるクラス
         TextAsset textAsset = new TextAsset();
+        //キャライメージの読み込み
+        charaImage = Resources.LoadAll<Sprite>("NPCCharaImage/NPC" + npcNum);
 
         //用意したcsvファイルを読み込む
         textAsset = Resources.Load("NpcTalkData/NPC" + npcNum,typeof(TextAsset)) as TextAsset;
         //実際にデータを変数に格納
         npcTalkDatas = CSVSerializer.Deserialize<NpcTalkData>(textAsset.text);
     }
+
+    void Update(){
+
+        //話し中ではなく，プレイヤーが会話エリアにいたら
+        if(isTalkingNow == false && isPlayerInErea == true){
+            /* トーク開始をクリックで判定する場合
+            if(Input.GetMouseButton(0)){ // そしてマウスの左クリックされたら
+                //レイを作成
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+                //ヒットしたものが自分なら
+                if(hit.collider != null && hit.collider.gameObject == this.gameObject){
+                    isTalkingNow = true; //会話中フラグをtrue
+                    textStart(); //テキストスタート
+                }  
+            }*/
+
+            if(Input.GetKeyDown(KeyCode.F)){
+                isTalkingNow = true; //会話中フラグをtrue
+                textStart(); //テキストスタート
+            }
+        }else if(isTalkingNow == true && Input.GetKeyDown(KeyCode.F)){
+            if(isCanNextText == true){
+                ReadNextMessage();
+            }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other){
+        if(other.gameObject.tag == "Player"){
+            isPlayerInErea = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other){
+        isPlayerInErea = false;
+    }
+
+
 
     public void textStart(){
         
@@ -88,6 +136,8 @@ public class Talk : MonoBehaviour
                 if(npcTalkDatas[currentTextID].set_branch){
                     ShowBranchText(npcTalkDatas[currentTextID].yes_text, npcTalkDatas[currentTextID].no_text);
                 }
+
+                image.sprite = charaImage[npcTalkDatas[currentTextID].imageNum -1];
                 break;
             case "fade_blackIn":
                 break;
@@ -100,8 +150,10 @@ public class Talk : MonoBehaviour
 
     private void ShowBranchText(string yText, string nText)
     {
-        //readNextボタンを無効化
-        SwichReadNextInteractable();
+        //readNextボタンを無効化（クリック使用時）
+        //SwichReadNextInteractable();
+
+        isCanNextText = false;
 
         //選択肢ダイアログを有効化
         SwichChooseDialogActivate();
@@ -125,8 +177,10 @@ public class Talk : MonoBehaviour
     //テキストのスキップ
     private void skip(int skip_id)
     {
-        //readNextボタンを有効化
-        SwichReadNextInteractable();
+        //readNextボタンを有効化(クリック使用時)
+        //SwichReadNextInteractable();
+
+        isCanNextText = true;
 
         //選択肢ダイアログを無効化
         SwichChooseDialogActivate();
@@ -151,6 +205,7 @@ public class Talk : MonoBehaviour
         }else{
             currentTextID = 0;
             isEndOfTalk = true;
+            isTalkingNow = false;
             //ボタンのイベントを削除
             ClearAllListeners();
             SwichTalkDialogActivate();
