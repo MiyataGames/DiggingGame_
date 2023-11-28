@@ -6867,7 +6867,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7204734243648143988, guid: f5e9eed012ad62342bcb0ce531dafeb9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.59
+      value: 0.552585
       objectReference: {fileID: 0}
     - target: {fileID: 7204734243648143988, guid: f5e9eed012ad62342bcb0ce531dafeb9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6942,7 +6942,7 @@ GameObject:
   - component: {fileID: 598888407}
   m_Layer: 11
   m_Name: Sonar
-  m_TagString: Finish
+  m_TagString: sonar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6956,7 +6956,7 @@ Transform:
   m_GameObject: {fileID: 598888403}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.319434, y: 2.319434, z: 2.319434}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4493679613874932078}
@@ -7004,7 +7004,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.25402117, g: 1, b: 0, a: 0.12156863}
+  m_Color: {r: 0.104396604, g: 0.73877215, b: 0.9622642, a: 0.12156863}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -8147,7 +8147,7 @@ GameObject:
   - component: {fileID: 1368512488}
   m_Layer: 11
   m_Name: FlashHlight
-  m_TagString: Respawn
+  m_TagString: flashlight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -52,5 +52,6 @@
         "temp/":true,
         "Temp/":true
     },
-    "nuxt.isNuxtApp": false
+    "nuxt.isNuxtApp": false,
+    "dotnet.preferCSharpExtension": true
 }
