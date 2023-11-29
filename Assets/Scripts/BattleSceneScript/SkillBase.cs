@@ -9,6 +9,7 @@ public enum SKILL_CATEGORY
     HEAL,
     STATUS,
     CONDITION,
+    MOVE_ATTACK,
 }
 public enum SKILL_TARGET_KIND
 {

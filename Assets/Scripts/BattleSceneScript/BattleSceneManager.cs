@@ -8,6 +8,7 @@ public enum BattleState
 {
     INIT_BATTLE,
     PREPARE_BATTLE,
+    DIGGING,
     CHECK_CONDITION,
     PLAYER_ACTION_SELECT,
     PLAYER_MOVE,
@@ -33,12 +34,19 @@ internal enum InputSkillStatement
     END_INPUT
 }
 
-// アイテムについての入力の状態遷移を表す列挙型「InputSkillStatement」を定義する
+// アイテムについての入力の状態遷移を表す列挙型「InputItemStatement」を定義する
 internal enum InputItemStatement
 {
     INIT_ITEM,
     ITEM_SELECT,
     TARGET_SELECT,
+    END_INPUT
+}
+// 穴掘りについての入力の状態遷移を表す列挙型「InputDiggingStatement」を定義する
+public enum InputDiggingStatement
+{
+    INIT_DIGGING,
+    BEDDING_ITEM,
     END_INPUT
 }
 
@@ -58,7 +66,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     [SerializeField] private BattleCommand battleCommand;
 
-    private BattleState battleState = BattleState.BUSY;
+    public BattleState battleState = BattleState.BUSY;
     private InputSkillStatement inputSkillStatement;
     InputItemStatement inputItemStatement;
 
@@ -92,7 +100,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private int selectedTargetIndex;
 
     // アイテム関係==================================
-    Player mainPlayer;
+    public Player mainPlayer;
     List<ItemCellData> itemCellDatas;
     int selectedItemIndex;// 選択されたアイテムのインデックス
     public EnhancedScrollerCellView itemCellViewPrefab;
@@ -109,14 +117,20 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     */
     // 現在のMove
 
-    private int currentMove;
+    private int currentMove = 1;
 
     public Character TurnCharacter { get => turnCharacter; set => turnCharacter = value; }
+    // 穴掘り関係 ================================
+    [SerializeField] DiggingGridManager diggingGridManager;
+    public InputDiggingStatement inputDiggingStatement;
+
 
     public void StartBattle()
     {
         Application.targetFrameRate = 60;
         battleState = BattleState.INIT_BATTLE;
+        diggingGridManager.diggingFinishDelegate = FinishDigging;
+        diggingGridManager.selectItemDelegate = SelectedItem;
 
     }
 
@@ -136,7 +150,27 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // プレイヤーが走ってくる
             PrepareBattle();
-        }else if(battleState == BattleState.CHECK_CONDITION)
+        } else if (battleState == BattleState.DIGGING) {
+            if(inputDiggingStatement == InputDiggingStatement.INIT_DIGGING)
+            {
+                // アイテム一覧を表示する
+                // 穴掘りパネルの入力を受け付ける
+                InitDigging();
+
+            }else if(inputDiggingStatement == InputDiggingStatement.BEDDING_ITEM)
+            {
+                // アイテムを選んで
+                HandleDiggingItemSelection();
+                // 穴に埋める
+
+            }else if(inputDiggingStatement == InputDiggingStatement.END_INPUT)
+            {
+                // 穴掘り処理終了
+                // ボタンの入力を受け付けなくする
+
+            }
+        }
+        else if (battleState == BattleState.CHECK_CONDITION)
         {
             // 状態異常のチェック
             CheckCondition();
@@ -166,7 +200,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     PlayerEndSkillInput();
                 }
-            }else if((Move)currentMove == Move.ITEM)
+            } else if ((Move)currentMove == Move.ITEM)
             {
                 if (inputItemStatement == InputItemStatement.INIT_ITEM)
                 {
@@ -348,42 +382,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void PrepareBattle()
     {
-        /*
-        bool[] prepareEnd = new bool[activePlayers.Count];
-
-        // 指定の位置に移動する
-        for (int i = 0; i < activePlayers.Count; i++)
-        {
-            prepareEnd[i] = PreparePlayerPosition(speed, activePlayers[i].battlePlayerUI.PlayerPos, activePlayers[i].PlayerModel, activePlayers[i].PlayerAnimator);
-        }
-
-        // 全員が移動し終わったら
-        if (prepareEnd.All(val => val == true))
-        {
-            if (turnCharacter.isPlayer)
-            {
-                battleState = BattleState.PLAYER_MOVE;
-            }
-            else
-            {
-                battleState = BattleState.ENEMY_MOVE;
-            }
-            inputSkillStatement = InputSkillStatement.INIT_SKILL;
-        }
-        */
-        // 変更 11/24
-        battleState = BattleState.CHECK_CONDITION;
-        //if (turnCharacter.isPlayer)
-        //{
-        //    
-        //    //battleState = BattleState.PLAYER_MOVE;
-        //}
-        //else
-        //{
-        //    battleState = BattleState.ENEMY_MOVE;
-        //}
-        //inputSkillStatement = InputSkillStatement.INIT_SKILL;
-
+        battleState = BattleState.DIGGING;
     }
 
     private bool PreparePlayerPosition(float playerSpeed, Transform playerTargetPos, GameObject playerModel, Animator playerAnimator)
@@ -461,6 +460,109 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
         }
     }
+
+    // 穴掘りフェーズ=======================================
+
+    // 穴掘りパネルを操作する
+    void InitDigging()
+    {
+        // アイテムの表示
+        Debug.Log("---PlayerDIGGINGInit---");
+        // スキルパネルを表示
+        battleCommand.ActivateSkillCommandPanel(true);
+        // アニメーターの取得
+        //turnPlayer.EquipEnemy.EnemyAnimator = playerPersona.GetComponent<Animator>();
+
+        //Vector3 targetPos = turnPlayer.battlePlayerUI.PlayerPos.position;
+        //targetPos = new Vector3(turnPlayer.battlePlayerUI.PlayerPos.position.x, turnPlayer.battlePlayerUI.PlayerPersonaPos.position.y - turnPlayer.battlePlayerUI.PlayerPos.position.y, turnPlayer.battlePlayerUI.PlayerPos.position.z);
+
+        // EnhancedScrollerのデリゲートを指定する
+        // デリゲートを設定することで、スクロールビューが必要な情報を取得
+        playerSkillPanel.Delegate = this;
+        // 主人公のアイテムをセットする
+        LoadItemData(mainPlayer.items);
+        inputDiggingStatement = InputDiggingStatement.BEDDING_ITEM;
+
+    }
+    // 穴掘りで埋めるアイテムを選択する
+    private void HandleDiggingItemSelection()
+    {
+        bool selectionChanged = false;
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            selectedItemIndex = Mathf.Clamp(selectedItemIndex - 1, 0, itemCellDatas.Count - 1);
+            selectionChanged = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellDatas.Count - 1);
+            selectionChanged = true;
+        }
+
+        // アイテム決定
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            // アイテムをセットする
+            diggingGridManager.SetSelectedItem(mainPlayer.items[selectedItemIndex]);
+
+        }
+
+        // 選択中
+        if (selectionChanged)
+        {
+            // 選択されたインデックスが更新されたから基礎データを更新する
+            for (int i = 0; i < itemCellDatas.Count; i++)
+            {
+                // 選択中のisSelectedをtrueにする
+                itemCellDatas[i].isSelected = (i == selectedItemIndex);
+            }
+
+            // アクティブセルに対してUIの更新をする
+            playerSkillPanel.RefreshActiveCellViews();
+            // 選択されたインデックスが最下部またはその先にある時
+            if (selectedItemIndex >= playerSkillPanel.EndCellViewIndex)
+            {
+                playerSkillPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
+            }
+            else if (selectedItemIndex <= playerSkillPanel.StartCellViewIndex)
+            {
+                // 選択されたインデックスが最上部またはそれ以上にある時
+                playerSkillPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
+            }
+        }
+    }
+
+    // アイテムが選択された時に呼ばれる関数
+    bool SelectedItem(Item selectedItem)
+    {
+        if (mainPlayer.items.Find(item => item == selectedItem).ItemCount > 0)
+        {
+            // プレイヤーの持っているアイテムを探す
+            mainPlayer.items.Find(item => item == selectedItem).ItemCount--;
+            // パネルの更新
+            LoadItemData(mainPlayer.items);
+            playerSkillPanel.RefreshActiveCellViews();
+            // 選択している位置まで飛ぶ
+            playerSkillPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void FinishDigging()
+    {
+        // 穴掘りフェーズの終了処理
+        inputDiggingStatement = InputDiggingStatement.END_INPUT;
+        battleState = BattleState.CHECK_CONDITION;
+        // 必要ならここでgridItemsのデータを他のコンポーネントに渡す
+        // パネルの非表示
+        battleCommand.ActivateSkillCommandPanel(false);
+    }
+
 
     // ==========================メインパネルからアクションを選択する
     private float animationTransitionTime = 0;
@@ -1504,37 +1606,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             selectedSkillIndex = Mathf.Clamp(selectedSkillIndex + 1, 0, skillDatas.Count - 1);
             selectionChanged = true;
         }
-        /*
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            // 右を押したらペルソナの付け替え　下++
-            if (turnPlayer.EnemyList.Count > 1)
-            {
-                if (turnPlayer.EquipPersonaIndex < turnPlayer.EnemyList.Count - 1)
-                {
-                    Debug.Log(turnPlayer.EnemyList.Count + "count:index" + turnPlayer.EquipPersonaIndex);
-                    // 装備ペルソナの変更
-                    turnPlayer.EquipPersonaIndex++;
-                    // スキルのリロード
-                    InitSkill();
-                    // UIの表示
-                    selectionChanged = true;
-                }
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (turnPlayer.EquipPersonaIndex > 0)
-            {
-                // 装備ペルソナの変更
-                turnPlayer.EquipPersonaIndex--;
-                // スキルのリロード
-                InitSkill();
-                // UIの表示
-                selectionChanged = true;
-            }
-        }*/
-
         // 技決定
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -1651,37 +1722,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellDatas.Count - 1);
             selectionChanged = true;
         }
-        /*
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            // 右を押したらペルソナの付け替え　下++
-            if (turnPlayer.EnemyList.Count > 1)
-            {
-                if (turnPlayer.EquipPersonaIndex < turnPlayer.EnemyList.Count - 1)
-                {
-                    Debug.Log(turnPlayer.EnemyList.Count + "count:index" + turnPlayer.EquipPersonaIndex);
-                    // 装備ペルソナの変更
-                    turnPlayer.EquipPersonaIndex++;
-                    // スキルのリロード
-                    InitSkill();
-                    // UIの表示
-                    selectionChanged = true;
-                }
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (turnPlayer.EquipPersonaIndex > 0)
-            {
-                // 装備ペルソナの変更
-                turnPlayer.EquipPersonaIndex--;
-                // スキルのリロード
-                InitSkill();
-                // UIの表示
-                selectionChanged = true;
-            }
-        }*/
-
         // アイテム決定
         if (Input.GetKeyDown(KeyCode.Return))
         {

@@ -50,17 +50,26 @@ public class Player : Character
         atk = PlayerBase.PlayerMaxAtk;
         def = PlayerBase.PlayerMaxDef;
         agi = PlayerBase.PlayerMaxAgi;
+        Item item;
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
         // 主人公なら
         if (playerID == 0)
         {
+            Debug.Log(debugItemBase.Count);
+
             // デバッグアイテムが入っていれば
             for (int i = 0; i < debugItemBase.Count; i++)
             {
-                Item item = new Item(debugItemBase[i]);
+                item = new Item(debugItemBase[i]);
+                item.ItemCount = 2;
                 items.Add(item);
             }
+            /*for (int i = 0; i < debugItemBase.Count; i++)
+            {
+                Debug.Log(items[i]);
+            }*/
+
         }
         Skills = new List<EnemySkill>();
 

@@ -9,8 +9,8 @@ public enum ItemType
     HEAL_ITEM,
     WEAPON
 }
-
-public class Item : MonoBehaviour
+[System.Serializable]
+public class Item
 {
     [SerializeField] private ItemBase itemBase;
     private int itemCount = 0;
@@ -19,6 +19,7 @@ public class Item : MonoBehaviour
     public Item(ItemBase iBase)
     {
         ItemBase = iBase;
+        Debug.Log("アイテムの名前"+itemBase.ItemName);
         id = iBase.Id;
     }
 
