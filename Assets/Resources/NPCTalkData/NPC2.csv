@@ -1,0 +1,7 @@
+﻿id,command,character,imageNum,main_text,set_branch,yes_text,no_text,chose_yes,chose_no,skip_id
+0,set_bgm,,,,FALSE,,,,,
+1,set_text,ササキ,1,BRDF!,FALSE,,,,,
+2,set_text,ササキ,1,BRDFこそ至高！,TRUE,賛,否,3,4,
+3,set_text,ササキ,1,同志よ！,FALSE,,,,,5
+4,set_text,ササキ,1,神の裁きが下るぞ,FALSE,,,,,5
+5,set_text,ササキ,1,さらば,FALSE,,,,,
