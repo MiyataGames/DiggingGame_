@@ -16,6 +16,9 @@ public class Player : Character
     public PlayerFieldUI playerUI;
     public BattlePlayerUI battlePlayerUI;
     public List<Item> items;
+    // 所持金
+    public int gold;
+    public int Gold { get => gold; set => gold = value; }
 
     // レベルに応じたHPを返す
     public int currentMaxHp
