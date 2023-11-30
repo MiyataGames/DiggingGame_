@@ -14,8 +14,13 @@ public class PlayerStatusUIsManager : MonoBehaviour
     private List<PlayerFieldUI> playerFieldUIs;
 
     public StatusSelectButtonClickedDelegate statusSelectButtonClickedDelegate;
-    public void SetUpPlayerStatusUI(List<Player> players, bool isAllSelect)
+    public void SetUpPlayerStatusUI(List<Player> players, TARGET_NUM targetNum)
     {
+        bool isAllSelect = false;
+        if(targetNum == TARGET_NUM.ALL)
+        {
+            isAllSelect = true;
+        }
         // プレイヤーの人数が変わったときだけ更新する
         if (players.Count != playersCount || prevIsAllSelect != isAllSelect)
         {

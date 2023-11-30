@@ -11,7 +11,7 @@ public enum MenuCommand
     END
 }
 
-
+// 呼び出す方にデリゲートを定義する
 public delegate void MenuSelectButtonClickedDelegate(int menuIndex);
 public delegate void ItemSelectButtonHoverdDelegate(int itemIndex);
 

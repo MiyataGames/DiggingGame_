@@ -1,0 +1,121 @@
+@startuml
+
+
+
+package Common{
+    class PlayerUnit{
+
+    }
+    class Character{
+
+    }
+    class HealItemBase{
+
+    }
+    class HPBar{
+
+    }
+    class SPBar{
+
+    }
+    class Item{
+        
+    }
+    class ItemBase{
+
+    }
+    class Party{
+
+    }
+
+    class Player{
+
+    }
+
+    class PlayerBase{
+
+    }
+    
+    class WorldDataBase{
+
+    }
+
+    
+
+
+}
+package BattleScene{
+    class BattleSceneManager{
+
+    }
+    class BattleCommand{
+
+    }
+    class LearnableSkill{
+
+    }
+    class SkillBase{
+
+    }
+    class BattlePlayerUI{
+
+    }
+    package Enemy{
+        class Enemy {
+            
+        }
+
+        class EnemyBase{
+            
+        }
+
+        class BattleEnemyUI{
+
+        }
+        class EnemyUnit{
+
+        }
+        class EnemySkill{
+
+        }
+    }
+}
+
+package FieldScene{
+    class PlayerFieldUI{
+
+    }
+}
+
+Character <|- Enemy
+Character <|-- Player
+
+Player o-- PlayerBase
+Player o-- BattlePlayerUI
+Player o-- EnemySkill
+Player o-- Item
+Player o-- PlayerFieldUI
+Enemy o-- EnemySkill
+Enemy o-- EnemyBase
+Enemy o-- BattleEnemyUI
+
+Item o-- ItemBase
+
+EnemyBase o-- LearnableSkill
+PlayerBase o-- LearnableSkill
+
+LearnableSkill o-- SkillBase
+
+BattleSceneManager o-- PlayerUnit
+BattleSceneManager o--- EnemyUnit
+PlayerUnit o-- Player
+EnemyUnit o-- Enemy
+
+BattleSceneManager o-- BattleCommand
+
+BattlePlayerUI o-- HPBar
+BattlePlayerUI o-- SPBar
+
+BattleEnemyUI o-- HPBar
+BattleEnemyUI o-- SPBar
+@enduml
