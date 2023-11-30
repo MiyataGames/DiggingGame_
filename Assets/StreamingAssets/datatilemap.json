@@ -1,7 +1,7 @@
 {
     "playerPosition": [
-        2.5099759101867677,
-        0.8149886131286621
+        -2.830000162124634,
+        0.8049067854881287
     ],
     "origin": [
         "-15",
@@ -11,13 +11,13 @@
         " , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , ",
         " , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
         " , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , , , ",
-        " , , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
-        " , , , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , ",
-        " , , , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , ",
-        " , , , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
-        " , , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
         " , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
-        " , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , , ",
+        " , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , ",
+        " , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , ",
+        " , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
+        " , , , , , , , , , , , , , , , , , , , , ,a,a,a, , , , , , , ,a,a,a,a,a, , , , , ",
+        " , , , , , , , , , , , , , , , , , , , , ,a,a,a, , , , , , , ,a,a,a,a,a, , , , , ",
+        " , , , , , , , , , , , , , , , , , , , , ,a,a,a, , , , , , , ,a,a,a,a, , , , , , ",
         " , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , , , ",
         " , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , ",
         " , , , , , , , , , , , , ,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a, , , , , , , ",
@@ -34,7 +34,7 @@
         " , , , , , , , , , , , , , , , , , , , , , , , , , , ,a,a,a,a,a,a,a,a, , , , , , "
     ],
     "playerDatas": [
-        "{\"isPlayer\":true,\"isDying\":false,\"isFainted\":false,\"playerID\":0,\"level\":1,\"currentHP\":3,\"currentSP\":31,\"atk\":100,\"def\":100,\"agi\":100,\"playerUI\":{\"instanceID\":0},\"items\":[{\"instanceID\":-1256},{\"instanceID\":-1266}]}",
+        "{\"isPlayer\":true,\"isDying\":false,\"isFainted\":false,\"playerID\":0,\"level\":1,\"currentHP\":3,\"currentSP\":31,\"atk\":100,\"def\":100,\"agi\":100,\"playerUI\":{\"instanceID\":0},\"items\":[]}",
         "{\"isPlayer\":true,\"isDying\":false,\"isFainted\":false,\"playerID\":1,\"level\":1,\"currentHP\":3,\"currentSP\":32,\"atk\":200,\"def\":200,\"agi\":200,\"playerUI\":{\"instanceID\":0},\"items\":[]}"
     ]
 }

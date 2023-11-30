@@ -212,18 +212,6 @@ PrefabInstance:
       value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 333597413819778832, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 333597413819778832, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 333597413819778832, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 333597413819778832, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.5
       objectReference: {fileID: 0}
@@ -263,17 +251,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 333597413819778833, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
-      propertyPath: m_SortingOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 333597413819778837, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
       propertyPath: m_Name
       value: Enemy_TypeA
-      objectReference: {fileID: 0}
-    - target: {fileID: 333597413819778837, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0cde360f60a1db544bc0ae761fa4d9d3, type: 3}
@@ -5702,7 +5682,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 0.8396226, g: 0.09109115, b: 0.09109115, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: -15, y: -4, z: 0}
   m_Size: {x: 41, y: 24, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -7810,17 +7790,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9085347767401041857, guid: b8caec3513932a84792e3146b883d19b, type: 3}
-      propertyPath: m_SortingOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 9085347767401041861, guid: b8caec3513932a84792e3146b883d19b, type: 3}
       propertyPath: m_Name
       value: Enemy_TypeB
-      objectReference: {fileID: 0}
-    - target: {fileID: 9085347767401041861, guid: b8caec3513932a84792e3146b883d19b, type: 3}
-      propertyPath: m_TagString
-      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8caec3513932a84792e3146b883d19b, type: 3}
@@ -8250,8 +8222,8 @@ MonoBehaviour:
   m_LightType: 4
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.6901961, g: 0.5700628, b: 0.10196077, a: 1}
-  m_Intensity: 0.1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.33
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 00000000
