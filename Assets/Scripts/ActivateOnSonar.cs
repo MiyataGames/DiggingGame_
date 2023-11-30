@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+
 public class ActivateOnSonar : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;  // ここで spriteRenderer を宣言
@@ -33,11 +34,11 @@ public class ActivateOnSonar : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Respawn"))
+        if (other.CompareTag("flashlight"))
         {
             FlashHlight = true;
         }
-        if (other.CompareTag("Finish") && FlashHlight == false)
+        if (other.CompareTag("sonar") && FlashHlight == false)
         {
             if (spriteRenderer != null)
             {
@@ -52,7 +53,7 @@ public class ActivateOnSonar : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Respawn"))
+        if (other.CompareTag("flashlight"))
         {
             FlashHlight = true;
             if (spriteRenderer != null)
@@ -65,11 +66,11 @@ public class ActivateOnSonar : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Respawn"))
+        if (other.CompareTag("flashlight"))
         {
             FlashHlight = false;
         }
-        if (other.CompareTag("Finish"))
+        if (other.CompareTag("sonar"))
         {
             if (spriteRenderer != null)
             {
@@ -85,20 +86,24 @@ public class ActivateOnSonar : MonoBehaviour
     }
 private IEnumerator BlinkingLight()
 {
-    float duration = 2f;  // 2秒間の点滅
-    float elapsed = 0f;
-
-    while (elapsed < duration)
+    while (true) // 無限ループを作成して点滅を繰り返す
     {
-        float intensity = Mathf.PingPong(elapsed * 5f, 1f);
-        light2DComponent.intensity = intensity;
+        float duration = 0.4f;  // 点滅時間を短く設定（例：0.5秒）
+        float elapsed = 0f;
 
-        elapsed += Time.deltaTime;
-        yield return null;
+        while (elapsed < duration)
+        {
+            // Mathf.PingPongを使って点滅させる
+            float intensity = Mathf.PingPong(elapsed, 3f); // 明るさを0から3まで変化
+            light2DComponent.intensity = 3;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        light2DComponent.intensity = 0f;  // 点滅をオフにする
+        yield return new WaitForSeconds(0.1f);  // 待機時間も短く設定（例：0.1秒）
     }
-
-    light2DComponent.intensity = 0f;  // 点滅が終了したらライトをオフにする
-    lightBlinkCoroutine = null;  // 点滅が終了したら変数をリセット
+}
 }
 
-}
