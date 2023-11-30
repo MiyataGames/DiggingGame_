@@ -1,14 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;  
 
 public class FieldShop : MonoBehaviour
 {
 	public ShopBase shopBase;
 	public GameObject itemButtunPrefab; // ボタンのプレファブ
 	private List<Item> shopItems = new List<Item>();
+	public List<Item> ShopItems {get => shopItems; }
 
 	// ショップボタンを格納
 	private List<GameObject> buyButtonList = new List<GameObject>();
@@ -32,7 +33,7 @@ public class FieldShop : MonoBehaviour
 
 	[SerializeField] Party party;
 
-	void Start()
+	void Awake()
 	{
 		// GameManagerに後で移す
 		party.Setup();
@@ -60,6 +61,7 @@ public class FieldShop : MonoBehaviour
 			shopItems.Add(newShopItemEntry); // ItemEntryをリストに追加
 			*/
 			shopItems.Add(newItem);
+			Debug.Log("aaaa");
 		}
 	}
 

@@ -5,45 +5,48 @@ using EnhancedUI.EnhancedScroller;
 // IEnhancedScrollerDelegateインタフェースを継承していることに注意！
 public class ScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    private List<ScrollerData> _data;
+    public FieldShop fieldShop; // FieldShop クラスの参照
+    private List<ScrollerData> _data; // ここで変数を定義
+    public ShopBase shopBase;
 
     public EnhancedScroller myScroller;
     public CallView cellViewPrefab;
 
-    void Start()
+void Start()
+{
+    _data = new List<ScrollerData>();
+            Debug.Log(fieldShop.ShopItems.Count);
+    if (fieldShop.ShopItems == null)
     {
-        _data = new List<ScrollerData>()
-        {
-            new ScrollerData() { cellText = "Lion" },
-            new ScrollerData() { cellText = "Bear" },
-            new ScrollerData() { cellText = "Eagle" },
-            new ScrollerData() { cellText = "Dolphin" },
-            new ScrollerData() { cellText = "Ant" },
-            new ScrollerData() { cellText = "Cat" },
-            new ScrollerData() { cellText = "Sparrow" },
-            new ScrollerData() { cellText = "Dog" },
-            new ScrollerData() { cellText = "Spider" },
-            new ScrollerData() { cellText = "Elephant" },
-        };
-
-        myScroller.Delegate = this;
-        myScroller.ReloadData();
+        Debug.Log("null");
     }
+    Debug.Log("aaa");
+    foreach (var item in fieldShop.ShopItems)
+    {
+        Debug.Log("bbb");
+        _data.Add(new ScrollerData() { cellText = item.ItemBase.ItemName});
+    }
+    myScroller.Delegate = this;
+    myScroller.ReloadData();
+}
+
 
     public int GetNumberOfCells(EnhancedScroller scroller)
     {
-        return _data.Count;
+        return fieldShop.ShopItems.Count;
+        // return _data.Count;
     }
 
     public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
     {
-        return 100f;
+        return 50f;
     }
 
-    public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
-    {
-        CallView cell = scroller.GetCellView(cellViewPrefab) as CallView;
-        cell.SetData(_data[dataIndex]);
-        return cell;
-    }
+public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+{
+    Debug.Log("qqq");
+    CallView cell = scroller.GetCellView(cellViewPrefab) as CallView;
+    cell.SetData(_data[dataIndex]);
+    return cell;
+}
 }
