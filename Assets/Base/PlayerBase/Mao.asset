@@ -15,9 +15,17 @@ MonoBehaviour:
   playerId: 0
   playerName: "\u30DE\u30AA"
   playerFaceIcon: {fileID: 21300000, guid: 2829e8f2106e60e429547be87bc724c3, type: 3}
+  playerBattleSceneSprite: {fileID: 8159291058656257615, guid: e62f13bd48290584d974363402ccdacb, type: 3}
   playerMaxLv: 20
-  playerMaxHp: 100
+  playerMaxHp: 10000
   playerMaxSp: 100
   playerMaxAtk: 100
   playerMaxDef: 100
   playerMaxAgi: 100
+  learnablePlayerSkills:
+  - skillBase: {fileID: 11400000, guid: a8904af21f11e80458fcba9ef109bebb, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: e8e986e80ef6d034c90e1096a245b187, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: 282abcf0e88114af3b75a8f04a288559, type: 2}
+    level: 0
