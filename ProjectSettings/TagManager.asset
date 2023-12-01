@@ -12,6 +12,7 @@ TagManager:
   - ground
   - digObject
   - Enemy
+  - Town
   layers:
   - Default
   - TransparentFX

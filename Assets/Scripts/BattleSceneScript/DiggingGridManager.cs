@@ -94,7 +94,20 @@ public class DiggingGridManager : MonoBehaviour
             FinishDigging();
         }*/
     }
-
+    // ボタンをきくようにする
+    public void StartDigging()
+    {
+        selectedItemNum = 0;
+        for (int i = 0; i < gridButtons.GetLength(0); i++)
+        {
+            for (int j = 0; j < gridButtons.GetLength(1); j++)
+            {
+                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = null;
+                gridButtons[i, j].GetComponent<Button>().interactable = true;
+            }
+        }
+        finishButton.gameObject.SetActive(true);
+    }
     // ボタンを効かないようにする
     private void UnInteractiveButton()
     {

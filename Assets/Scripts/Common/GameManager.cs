@@ -26,9 +26,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BattleSceneManager battleSceneManager;
     // [SerializeField] private ResultSceneMangaer resultSceneManager;
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerTownController playerTownController;
     [SerializeField] private PlayerUnit playerUnit;
     [SerializeField] private EnemyUnit enemyUnit;
     private List<Player> players;
+    Player mainPlayer;
 
     [SerializeField]
     private List<Enemy> enemies;
@@ -44,6 +46,9 @@ public class GameManager : MonoBehaviour
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {
             battleSceneManager.HandleUpdate();
+        }else if(currentSceneIndex == (int)GameMode.TOWN_SCENE)
+        {
+            playerTownController.HandleUpdate();
         }
         /*
         else if (currentSceneIndex == (int)GameMode.RESULT_SCENE)
@@ -81,7 +86,6 @@ public class GameManager : MonoBehaviour
 
     public void StartBattle()
     {
-        battleSceneManager.StartBattle();
         ActivateCurrentScene((int)GameMode.BATTLE_SCENE);
         battleSceneManager.StartBattle();
         // 生成
@@ -108,7 +112,17 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log("enemyCount" + enemies.Count);
 
-        battleSceneManager.InitBattle(players, enemies);
+        // 主人公を探す
+        mainPlayer = players[0];
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].PlayerID == 0)
+            {
+                mainPlayer = players[i];
+            }
+        }
+
+        battleSceneManager.InitBattle(players, enemies,mainPlayer);
     }
 
     public void EndBattle()

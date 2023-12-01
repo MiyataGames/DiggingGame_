@@ -1,4 +1,4 @@
-﻿using EnhancedUI.EnhancedScroller;
+using EnhancedUI.EnhancedScroller;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -6,42 +6,9 @@ using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.EventSystems;
 using System.Linq;
-public enum GameStatus
-{
-    DIGGING,
-    MENU,
-    ITEM,
-    STATUS,
-    SYSTEM,
-}
-
-public enum ItemUseStatus
-{
-    SELECT_ITEM,
-    SELECT_TARGET,
-    USE_ITEM
-}
-
-public class Define
-{
-    public enum DirectionNumber
-    {
-        RIGHT_UP,
-        RIGHT,
-        RIGHT_DOWN,
-        DOWN,
-        LEFT_DOWN,
-        LEFT,
-        LEFT_UP,
-        NONE
-    }
-
-    // 方向　右上、右、右下、下、左下、左、左上
-    public static Vector2[] directions = { new Vector2(1, 1), new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1), new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 0) };
-}
 
 
-public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
+public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
 {
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
@@ -59,10 +26,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     public static GameStatus currentGameStatus;
 
-    // プレイヤー 仮
-    //[SerializeField] private PlayerBase[] playerBasies;
-
-    //[SerializeField] private GameObject[] playerUIs;
     [SerializeField] Party party;
     // セーブシステム
     [SerializeField] SaveLoadController saveLoadCtrl;
@@ -112,9 +75,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     public void HandleUpdate()
     {
+        Debug.Log("実行中");
         // 穴掘り中だったら
         if (currentGameStatus == GameStatus.DIGGING)
         {
+            Debug.Log("移動できるはず");
             // サーチ
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -188,44 +153,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void HandleMenuSelect()
     {
 
-        /*
-        // キー操作
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (currentMenuCommandNum < (int)MenuCommand.END - 1)
-            {
-                currentMenuCommandNum++;
-                menu.ActivateMenuSelectArrow((MenuCommand)currentMenuCommandNum);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (currentMenuCommandNum > 0)
-            {
-                currentMenuCommandNum--;
-                menu.ActivateMenuSelectArrow((MenuCommand)currentMenuCommandNum);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            // メニューを選択
-            // アイテムコマンドだったら
-            if (currentMenuCommandNum == ((int)MenuCommand.ITEM))
-            {
-                // アイテムパネルを開く
-                menu.ActivateItemPanel(true);
-                currentGameStatus = GameStatus.ITEM;
-                menu.ActivateMenuPanel(false);
-                InitItem();
-            }
-            if (currentMenuCommandNum == (int)MenuCommand.STATUS)
-            {
-                menu.ActivateStatusPanel(true);
-                currentGameStatus = GameStatus.STATUS;
-                InitStatus();
-            }
-        }
-        */
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // メニュー画面を閉じる
@@ -266,63 +193,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         if (currentItemUseStatus == ItemUseStatus.SELECT_ITEM)
         {
-            /*
-            // キー操作
-            bool selectionChanged = false;
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                // 値を範囲内にする
-                selectedItemIndex = Mathf.Clamp(selectedItemIndex - 1, 0, itemCellData.Count - 1);
-                selectionChanged = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                selectedItemIndex = Mathf.Clamp(selectedItemIndex + 1, 0, itemCellData.Count - 1);
-                selectionChanged = true;
-            }
-
-            // 選択中
-            if (selectionChanged)
-            {
-                for (int i = 0; i < itemCellData.Count; i++)
-                {
-                    itemCellData[i].isSelected = (i == selectedItemIndex);
-                }
-                // アクティブセルに対してUIの更新をする
-                itemPanel.RefreshActiveCellViews();
-
-                if (selectedItemIndex >= itemPanel.EndCellViewIndex)
-                {
-                    itemPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
-                }
-                else if (selectedItemIndex <= itemPanel.StartCellViewIndex)
-                {
-                    itemPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
-                }
-            }
-
-            // アイテムを使用する
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                Debug.Log("アイテムを使うよ");
-                // 使うアイテムの情報を保持
-                Item item = players[0].Items[selectedItemIndex];
-
-                // 回復アイテムだったら
-                if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
-                {
-                    // アイテムパネルを消す
-                    menu.ActivateItemPanel(false);
-                    // ステータス画面を開く
-                    menu.ActivateStatusPanel(true);
-                    // ステータス画面の更新
-                    playerStatusUIsManager.SetUpPlayerStatusUI(players);
-                    playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
-                }
-                // ターゲットを選ぶステータスに移行
-                currentItemUseStatus = ItemUseStatus.SELECT_TARGET;
-            }
-            */
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // アイテム画面を閉じてメニュー画面を開く
@@ -334,43 +204,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (currentItemUseStatus == ItemUseStatus.SELECT_TARGET)
         {
-            /*
-            // キー操作
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                if (selectedItemTargetIndex < players.Count - 1)
-                {
-                    selectedItemTargetIndex++;
-                    playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                if (selectedItemTargetIndex > 0)
-                {
-                    selectedItemTargetIndex--;
-                    playerStatusUIsManager.selectStatus(selectedItemTargetIndex);
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Return))
-            {   // アイテムの残りが0だったら
-                if (players[0].Items[selectedItemIndex].ItemCount == 0)
-                {
-                    Debug.Log("使えないよ");
-                }
-                else
-                {
-                    Item item = players[0].Items[selectedItemIndex];
-                    // アイテムの効果発動
-                    players[selectedItemTargetIndex].TakeHealWithItem(item);
-                    players[selectedItemTargetIndex].playerUI.UpdateHpSp();
-
-                    // アイテムの数を減らす
-                    players[0].Items[selectedItemIndex].ItemCount--;
-                }
-            }
-            */
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // 0のものをアイテムリストから除外する
@@ -396,25 +229,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void HandleStatusSelect()
     {
-        /*
-        // キー操作
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (selectedStatusIndex < players.Count - 1)
-            {
-                selectedStatusIndex++;
-                playerStatusUIsManager.selectStatus(selectedStatusIndex);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (selectedStatusIndex > 0)
-            {
-                selectedStatusIndex--;
-                playerStatusUIsManager.selectStatus(selectedStatusIndex);
-            }
-        }
-        */
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // アイテム画面を閉じてメニュー画面を開く
@@ -708,7 +522,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             GameManager.instance.StartBattle();
             // 敵オブジェクトを破壊
             Destroy(collision.gameObject);
-        }else if(collision.gameObject.tag == "Town")
+        }
+        else if (collision.gameObject.tag == "Town")
         {
             // 街へ入る
             GameManager.instance.CurrentSceneIndex = (int)GameMode.TOWN_SCENE;

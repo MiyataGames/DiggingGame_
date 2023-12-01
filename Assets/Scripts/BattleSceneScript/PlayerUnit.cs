@@ -39,6 +39,7 @@ public class PlayerUnit : MonoBehaviour
         {
             //List<Enemy> enemyList = this.gameObject.transform.Find("Player" + playerBasies[i].PlayerId + "Persona").GetComponent<PersonaParty>().EnemyList;
             // レベル１で生成
+            Debug.Log(debugItemBase[0].ItemName);
             Player player = new Player(playerBasies[i], level,debugItemBase);
             agiPlayerDic.Add(player, player.PlayerBase.PlayerMaxAgi);
         }
@@ -56,8 +57,6 @@ public class PlayerUnit : MonoBehaviour
             */
             players[j].PlayerBattleSprite = Instantiate(players[j].PlayerBase.PlayerBattleSceneSprite, playerPos[j].transform);
             players[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
-            Debug.Log(j);
-            Debug.Log(players[j].battlePlayerUI);
             players[j].battlePlayerUI.SetPlayerData(players[j]);
             //Debug.Log("ResultPanel/player" + j + "ResultPanel");
             /*

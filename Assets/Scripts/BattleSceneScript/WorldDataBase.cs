@@ -32,7 +32,8 @@ public enum GameMode
 {
     FIELD_SCENE,
     BATTLE_SCENE,
-    BOSS_SCENE
+    BOSS_SCENE,
+    TOWN_SCENE,
 }
 
 //属性

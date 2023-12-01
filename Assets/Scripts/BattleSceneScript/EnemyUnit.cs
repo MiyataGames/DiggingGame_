@@ -46,18 +46,13 @@ public class EnemyUnit : MonoBehaviour
                 positionIndex = Random.Range(0, enemyPos9.Length);
                 // 敵を生成する位置をきめる
                 // 前に生成した敵と同じ位置だったら
-                Debug.Log("positionIndexは" + positionIndex);
                 while (positions.Any(value => value == positionIndex))
                 {
-                    Debug.Log("もう一度ふりなおすよ");
                     // ふりなおす
                     positionIndex = Random.Range(0, enemyPos9.Length - 1);
-                    Debug.Log("positionIndexは" + positionIndex);
 
                 }
                 positions.Add(positionIndex);
-                Debug.Log("positionsに加えたよ" + positionIndex);
-                Debug.Log("今のリストは" + string.Join(",", positions));
                 enemies[j] = enemy.Key;
                 // 敵のモデルを生成
                 enemies[j].EnemyPrefab = Instantiate(enemies[j].EnemyBase.EnemyPrefab, enemyPos9[positionIndex].transform.position, Quaternion.identity, enemyPos9[positionIndex].transform);

@@ -128,6 +128,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     public void StartBattle()
     {
         Application.targetFrameRate = 60;
+        currentMove = 1;
         battleState = BattleState.INIT_BATTLE;
         inputSkillStatement = InputSkillStatement.INIT_SKILL;
         inputItemStatement = InputItemStatement.INIT_ITEM;
@@ -291,9 +292,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // 戦闘が始まる前に一回だけ実行する===========================
-    public void InitBattle(List<Player> players, List<Enemy> enemies)
+    public void InitBattle(List<Player> players, List<Enemy> enemies,Player mainPlayer)
     {
         inputSkillStatement = InputSkillStatement.INIT_SKILL;
+        this.mainPlayer = mainPlayer;
         // プレイヤーの生成
         /*
         if (FirstBattle == true)
@@ -343,17 +345,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         foreach (var Chara in agiCharaDictionary.OrderByDescending(c => c.Value))
         {
             characters.Add(Chara.Key);
-            Debug.Log(Chara.Value);
             if (Chara.Key.isPlayer)
             {
                 // デバッグ用
                 Player player = (Player)Chara.Key;
-                Debug.Log("player:" + player.PlayerBase.PlayerName);
             }
             else
             {
                 Enemy enemy = (Enemy)Chara.Key;
-                Debug.Log("enemy:" + enemy.EnemyBase.EnemyName);
             }
         }
 
@@ -471,6 +470,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("---PlayerDIGGINGInit---");
         // スキルパネルを表示
         battleCommand.ActivateSkillCommandPanel(true);
+        // 穴掘りパネルを有効にする
+        diggingGridManager.StartDigging();
         // アニメーターの取得
         //turnPlayer.EquipEnemy.EnemyAnimator = playerPersona.GetComponent<Animator>();
 
@@ -1043,7 +1044,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     //Destroy(activePlayers[i].PlayerModel);
                 }
                 //フィールドのシーンに戻る
-                GameManager.instance.EndBattle();
+                EndBattle();
 
             }
             else// 一体でも生き残っていれば
@@ -1226,7 +1227,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     //Destroy(activePlayers[i].PlayerModel);
                 }
                 //フィールドのシーンに戻る
-                GameManager.instance.EndBattle();
+                EndBattle();
             }
             else// 一体でも生き残っていれば
             {
@@ -1488,7 +1489,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("戦闘不能");
                 yield return new WaitForSeconds(0.7f);
                 //フィールドのシーンに戻る
-                GameManager.instance.EndBattle();
+                EndBattle();
             }
             else
             {
@@ -1951,12 +1952,19 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     }
 
+    void EndBattle()
+    {
+        GameManager.instance.EndBattle();
+        playerSkillPanel.gameObject.SetActive(false);
+    }
+
     /// ===================================
 
     // スキルデータの設定
 
     private void LoadSkillData(List<EnemySkill> playerSkillDatas)
     {
+        Debug.Log("スキルのロード");
         // 適当なデータを設定する
         skillDatas = new List<SkillCellData>();
         for (int i = 0; i < playerSkillDatas.Count; i++)
@@ -2023,10 +2031,12 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテムデータの設定
     private void LoadItemData(List<Item> playerItemDatas)
     {
+        Debug.Log("アイテムをロード");
         // 適当なデータを設定する
         itemCellDatas = new List<ItemCellData>();
         for (int i = 0; i < playerItemDatas.Count; i++)
         {
+            Debug.Log(playerItemDatas[i].ItemBase.ItemName);
             itemCellDatas.Add(new ItemCellData()
             {
                 itemText = playerItemDatas[i].ItemBase.ItemName,
@@ -2034,6 +2044,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 itemCountText = playerItemDatas[i].ItemCount.ToString(),
             }) ;
         }
+
         // データが揃ったのでスクローラーをリロードする
         playerSkillPanel.ReloadData();
     }
