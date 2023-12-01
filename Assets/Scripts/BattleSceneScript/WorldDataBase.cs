@@ -27,3 +27,23 @@ public enum STATUS
     // 回避率
     EVASION
 }
+
+public enum GameMode
+{
+    FIELD_SCENE,
+    BATTLE_SCENE,
+    BOSS_SCENE
+}
+
+//属性
+public enum MagicType
+{
+    NOTHING,
+    FIRE,
+    ICE,
+    WIND,
+    THUNDER,
+    DARK,
+    HOLY,
+    END
+}

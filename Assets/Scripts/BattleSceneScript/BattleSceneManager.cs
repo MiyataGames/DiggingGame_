@@ -129,6 +129,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         Application.targetFrameRate = 60;
         battleState = BattleState.INIT_BATTLE;
+        inputSkillStatement = InputSkillStatement.INIT_SKILL;
+        inputItemStatement = InputItemStatement.INIT_ITEM;
+        inputDiggingStatement = InputDiggingStatement.INIT_DIGGING;
         diggingGridManager.diggingFinishDelegate = FinishDigging;
         diggingGridManager.selectItemDelegate = SelectedItem;
 
@@ -136,14 +139,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     void Start()
     {
-        StartBattle();
+        //StartBattle();
     }
 
-    public void Update()
+    public void HandleUpdate()
     {
         if (battleState == BattleState.INIT_BATTLE)
         {
-            PrepareInitBattle();
+            //PrepareInitBattle();
             //InitBattle();
         }
         else if (battleState == BattleState.PREPARE_BATTLE)
@@ -243,13 +246,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
 
     // あとでGameManagerに移植する
-    private List<Player> players;
-    private List<Enemy> enemies;
-    [SerializeField] PlayerUnit playerUnit;
-    [SerializeField] EnemyUnit enemyUnit;
-    bool firstBattle = true;
+
     void PrepareInitBattle()
     {
+        /*
         // playersとenemiesのリストを用意する
         players = new List<Player>();
         enemies = new List<Enemy>();
@@ -287,6 +287,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
 
         InitBattle(players, enemies);
+        */
     }
 
     // 戦闘が始まる前に一回だけ実行する===========================
@@ -1042,7 +1043,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     //Destroy(activePlayers[i].PlayerModel);
                 }
                 //フィールドのシーンに戻る
-                //gameManager.EndBattle();
+                GameManager.instance.EndBattle();
+
             }
             else// 一体でも生き残っていれば
             {
@@ -1224,7 +1226,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     //Destroy(activePlayers[i].PlayerModel);
                 }
                 //フィールドのシーンに戻る
-                //gameManager.EndBattle();
+                GameManager.instance.EndBattle();
             }
             else// 一体でも生き残っていれば
             {
@@ -1485,6 +1487,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 Debug.Log("戦闘不能");
                 yield return new WaitForSeconds(0.7f);
+                //フィールドのシーンに戻る
+                GameManager.instance.EndBattle();
             }
             else
             {

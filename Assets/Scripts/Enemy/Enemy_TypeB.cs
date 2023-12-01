@@ -202,7 +202,7 @@ public class Enemy_TypeB : FieldEnemy
         if (hit)
         {
             isHit = true;
-            Debug.Log(hit.collider.gameObject);
+            //Debug.Log(hit.collider.gameObject);
         }
         else
         {
@@ -270,7 +270,7 @@ public class Enemy_TypeB : FieldEnemy
 
                 if (searchAngle > playerAngle)
                 {//サーチ（視界）内にいるか確認
-                    Debug.Log("視界の範囲内");
+                    //Debug.Log("視界の範囲内");
 
                     LayerMask layerMask = ~(1 << 10) & ~(1<<11); //レイヤーマスクを指定(自分と視界のコリジョンに当たらないように)
                     RaycastHit2D hit = Physics2D.Raycast(transform.position, toPlayer.normalized, toPlayer.magnitude, layerMask);//プレイヤーへレイを飛ばす

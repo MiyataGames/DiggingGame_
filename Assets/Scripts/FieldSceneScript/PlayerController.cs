@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // Update is called once per frame
-    private void Update()
+    public void HandleUpdate()
     {
         // 穴掘り中だったら
         if (currentGameStatus == GameStatus.DIGGING)
@@ -557,13 +557,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             Destroy(other.gameObject);
             // idが早い順に並べる
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
+            LoadItemData();
         }
 
-        // else if (other.tag == "Finish")
-        // {
-        //     Debug.Log("wwwwww");
-        // }
-        LoadItemData();
     }
     #endregion
     #region 
@@ -698,6 +694,21 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void OnTriggerExit2D(Collider2D other)
     {
         groundFlag = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log(collision.gameObject.name);
+        if (collision.gameObject.tag == "Enemy")
+        {
+            Debug.Log("敵に当たった");
+            // バトルシーンに移動する
+            //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
+            // バトルシーンに移動する
+            GameManager.instance.StartBattle();
+            // 敵オブジェクトを破壊
+            Destroy(collision.gameObject);
+        }
     }
 
 }
