@@ -16,6 +16,7 @@ public class EnemyUnit : MonoBehaviour
     private Enemy[] enemies;
 
     public Enemy[] Enemies { get => enemies; }
+    int[] debugPositionIndexs = { 7, 8, 4 };
 
     public void SetUp(int lowLevel, int highLevel)
     {
@@ -37,38 +38,39 @@ public class EnemyUnit : MonoBehaviour
 
         int j = 0;
         // 敵の数が3体だったら
-        if (enemyNum == 3)
-        {
-            List<int> positions = new List<int>();
-            int positionIndex;
-            foreach (var enemy in agiEnemyDic.OrderByDescending(c => c.Value))
-            {
-                positionIndex = Random.Range(0, enemyPos9.Length);
-                // 敵を生成する位置をきめる
-                // 前に生成した敵と同じ位置だったら
-                while (positions.Any(value => value == positionIndex))
-                {
-                    // ふりなおす
-                    positionIndex = Random.Range(0, enemyPos9.Length - 1);
 
-                }
-                positions.Add(positionIndex);
-                enemies[j] = enemy.Key;
-                // 敵のモデルを生成
-                enemies[j].EnemyPrefab = Instantiate(enemies[j].EnemyBase.EnemyPrefab, enemyPos9[positionIndex].transform.position, Quaternion.identity, enemyPos9[positionIndex].transform);
-                // アニメーターをいれる
-                // enemies[j].EnemyAnimator = enemies[j].EnemyModel.GetComponent<Animator>();
-                // EnemyUIのオブジェクトをみつける
-                //enemies[j].EnemyUIObject = enemyPos3[j].transform.Find("Child/EnemyCanvas").gameObject;
-                // EnemyUIをEnemyPosの子オブジェクトに生成
-                Vector3 uiPosition = new Vector3(enemyPos9[positionIndex].transform.position.x, enemyPos9[positionIndex].transform.position.y + 2.5f, enemyPos9[positionIndex].transform.position.z + 1);
-                enemies[j].EnemyUI = Instantiate(enemyCanvas, uiPosition, Quaternion.identity, enemyPos9[positionIndex].transform).gameObject.GetComponent<BattleEnemyUI>();
-                // EnemyUIのセットアップ
-                enemies[j].EnemyUI.SetEnemyData(enemies[j]);
-                // EnemyUIのパネルを表示する
-                enemies[j].EnemyUI.ActivateUIPanel();
-                j++;
-            }
+        List<int> positions = new List<int>();
+        int positionIndex;
+        foreach (var enemy in agiEnemyDic.OrderByDescending(c => c.Value))
+        {
+            /*
+            positionIndex = Random.Range(0, enemyPos9.Length);
+            // 敵を生成する位置をきめる
+            // 前に生成した敵と同じ位置だったら
+            while (positions.Any(value => value == positionIndex))
+            {
+                // ふりなおす
+                positionIndex = Random.Range(0, enemyPos9.Length - 1);
+
+            }*/
+            //positions.Add(positionIndex);
+            enemies[j] = enemy.Key;
+            //enemies[j].positionIndex = positionIndex;
+            enemies[j].positionIndex = debugPositionIndexs[j];
+            // 敵のモデルを生成
+            enemies[j].EnemyPrefab = Instantiate(enemies[j].EnemyBase.EnemyPrefab, enemyPos9[enemies[j].positionIndex].transform.position, Quaternion.identity, enemyPos9[enemies[j].positionIndex].transform);
+            // アニメーターをいれる
+            // enemies[j].EnemyAnimator = enemies[j].EnemyModel.GetComponent<Animator>();
+            // EnemyUIのオブジェクトをみつける
+            //enemies[j].EnemyUIObject = enemyPos3[j].transform.Find("Child/EnemyCanvas").gameObject;
+            // EnemyUIをEnemyPosの子オブジェクトに生成
+            Vector3 uiPosition = new Vector3(enemyPos9[enemies[j].positionIndex].transform.position.x, enemyPos9[enemies[j].positionIndex].transform.position.y + 2.5f, enemyPos9[enemies[j].positionIndex].transform.position.z + 1);
+            enemies[j].EnemyUI = Instantiate(enemyCanvas, uiPosition, Quaternion.identity, enemies[j].EnemyPrefab.transform).gameObject.GetComponent<BattleEnemyUI>();
+            // EnemyUIのセットアップ
+            enemies[j].EnemyUI.SetEnemyData(enemies[j]);
+            // EnemyUIのパネルを表示する
+            enemies[j].EnemyUI.ActivateUIPanel();
+            j++;
         }
     }
 }

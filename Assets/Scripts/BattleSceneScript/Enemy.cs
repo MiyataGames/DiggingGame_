@@ -15,6 +15,7 @@ public class Enemy : Character
     // public Animator EnemyAnimator { get; set; }
 
     public BattleEnemyUI EnemyUI { get; set; }
+    public int positionIndex;
 
     // レベルに応じたHPを返す
     public int currentMaxHp
@@ -59,9 +60,9 @@ public class Enemy : Character
     /// レベルに応じた初期値を設定する関数
     /// </summary>
     public override void InitStatusValue(int level)
-	{
+    {
 
-	}
+    }
 
     /*
         public bool isEffective(EnemySkill playerSkill)
