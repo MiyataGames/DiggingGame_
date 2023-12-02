@@ -17,7 +17,7 @@ public class Player : Character
     public BattlePlayerUI battlePlayerUI;
     public List<Item> items;
     // 所持金
-    public int gold;
+    public int gold = 2000;
     public int Gold { get => gold; set => gold = value; }
 
     // レベルに応じたHPを返す

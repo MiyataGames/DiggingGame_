@@ -12,15 +12,8 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 	private List<Item> shopItems = new List<Item>();
 	public List<Item> ShopItems {get => shopItems; }
 
-	// ショップボタンを格納
-	//private List<GameObject> buyButtonList = new List<GameObject>();
-	//private List<GameObject> sellButtonList = new List<GameObject>();
-
-
 	private Item selectedItemEntry;
 	public Canvas ShopHud;
-	public Canvas BuyHud;
-	public Canvas SellHud;
 	public Canvas CommandHud;
 	public Canvas CommonHud;
 
@@ -28,7 +21,8 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 	public TextMeshProUGUI quantityField;
 	public TextMeshProUGUI sellPriceField;
 	public TextMeshProUGUI itemCount;
-	public TextMeshProUGUI  descriptionField;
+	public TextMeshProUGUI descriptionField;
+	public TextMeshProUGUI tradeTextField;
 	int quantity = 1;
 	int choiceId = -1;
 
@@ -45,7 +39,6 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		party.Setup();
 		party = party.GetComponent<Party>();
 		InitializeShopItems();
-		moneyField.text =  party.Players[0].gold.ToString() + "Gold";
 		quantityField.text = "1";
 		itemCount.text = "0";
 		descriptionField.text = "";
@@ -111,15 +104,12 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		foreach (var newItem in shopBase.ShopItems)
 		{
 			shopItems.Add(newItem);
-			Debug.Log("aaaa");
 		}
 	}
 
 	/// <summary>
 	/// ScriptableObjectのshopBaseを
 	/// </summary>
-
-
 	// 購入するときにitemShopからボタンを生成
 	public void OnItemButtonClick(Item item)
 	{
@@ -135,99 +125,91 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		quantityField.text = quantity.ToString();
 		
     // 売却価格の表示
-	sellPriceField.text = "Price: " + (item.ItemBase.Price*quantity).ToString();
+    sellPriceField.text = "Price: " + (item.ItemBase.Price*quantity).ToString();
 		moneyField.text = party.Players[0].gold.ToString() + "Gold";
 
 		choiceId = item.ItemBase.Id;
-	}// プレイヤーのアイテム選択時の処理
-public void OnPlayerItemButtonClick(Item items)
-{
-    if (items == null)
-    {
-        Debug.Log("Error: Item is null");
-        return;
-    }
+	}
 
-    // 選択されたアイテムを更新
-    selectedItemEntry = items;
-    Debug.Log("Selected Item: " + items.ItemBase.ItemName);
-
-    // 売却価格の表示
-    sellPriceField.text = "Price: " + items.ItemBase.Price.ToString();
-
-}
 	// 選択したアイテムの個数を+1する
 	public void UpButtonClick()
 	{
-		quantity++;
+		if (quantity <100)
+        {
+			quantity++;
+		}
 		OnItemButtonClick(selectedItemEntry);
 	}
 
 	// 選択したアイテムの個数を-1する
 	public void DownButtonClick()
 	{
-		quantity--;
+		if (quantity >0 )
+		{
+			quantity--;
+		}
+
 		OnItemButtonClick(selectedItemEntry);
 	}
 
 	// 購入する
 	public void OnClickPurchase()
 	{
-		party.Players[0].gold = party.Players[0].gold - (selectedItemEntry.Price * quantity);
-		//Debug.Log("Current Gold: " + party.Players[0].gold);
-
-		bool itemFound = false;
-		for (int i = 0; i < party.Players[0].Items.Count; i++)
+		if (tradeState == true)
 		{
-			if (shopItems[choiceId].ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)
+			party.Players[0].gold = party.Players[0].gold - (selectedItemEntry.Price * quantity);
+
+			bool itemFound = false;
+			for (int i = 0; i < party.Players[0].Items.Count; i++)
 			{
-				// 既に存在するアイテムの場合、個数を増やす
-				party.Players[0].Items[i].ItemCount += quantity;
-				itemFound = true;
-				break;
+				if (shopItems[choiceId].ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)
+				{
+					// 既に存在するアイテムの場合、個数を増やす
+					party.Players[0].Items[i].ItemCount += quantity;
+					itemFound = true;
+					break;
+				}
 			}
+
+			if (!itemFound)
+			{
+				// 新しいアイテムの場合、リストに追加
+				party.Players[0].Items.Add(shopItems[choiceId]);
+				shopItems[choiceId].ItemCount = quantity;
+			}
+
+			OnItemButtonClick(selectedItemEntry);
+			//Debug.Log("Number of Items in Inventory: " + party.Players[0].Items.Count);
+			Debug.Log("購入" + shopItems[choiceId].ItemBase.Id);
+		}
+		else
+        {
+			var selectedItem = shopItems[choiceId];
+
+			// プレイヤーのアイテムリストをチェック
+			for (int i = 0; i < party.Players[0].Items.Count; i++)
+			{
+				Item item = party.Players[0].Items[i];
+
+				if (item.ItemBase.Id == selectedItem.ItemBase.Id)
+				{
+					// アイテムが見つかった場合、半額で売却
+					int sellPrice = item.ItemBase.Price / 2;
+					party.Players[0].gold += sellPrice; // プレイヤーの所持金を増やす
+					party.Players[0].Items[i].ItemCount = party.Players[0].Items[i].ItemCount - quantity;
+					OnItemButtonClick(selectedItemEntry);
+					//CreateSellButtons();
+				}
+				else
+				{
+					Debug.Log("リストにあるけど持っていない");
+				}
+			}
+			// アイテムがリストにない場合、売却できない旨のメッセージを表示
+			Debug.Log("リストにない");
 		}
 
-		if (!itemFound)
-		{
-			// 新しいアイテムの場合、リストに追加
-			party.Players[0].Items.Add(shopItems[choiceId]);
-			shopItems[choiceId].ItemCount = quantity;
-		}
-
-		OnItemButtonClick(selectedItemEntry);
-		//Debug.Log("Number of Items in Inventory: " + party.Players[0].Items.Count);
-		Debug.Log("購入"+shopItems[choiceId].ItemBase.Id);
-
-	}
-
-	// 売却する
-	public void OnSellPriceButtonClick()
-	{
-		var selectedItem = shopItems[choiceId];
-
-		// プレイヤーのアイテムリストをチェック
-	for (int i = 0; i < party.Players[0].Items.Count; i++)
-	{
-    Item item = party.Players[0].Items[i];
-
-    if (item.ItemBase.Id == selectedItem.ItemBase.Id)
-    {
-        // アイテムが見つかった場合、半額で売却
-        int sellPrice = item.ItemBase.Price / 2;
-        party.Players[0].gold += sellPrice; // プレイヤーの所持金を増やす
-        party.Players[0].Items[i].ItemCount = party.Players[0].Items[i].ItemCount - quantity;
-		OnItemButtonClick(selectedItemEntry);
-		//CreateSellButtons();
-	}
-	else 
-	{
-		Debug.Log("リストにあるけど持っていない");
-	}
-}
-
-		// アイテムがリストにない場合、売却できない旨のメッセージを表示
-		Debug.Log("リストにない");
+		itemCount.text = "myCount:" + selectedItemEntry.ItemCount.ToString();
 	}
 
 	// >>>>>>>>>>>> UI制御系 >>>>>>>>>>>>
@@ -237,53 +219,34 @@ public void ReturnButtonClick()
 {
     // 各HUDの表示状態を更新
     CommandHud.enabled = true;
-    BuyHud.enabled = false;
-    SellHud.enabled = false;
 	CommonHud.enabled=false;
 	tradeState = true;
-	CreateCell();
-
-	// 生成されたボタンのインスタンスを破棄してUIをクリア
-	// DestroyAllPrefabInstances();
-	}
+}
 
 // 購入画面の表示
 public void OnBuyButtonClick()
 {
-		tradeState = true;
-		CreateCell();
-		quantityField.text = "0";
-    // ショップのアイテムボタンを生成
-    //CreateShopButtons();
-   CommonHud.enabled=true;
-    // 初期選択アイテムと所持金の表示を設定
+	tradeState = true;
+	CreateCell();
+	CommonHud.enabled=true;
     selectedItemEntry = shopItems[0];
-    moneyField.text = party.Players[0].gold.ToString() + "Gold";
-
-    // 購入画面のみを表示
-    BuyHud.enabled = true;
-	SellHud.enabled = false;
-}
+	tradeTextField.text = "Purchase";
+		moneyField.text = party.Players[0].gold.ToString() + "Gold";
+	}
 
 // 売却画面の表示
 public void OnSellButtonClick()
 {
 	tradeState = false;
 	CreateCell();
-	quantityField.text = "0";
-    // プレイヤーのアイテムボタンを生成
-    //CreateSellButtons();
 	CommonHud.enabled=true;
-
-    // 売却画面のみを表示
-	    BuyHud.enabled = false;
-    SellHud.enabled = true;
-}
+		tradeTextField.text = "Sell";
+		moneyField.text = party.Players[0].gold.ToString() + "Gold";
+	}
 
 // 選択からゲーム画面に戻る
 public void OnEndButtonClick()
 {
-    // ショップHUDを非表示にしてゲーム画面に戻る
 	CommonHud.enabled=false;
     ShopHud.enabled = false;
 	
@@ -311,64 +274,36 @@ public void OnEndButtonClick()
 		if (tradeState == true)
         {
 			selectedItemEntry = shopItems[value];
+			sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
 			Debug.Log("追加したもの"+shopItems[value].ItemBase.name);
 		}
         else
         {
 			selectedItemEntry = party.Players[0].Items[value];
-
 		}
+		// 自分の所持数を表示
+		// valueがリストの範囲内にあるかどうかをチェック
+		if (value >= 0 && value < party.Players[0].Items.Count)
+		{
+			// valueがリストの範囲内にある場合、ItemCountを取得
+			itemCount.text = "myCount:" + party.Players[0].Items[value].ItemCount.ToString();
+		}
+		else
+		{
+			// valueが範囲外の場合、0を表示
+			itemCount.text = "myCount: 0";
+		}
+
+		// 個数を表示
+		quantityField.text = quantity.ToString();
+
+		// 説明を表示
+		descriptionField.text = selectedItemEntry.ItemBase.Description.ToString();
+		quantityField.text = "1";
+
+		////の表示
+		//moneyField.text = party.Players[0].gold.ToString() + "Gold";
+
+		//choiceId = item.ItemBase.Id;
 	}
-
-
-	#region 使わない関数
-	//private void CreateShopButtons()
-	//{
-	//	int buttonSpacing = -40; // ボタン間の間隔
-	//	int currentY = 90; // 現在のY位置
-
-
-	//	foreach (var item in shopItems)
-	//	{
-	//		GameObject buttonObj = Instantiate(itemButtunPrefab);
-	//		buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + item.ItemBase.ItemName + ", Price: " + item.Price;
-
-	//		buttonObj.GetComponent<Button>().onClick.AddListener(() => OnItemButtonClick(item));
-
-	//		// ボタンの位置を設定
-	//		RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
-	//		rectTransform.anchoredPosition = new Vector2(-150, currentY); // X位置を0に設定
-	//		currentY += buttonSpacing;
-
-	//		// ボタンをキャンバスまたは特定の親要素にアタッチ
-	//		// ボタンの親をキャンバスに設定
-	//		buttonObj.transform.SetParent(BuyHud.transform, false);
-	//		// 生成されたボタンの参照をリストに追加
-	//		buyButtonList.Add(buttonObj);
-	//	}
-	//}
-
-	//// 売却アイテムボタンをPlayerのItemsのリストから生成
-	//private void CreateSellButtons()
-	//{
-	//	int buttonSpacing = -40; // ボタン間の間隔
-	//	int currentY = 90; // 現在のY位置
-	//	foreach (var playerItem in party.Players[0].Items)
-	//	{
-	//		GameObject buttonObj = Instantiate(itemButtunPrefab);
-	//		buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + playerItem.ItemBase.ItemName + ", Count: " + playerItem.ItemCount;
-
-	//		buttonObj.GetComponent<Button>().onClick.AddListener(() => OnPlayerItemButtonClick(playerItem));
-
-	//		// ボタンの位置を設定
-	//		RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
-	//		rectTransform.anchoredPosition = new Vector2(-150, currentY); // X位置を-50に設定
-	//		currentY += buttonSpacing;
-
-	//		// ボタンをキャンバスまたは特定の親要素にアタッチ
-	//		buttonObj.transform.SetParent(SellHud.transform, false);
-	//		sellButtonList.Add(buttonObj);
-	//	}
-	//}
-	#endregion
 }
