@@ -13,8 +13,8 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 	public List<Item> ShopItems {get => shopItems; }
 
 	// ショップボタンを格納
-	private List<GameObject> buyButtonList = new List<GameObject>();
-	private List<GameObject> sellButtonList = new List<GameObject>();
+	//private List<GameObject> buyButtonList = new List<GameObject>();
+	//private List<GameObject> sellButtonList = new List<GameObject>();
 
 
 	private Item selectedItemEntry;
@@ -33,6 +33,7 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 	int choiceId = -1;
 
 	private List<ScrollerData> _data; // ここで変数を定義
+	bool tradeState = true;// true:buy, false:sell
 	public EnhancedScroller myScroller;
 	public CallView cellViewPrefab;
 
@@ -50,18 +51,49 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		descriptionField.text = "";
 		// CreateShopButtons();
 		_data = new List<ScrollerData>();
-		foreach (var item in ShopItems)
-		{
-			_data.Add(new ScrollerData()
-			{
-				id = item.ItemBase.Id,
-				cellText = item.ItemBase.ItemName }) ;
+		CreateCell();
 
-		}
 		myScroller.Delegate = this;
 		myScroller.ReloadData();
 	}
+
 	#region EnhancedScroller Handlers
+	/// <summary>
+	/// 売却・購入に合わせてCellの中身を更新する
+	/// </summary>
+	public void CreateCell()
+    {
+		// リストの内容をクリア
+		_data.Clear();
+
+		// 購入する場合のCellを生成
+		if (tradeState == true)
+		{
+			foreach (var buyItem in ShopItems)
+			{
+				_data.Add(new ScrollerData()
+				{
+					id = buyItem.ItemBase.Id,
+					cellText = buyItem.ItemBase.ItemName
+				});
+
+			}
+		}
+		// 売却する場合のCellを生成
+		else
+        {
+			foreach (var SellItem in party.Players[0].Items)
+            {
+				_data.Add(new ScrollerData()
+				{
+					id = SellItem.ItemBase.Id,
+					cellText = SellItem.ItemBase.ItemName
+				});
+			}
+        }
+		// スクローラーのビューを更新
+		myScroller.ReloadData();
+	}
 
 	public int GetNumberOfCells(EnhancedScroller scroller)
 	{
@@ -70,74 +102,21 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 
 	#endregion
 
-
-	// public void ClickConfirm()
-	// {
-	//     Debug.Log($"sssss");
-	// }
+	/// <summary>
+	/// ScriptableObjectのshopBaseをListに格納
+	/// </summary>
 	private void InitializeShopItems()
 	{
 		foreach (var newItem in shopBase.ShopItems)
 		{
-			// Item.item は ItemBase オブジェクトです
-			/*
-			Item newItem = new Item(newItemBase); // Itemオブジェクトを作成
-			Item newShopItemEntry = new Item(newItem.ItemBase); // 新しいItemEntryを作成
-			shopItems.Add(newShopItemEntry); // ItemEntryをリストに追加
-			*/
 			shopItems.Add(newItem);
 			Debug.Log("aaaa");
 		}
 	}
 
-	private void CreateShopButtons()
-	{
-		int buttonSpacing = -40; // ボタン間の間隔
-		int currentY = 90; // 現在のY位置
-
-
-		foreach (var item in shopItems)
-		{
-			GameObject buttonObj = Instantiate(itemButtunPrefab);
-			buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + item.ItemBase.ItemName + ", Price: " + item.Price;
-
-			buttonObj.GetComponent<Button>().onClick.AddListener(() => OnItemButtonClick(item));
-
-			// ボタンの位置を設定
-			RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
-			rectTransform.anchoredPosition = new Vector2(-150, currentY); // X位置を0に設定
-			currentY += buttonSpacing;
-
-			// ボタンをキャンバスまたは特定の親要素にアタッチ
-			// ボタンの親をキャンバスに設定
-			buttonObj.transform.SetParent(BuyHud.transform, false);
-			// 生成されたボタンの参照をリストに追加
-			buyButtonList.Add(buttonObj);
-		}
-	}
-
-	// 売却アイテムボタンをPlayerのItemsのリストから生成
-	private void  CreateSellButtons()
-	{
-		int buttonSpacing = -40; // ボタン間の間隔
-		int currentY = 90; // 現在のY位置
-		foreach (var playerItem in party.Players[0].Items)
-		{
-			GameObject buttonObj = Instantiate(itemButtunPrefab);
-			buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + playerItem.ItemBase.ItemName + ", Count: " + playerItem.ItemCount;
-
-			buttonObj.GetComponent<Button>().onClick.AddListener(() => OnPlayerItemButtonClick( playerItem));
-
-			// ボタンの位置を設定
-			RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
-			rectTransform.anchoredPosition = new Vector2(-150, currentY); // X位置を-50に設定
-			currentY += buttonSpacing;
-
-			// ボタンをキャンバスまたは特定の親要素にアタッチ
-			buttonObj.transform.SetParent(SellHud.transform, false);
-			sellButtonList.Add(buttonObj);
-		}
-	}
+	/// <summary>
+	/// ScriptableObjectのshopBaseを
+	/// </summary>
 
 
 	// 購入するときにitemShopからボタンを生成
@@ -150,11 +129,7 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		{
 			quantity = 1;
 		}
-	// 	if (party.Players[0].Items[item.ItemBase.Id] != null || party.Players[0].Items[item.ItemBase.Id].ItemCount != 0){
-
-	// itemCount.text = party.Players[0].Items[item.ItemBase.Id].ItemCount.ToString();
-	// 	}
-descriptionField.text = item.ItemBase.Description.ToString();
+		descriptionField.text = item.ItemBase.Description.ToString();
 		// アイテムがクリックされたときの処理
 		quantityField.text = quantity.ToString();
 		
@@ -241,7 +216,7 @@ public void OnPlayerItemButtonClick(Item items)
         party.Players[0].gold += sellPrice; // プレイヤーの所持金を増やす
         party.Players[0].Items[i].ItemCount = party.Players[0].Items[i].ItemCount - quantity;
 		OnItemButtonClick(selectedItemEntry);
-		CreateSellButtons();
+		//CreateSellButtons();
 	}
 	else 
 	{
@@ -253,21 +228,6 @@ public void OnPlayerItemButtonClick(Item items)
 		Debug.Log("リストにない");
 	}
 
-	public void DestroyAllPrefabInstances()
-	{
-		foreach (var instance in sellButtonList)
-		{
-			Destroy(instance);
-		}
-		foreach (var instance in buyButtonList)
-		{
-			// ゲームオブジェクトの破棄
-			Destroy(instance);
-		}
-		buyButtonList.Clear(); // リストをクリア
-		sellButtonList.Clear(); // リストをクリア
-	}
-
 	// >>>>>>>>>>>> UI制御系 >>>>>>>>>>>>
 
 // 購入 or 売却画面から選択画面に戻る
@@ -277,18 +237,23 @@ public void ReturnButtonClick()
     CommandHud.enabled = true;
     BuyHud.enabled = false;
     SellHud.enabled = false;
-		CommonHud.enabled=false;
+	CommonHud.enabled=false;
+	tradeState = true;
+	CreateCell();
 
-    // 生成されたボタンのインスタンスを破棄してUIをクリア
-    DestroyAllPrefabInstances();
-}
+	// 生成されたボタンのインスタンスを破棄してUIをクリア
+	// DestroyAllPrefabInstances();
+	}
 
 // 購入画面の表示
 public void OnBuyButtonClick()
-{quantityField.text = "0";
+{
+		tradeState = false;
+		CreateCell();
+		quantityField.text = "0";
     // ショップのアイテムボタンを生成
-    CreateShopButtons();
-    	CommonHud.enabled=true;
+    //CreateShopButtons();
+   CommonHud.enabled=true;
     // 初期選択アイテムと所持金の表示を設定
     selectedItemEntry = shopItems[0];
     moneyField.text = party.Players[0].gold.ToString() + "Gold";
@@ -302,7 +267,7 @@ public void OnBuyButtonClick()
 public void OnSellButtonClick()
 {quantityField.text = "0";
     // プレイヤーのアイテムボタンを生成
-    CreateSellButtons();
+    //CreateSellButtons();
 	CommonHud.enabled=true;
 
     // 売却画面のみを表示
@@ -318,12 +283,6 @@ public void OnEndButtonClick()
     ShopHud.enabled = false;
 	
 }
-
-	//public int GetNumberOfCells(EnhancedScroller scroller)
-	//{
-	//	// ここではデータリストのサイズ（要素数）を返します
-	//	return _data.Count;
-	//}
 
 	public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
 	{
@@ -343,8 +302,68 @@ public void OnEndButtonClick()
 	
 	private void CellButtonDataIntegerClicked(int value)
 	{
-		Debug.Log("Cell Data Integer Button Clicked! Value = " + value);
+		// Debug.Log("Cell Data Integer Button Clicked! Value = " + value);
+		if (tradeState == true)
+        {
+			selectedItemEntry = shopItems[value];
+			Debug.Log("追加したもの"+shopItems[value].ItemBase.name);
+		}
+        else
+        {
+			selectedItemEntry = party.Players[0].Items[value];
+
+		}
 	}
 
-	// <<<<<<<<<<<< UI制御系 <<<<<<<<<<<
+
+	#region 使わない関数
+	//private void CreateShopButtons()
+	//{
+	//	int buttonSpacing = -40; // ボタン間の間隔
+	//	int currentY = 90; // 現在のY位置
+
+
+	//	foreach (var item in shopItems)
+	//	{
+	//		GameObject buttonObj = Instantiate(itemButtunPrefab);
+	//		buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + item.ItemBase.ItemName + ", Price: " + item.Price;
+
+	//		buttonObj.GetComponent<Button>().onClick.AddListener(() => OnItemButtonClick(item));
+
+	//		// ボタンの位置を設定
+	//		RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
+	//		rectTransform.anchoredPosition = new Vector2(-150, currentY); // X位置を0に設定
+	//		currentY += buttonSpacing;
+
+	//		// ボタンをキャンバスまたは特定の親要素にアタッチ
+	//		// ボタンの親をキャンバスに設定
+	//		buttonObj.transform.SetParent(BuyHud.transform, false);
+	//		// 生成されたボタンの参照をリストに追加
+	//		buyButtonList.Add(buttonObj);
+	//	}
+	//}
+
+	//// 売却アイテムボタンをPlayerのItemsのリストから生成
+	//private void CreateSellButtons()
+	//{
+	//	int buttonSpacing = -40; // ボタン間の間隔
+	//	int currentY = 90; // 現在のY位置
+	//	foreach (var playerItem in party.Players[0].Items)
+	//	{
+	//		GameObject buttonObj = Instantiate(itemButtunPrefab);
+	//		buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = "Name: " + playerItem.ItemBase.ItemName + ", Count: " + playerItem.ItemCount;
+
+	//		buttonObj.GetComponent<Button>().onClick.AddListener(() => OnPlayerItemButtonClick(playerItem));
+
+	//		// ボタンの位置を設定
+	//		RectTransform rectTransform = buttonObj.GetComponent<RectTransform>();
+	//		rectTransform.anchoredPosition = new Vector2(-150, currentY); // X位置を-50に設定
+	//		currentY += buttonSpacing;
+
+	//		// ボタンをキャンバスまたは特定の親要素にアタッチ
+	//		buttonObj.transform.SetParent(SellHud.transform, false);
+	//		sellButtonList.Add(buttonObj);
+	//	}
+	//}
+	#endregion
 }
