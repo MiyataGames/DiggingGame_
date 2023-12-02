@@ -2,9 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections.Generic;  
+using System.Collections.Generic;
+using EnhancedUI.EnhancedScroller;
 
-public class FieldShop : MonoBehaviour
+public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 {
 	public ShopBase shopBase;
 	public GameObject itemButtunPrefab; // ボタンのプレファブ
@@ -31,20 +32,32 @@ public class FieldShop : MonoBehaviour
 	int quantity = 1;
 	int choiceId = -1;
 
+	private List<ScrollerData> _data; // ここで変数を定義
+	public EnhancedScroller myScroller;
+	public CallView cellViewPrefab;
+
 	[SerializeField] Party party;
 
-	void Awake()
+	void Start()
 	{
 		// GameManagerに後で移す
 		party.Setup();
 		party = party.GetComponent<Party>();
 		InitializeShopItems();
 		moneyField.text =  party.Players[0].gold.ToString() + "Gold";
-				quantityField.text = "1";
-				itemCount.text = "0";
-				descriptionField.text = "";
+		quantityField.text = "1";
+		itemCount.text = "0";
+		descriptionField.text = "";
 		// CreateShopButtons();
+		_data = new List<ScrollerData>();
+		foreach (var item in ShopItems)
+		{
+			_data.Add(new ScrollerData() { cellText = item.ItemBase.ItemName });
+		}
+		myScroller.Delegate = this;
+		myScroller.ReloadData();
 	}
+	
 
 	// public void ClickConfirm()
 	// {
@@ -294,5 +307,26 @@ public void OnEndButtonClick()
 	
 }
 
-// <<<<<<<<<<<< UI制御系 <<<<<<<<<<<
+	public int GetNumberOfCells(EnhancedScroller scroller)
+	{
+		// ここではデータリストのサイズ（要素数）を返します
+		return _data.Count;
+	}
+
+	public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
+	{
+		// ここでは各セルのサイズを返します（例：60ユニット）
+		return 60f;
+	}
+
+	public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+	{
+		// ここではセルビューを生成し、データを設定します
+		CallView cellView = scroller.GetCellView(cellViewPrefab) as CallView;
+		cellView.SetData(_data[dataIndex]);
+		return cellView;
+	}
+
+
+	// <<<<<<<<<<<< UI制御系 <<<<<<<<<<<
 }
