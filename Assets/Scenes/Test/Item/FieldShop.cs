@@ -69,6 +69,7 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		// 購入する場合のCellを生成
 		if (tradeState == true)
 		{
+			Debug.Log("ddds");
 			foreach (var buyItem in ShopItems)
 			{
 				_data.Add(new ScrollerData()
@@ -196,7 +197,8 @@ public void OnPlayerItemButtonClick(Item items)
 
 		OnItemButtonClick(selectedItemEntry);
 		//Debug.Log("Number of Items in Inventory: " + party.Players[0].Items.Count);
-		Debug.Log(shopItems[choiceId].ItemBase.Id);
+		Debug.Log("購入"+shopItems[choiceId].ItemBase.Id);
+
 	}
 
 	// 売却する
@@ -248,7 +250,7 @@ public void ReturnButtonClick()
 // 購入画面の表示
 public void OnBuyButtonClick()
 {
-		tradeState = false;
+		tradeState = true;
 		CreateCell();
 		quantityField.text = "0";
     // ショップのアイテムボタンを生成
@@ -265,7 +267,10 @@ public void OnBuyButtonClick()
 
 // 売却画面の表示
 public void OnSellButtonClick()
-{quantityField.text = "0";
+{
+	tradeState = false;
+	CreateCell();
+	quantityField.text = "0";
     // プレイヤーのアイテムボタンを生成
     //CreateSellButtons();
 	CommonHud.enabled=true;
