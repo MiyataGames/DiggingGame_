@@ -932,13 +932,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void PlayerEndSkillInput()
     {
         Debug.Log("PlayerEndInput()");
-        //StartCoroutine(PerformPlayerSkill());
-        PerformPlayerSkill();
+        StartCoroutine(PerformPlayerSkill());
+        //PerformPlayerSkill();
     }
 
     // 全体攻撃のモーションを変更中
     // スキルの発動 IEnumerator
-    private void PerformPlayerSkill()
+    private IEnumerator PerformPlayerSkill()
     {
         battleState = BattleState.BUSY;
         // 技を決定
@@ -1045,7 +1045,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("戦闘不能");
 
                 battleState = BattleState.BUSY;
-                //yield return new WaitForSeconds(0.7f);
+                yield return new WaitForSeconds(0.7f);
                 // 3Dモデルの削除
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
@@ -1221,14 +1221,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
             Debug.Log("EnemySkill　1秒まつ");
-            //yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(1);
             // 全員瀕死になったら戦闘不能
             if (isDying.All(value => value == true))
             {
                 Debug.Log("戦闘不能");
 
                 battleState = BattleState.BUSY;
-                //yield return new WaitForSeconds(0.7f);
+                yield return new WaitForSeconds(0.7f);
                 // 3Dモデルの削除
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
@@ -1305,8 +1305,84 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             MoveSkillBase Skill = playerSkill.skillBase as MoveSkillBase;
             // 移動させる
-            StartCoroutine(MoveEnemies(activeEnemies[selectedTargetIndex], Skill.Direction));
+            MoveEnemies(activeEnemies[selectedTargetIndex], Skill.Direction);
+            // 1秒まつ
+            yield return new WaitForSeconds(1);
+            // ダメージ処理
+            // ダメージ決定　生きているキャラクター分の配列を用意
+            bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
 
+            /*
+            // ターンのプレイヤーのスキル発動モーション
+            player.PlayerAnimator.Play(hashSkill);
+            yield return null;// ステートの反映
+            // ターンのプレイヤーのペルソナのスキル発動モーション
+            player.EquipEnemy.EnemyAnimator.Play(hashAttack);
+            yield return null;// ステートの反映
+            yield return new WaitForAnimation(player.PlayerAnimator, 0);
+            player.PlayerAnimator.SetBool("SkillToIdle", true);
+            player.PlayerAnimator.SetBool("IdleToSkillIdle", false);
+            */
+            if (playerSkill.skillBase.SkillRecieveEffect != null)
+            {
+                Instantiate(playerSkill.skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.position, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.rotation);
+            }
+            isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeSkillDamage(playerSkill, turnCharacter);
+            // アニメーションやUI表示
+
+            // ダメージモーション
+            // activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
+
+            // HPSPの反映
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyUI.UpdateHp();
+            }
+
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                // 戦闘不能な敵を消す
+                if (isDying[i] == true)
+                {
+                    // i番目の敵のモデルを消す
+                    //activeEnemies[i].EnemyModel.SetActive(false);
+                    Destroy(activeEnemies[i].EnemyPrefab);
+                    // i番目の敵のUIを消す
+                    activeEnemies[i].EnemyUI.UnActiveUIPanel();
+                    // i番目の敵のisDyingをtrueにする
+                    characters.Find(value => value == activeEnemies[i]).isDying = true;
+                }
+            }
+            // 全員戦闘不能ならメッセージ
+            // 戦闘不能の敵を検索してリムーブする
+            List<Enemy> deadEnemies = activeEnemies.FindAll(value => value.isDying == true);
+            for (int i = 0; i < deadEnemies.Count; i++)
+            {
+                activeEnemies.Remove(deadEnemies[i]);
+            }
+
+            Debug.Log("EnemySkill　1秒まつ");
+            //yield return new WaitForSeconds(1);
+            // 全員瀕死になったら戦闘不能
+            if (isDying.All(value => value == true))
+            {
+                Debug.Log("戦闘不能");
+
+                battleState = BattleState.BUSY;
+                yield return new WaitForSeconds(0.7f);
+                // 3Dモデルの削除
+                for (int i = 0; i < activePlayers.Count; i++)
+                {
+                    //Destroy(activePlayers[i].PlayerModel);
+                }
+                //フィールドのシーンに戻る
+                EndBattle();
+
+            }
+            else// 一体でも生き残っていれば
+            {
+                NextTurn();
+            }
         }
     }
     /// <summary>
@@ -1314,7 +1390,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     /// </summary>
     /// <param name="attackedEnemy">攻撃された敵</param>
     /// <param name="direction">移動させる方向</param>
-    IEnumerator MoveEnemies(Enemy attackedEnemy, Direction direction)
+    void MoveEnemies(Enemy attackedEnemy, Direction direction)
     {
         float[] diff = { -1.0f, 0, 1.0f };
         List<Enemy> enemiesToMove = new List<Enemy>();
@@ -1361,7 +1437,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 }
                 // ちょっと時間をずらして移動
                 //yield return new WaitForSeconds(0.3f);
-                yield return null;
             }
         }
     }
@@ -1761,7 +1836,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             inputSkillStatement = InputSkillStatement.INIT_SKILL;// スキルを選択初期状態に戻す
-            // スキルパネルを非表示にする
+                                                                 // スキルパネルを非表示にする
             battleCommand.ActivateSkillCommandPanel(false);
             // メインパネルを表示する
             battleCommand.ActivateBattleCommandPanel(true);
@@ -1870,7 +1945,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             inputItemStatement = InputItemStatement.INIT_ITEM;// スキルを選択初期状態に戻す
-            // スキルパネルを非表示にする
+                                                              // スキルパネルを非表示にする
             battleCommand.ActivateSkillCommandPanel(false);
             // メインパネルを表示する
             battleCommand.ActivateBattleCommandPanel(true);
@@ -1989,7 +2064,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             inputItemStatement = InputItemStatement.ITEM_SELECT;// スキル選択状態に戻す
-            // ターゲット選択矢印を非表示にする
+                                                                // ターゲット選択矢印を非表示にする
             for (int i = 0; i < activePlayers.Count; i++)
             {
                 activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
