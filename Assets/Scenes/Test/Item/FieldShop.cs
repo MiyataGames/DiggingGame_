@@ -52,12 +52,24 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		_data = new List<ScrollerData>();
 		foreach (var item in ShopItems)
 		{
-			_data.Add(new ScrollerData() { cellText = item.ItemBase.ItemName });
+			_data.Add(new ScrollerData()
+			{
+				id = item.ItemBase.Id,
+				cellText = item.ItemBase.ItemName }) ;
+
 		}
 		myScroller.Delegate = this;
 		myScroller.ReloadData();
 	}
-	
+	#region EnhancedScroller Handlers
+
+	public int GetNumberOfCells(EnhancedScroller scroller)
+	{
+		return _data.Count;
+	}
+
+	#endregion
+
 
 	// public void ClickConfirm()
 	// {
@@ -307,11 +319,11 @@ public void OnEndButtonClick()
 	
 }
 
-	public int GetNumberOfCells(EnhancedScroller scroller)
-	{
-		// ここではデータリストのサイズ（要素数）を返します
-		return _data.Count;
-	}
+	//public int GetNumberOfCells(EnhancedScroller scroller)
+	//{
+	//	// ここではデータリストのサイズ（要素数）を返します
+	//	return _data.Count;
+	//}
 
 	public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
 	{
@@ -324,9 +336,15 @@ public void OnEndButtonClick()
 		// ここではセルビューを生成し、データを設定します
 		CallView cellView = scroller.GetCellView(cellViewPrefab) as CallView;
 		cellView.SetData(_data[dataIndex]);
+		cellView.cellButtonDataIntegerClicked = CellButtonDataIntegerClicked;
+
 		return cellView;
 	}
-
+	
+	private void CellButtonDataIntegerClicked(int value)
+	{
+		Debug.Log("Cell Data Integer Button Clicked! Value = " + value);
+	}
 
 	// <<<<<<<<<<<< UI制御系 <<<<<<<<<<<
 }
