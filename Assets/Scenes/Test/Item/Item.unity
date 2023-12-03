@@ -358,8 +358,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 326.5, y: 204}
-  m_SizeDelta: {x: 653, y: 408}
+  m_AnchoredPosition: {x: 480, y: 270}
+  m_SizeDelta: {x: 960, y: 540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &36788679
 GameObject:
@@ -399,8 +399,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -242.72736, y: 112.60971}
-  m_SizeDelta: {x: -520.3289, y: -236.9822}
+  m_AnchoredPosition: {x: -374.98633, y: 163.14957}
+  m_SizeDelta: {x: -805.2809, y: -369.2813}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &36788681
 MonoBehaviour:
@@ -6922,7 +6922,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 307, y: 126}
+  m_AnchoredPosition: {x: 373, y: 169.23}
   m_SizeDelta: {x: 145.6, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &156291836
@@ -7010,7 +7010,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 1.9282074, w: 17.095238}
+  m_margin: {x: 0, y: 0, z: 1.9282074, w: 18.923576}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -7061,7 +7061,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 313, y: -148}
+  m_AnchoredPosition: {x: 378, y: -130}
   m_SizeDelta: {x: 84.909, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &172615448
@@ -7193,7 +7193,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -42.5811, y: -160.8872}
+  m_AnchoredPosition: {x: -59, y: -169.61}
   m_SizeDelta: {x: 386.0377, y: 69.7744}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &180630642
@@ -7330,7 +7330,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 312, y: -52}
+  m_AnchoredPosition: {x: 377, y: -34}
   m_SizeDelta: {x: 48.4182, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &241708509
@@ -7577,8 +7577,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -42.788025, y: -162.5}
-  m_SizeDelta: {x: -714.348, y: -371.2344}
+  m_AnchoredPosition: {x: 7.402588, y: -185.62}
+  m_SizeDelta: {x: -775.13, y: -371.2344}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &339835863
 MonoBehaviour:
@@ -7695,7 +7695,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 305.86, y: 70.5}
+  m_AnchoredPosition: {x: 374.14, y: 96}
   m_SizeDelta: {x: 143.32, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &370787631
@@ -8213,8 +8213,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 424, y: 238.5}
-  m_SizeDelta: {x: 848, y: 477}
+  m_AnchoredPosition: {x: 479.99997, y: 270}
+  m_SizeDelta: {x: 960, y: 540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &517107719
 MonoBehaviour:
@@ -8263,7 +8263,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 517107717}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -8770,7 +8770,7 @@ GameObject:
   - component: {fileID: 777813793}
   - component: {fileID: 777813792}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TradeText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8930,7 +8930,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 306.38, y: -101}
+  m_AnchoredPosition: {x: 371.38, y: -83}
   m_SizeDelta: {x: 142.27, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &881470170
@@ -9066,8 +9066,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -148.5, y: 124.30023}
-  m_SizeDelta: {x: -673.80005, y: -438.9206}
+  m_AnchoredPosition: {x: -182.69641, y: 221.07477}
+  m_SizeDelta: {x: -790.1909, y: -505.0701}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &929586156
 MonoBehaviour:
@@ -9371,7 +9371,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 306.38, y: 17}
+  m_AnchoredPosition: {x: 377.04, y: 25}
   m_SizeDelta: {x: 142.27, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &977484977 stripped
@@ -10254,7 +10254,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300.8673, y: -204.5}
+  m_AnchoredPosition: {x: 378, y: -219.5}
   m_SizeDelta: {x: 111.9183, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1264934121
@@ -11216,7 +11216,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 5
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -11296,8 +11296,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -42.581985, y: -1.7679}
-  m_SizeDelta: {x: 386.04, y: 194.5339}
+  m_AnchoredPosition: {x: 7.399, y: 46.498}
+  m_SizeDelta: {x: 550, y: 295.47}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1617266529
 GameObject:
@@ -12333,6 +12333,7 @@ MonoBehaviour:
   sellPriceField: {fileID: 370787631}
   itemCount: {fileID: 963051980}
   descriptionField: {fileID: 180630642}
+  tradeTextField: {fileID: 777813792}
   myScroller: {fileID: 1589343731}
   cellViewPrefab: {fileID: 6769216843780700808, guid: 69241a1c562c9c648ae17802a0be7ba9, type: 3}
   party: {fileID: 4493679613633154106}

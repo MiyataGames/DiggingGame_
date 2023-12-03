@@ -220,7 +220,6 @@ public void ReturnButtonClick()
     // 各HUDの表示状態を更新
     CommandHud.enabled = true;
 	CommonHud.enabled=false;
-	tradeState = true;
 }
 
 // 購入画面の表示
@@ -231,8 +230,8 @@ public void OnBuyButtonClick()
 	CommonHud.enabled=true;
     selectedItemEntry = shopItems[0];
 	tradeTextField.text = "Purchase";
-		moneyField.text = party.Players[0].gold.ToString() + "Gold";
-	}
+	moneyField.text = party.Players[0].gold.ToString() + "Gold";
+}
 
 // 売却画面の表示
 public void OnSellButtonClick()
@@ -240,16 +239,15 @@ public void OnSellButtonClick()
 	tradeState = false;
 	CreateCell();
 	CommonHud.enabled=true;
-		tradeTextField.text = "Sell";
-		moneyField.text = party.Players[0].gold.ToString() + "Gold";
-	}
+	tradeTextField.text = "Sell";
+	moneyField.text = party.Players[0].gold.ToString() + "Gold";
+}
 
 // 選択からゲーム画面に戻る
 public void OnEndButtonClick()
 {
 	CommonHud.enabled=false;
     ShopHud.enabled = false;
-	
 }
 
 	public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
@@ -270,12 +268,13 @@ public void OnEndButtonClick()
 	
 	private void CellButtonDataIntegerClicked(int value)
 	{
-		// Debug.Log("Cell Data Integer Button Clicked! Value = " + value);
+		Debug.Log("Cell Data Integer Button Clicked! Value = " + value);
+
 		if (tradeState == true)
         {
 			selectedItemEntry = shopItems[value];
 			sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
-			Debug.Log("追加したもの"+shopItems[value].ItemBase.name);
+			// Debug.Log("追加したもの"+shopItems[value].ItemBase.name);
 		}
         else
         {
@@ -283,21 +282,14 @@ public void OnEndButtonClick()
 		}
 		// 自分の所持数を表示
 		// valueがリストの範囲内にあるかどうかをチェック
-		if (value >= 0 && value < party.Players[0].Items.Count)
-		{
-			// valueがリストの範囲内にある場合、ItemCountを取得
-			itemCount.text = "myCount:" + party.Players[0].Items[value].ItemCount.ToString();
-		}
-		else
-		{
-			// valueが範囲外の場合、0を表示
-			itemCount.text = "myCount: 0";
-		}
+		OnItemButtonClick(selectedItemEntry);
+		itemCount.text = "myCount:" + party.Players[0].Items[value].ItemCount.ToString();
 
 		// 個数を表示
 		quantityField.text = quantity.ToString();
 
 		// 説明を表示
+		Debug.Log("説明:"+selectedItemEntry.ItemBase.Description.ToString());
 		descriptionField.text = selectedItemEntry.ItemBase.Description.ToString();
 		quantityField.text = "1";
 
