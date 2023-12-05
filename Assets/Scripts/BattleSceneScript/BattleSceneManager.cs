@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using EnhancedUI.EnhancedScroller;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public enum BattleState
 {
@@ -14,6 +15,7 @@ public enum BattleState
     PLAYER_ACTION_SELECT,
     PLAYER_MOVE,
     ENEMY_MOVE,
+    CHECK_HOLE_POSITION,
     BUSY,
     END_BATTLE,
 }
@@ -125,6 +127,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] DiggingGridManager diggingGridManager;
     public InputDiggingStatement inputDiggingStatement;
     [SerializeField] GameObject[] diggingPositions;
+    // 移動先のポジション
+    int targetPositionIndex = -1;
 
 
     public void StartBattle()
@@ -230,6 +234,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     PlayerEndItemInput();
                 }
             }
+        }
+        else if (battleState == BattleState.CHECK_HOLE_POSITION)
+        {
+            CheckHolePosition(targetPositionIndex);
         }
         else if (battleState == BattleState.ENEMY_MOVE)
         {
@@ -1299,8 +1307,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 }
             }
             NextTurn();
-            // 移動攻撃魔法だったら
         }
+        // 移動攻撃魔法だったら
         else if (playerSkill.skillBase.SkillCategory == SKILL_CATEGORY.MOVE_ATTACK)
         {
             MoveSkillBase Skill = playerSkill.skillBase as MoveSkillBase;
@@ -1381,7 +1389,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
             else// 一体でも生き残っていれば
             {
-                NextTurn();
+                // 穴チェックに移行
+                battleState = BattleState.CHECK_HOLE_POSITION;
+                Debug.Log("穴チェックに移行");
+                // NextTurn();
             }
         }
     }
@@ -1411,29 +1422,29 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         foreach (Enemy enemy in enemiesToMove)
         {
             i++;
-            int newPositionIndex = GetNewPositionIndex(enemy.positionIndex, direction);
-            if (newPositionIndex != enemy.positionIndex)
+            targetPositionIndex = GetNewPositionIndex(enemy.positionIndex, direction);
+            if (targetPositionIndex != enemy.positionIndex)
             {
-                enemy.positionIndex = newPositionIndex;
+                enemy.positionIndex = targetPositionIndex;
                 if (direction == Direction.RIGHT)
                 {
                     // 移動
-                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[newPositionIndex].transform.position.x + diff[i], diggingPositions[newPositionIndex].transform.position.y, diggingPositions[newPositionIndex].transform.position.z), 1);
+                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x + diff[i], diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 1);
                     //enemy.EnemyPrefab.transform.position = new Vector3(diggingPositions[newPositionIndex].transform.position.x + diff[i], diggingPositions[newPositionIndex].transform.position.y, diggingPositions[newPositionIndex].transform.position.z);
                 }
                 else if (direction == Direction.LEFT)
                 {
                     // 移動
-                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[newPositionIndex].transform.position.x + diff[i], diggingPositions[newPositionIndex].transform.position.y, diggingPositions[newPositionIndex].transform.position.z), 1);
+                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x + diff[i], diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 1);
                 }
                 else if (direction == Direction.UP)
                 {
                     // 移動
-                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[newPositionIndex].transform.position.x, diggingPositions[newPositionIndex].transform.position.y, diggingPositions[newPositionIndex].transform.position.z + diff[i]), 1);
+                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z + diff[i]), 1);
                 }
                 else if (direction == Direction.DOWN)
                 {
-                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[newPositionIndex].transform.position.x, diggingPositions[newPositionIndex].transform.position.y, diggingPositions[newPositionIndex].transform.position.z - diff[i]), 1);
+                    enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z - diff[i]), 1);
                 }
                 // ちょっと時間をずらして移動
                 //yield return new WaitForSeconds(0.3f);
@@ -1493,6 +1504,54 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 return 0;
         }
     }
+
+    // 敵の移動先の穴にアイテムが埋まっていたらそのアイテムの効果を発動する
+    void CheckHolePosition(int position)
+    {
+        Debug.Log("穴チェック" + battleState);
+        bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
+        Item item = diggingGridManager.gridItems[position];
+        TrapItemBase itemBase = item.ItemBase as TrapItemBase;
+        // 敵の移動先の穴にアイテムが埋まっていたら
+        if (item != null)
+        {
+            // アイテムの効果を発動する
+            if (itemBase.Condition == STATUS_CONDITION_TYPE.NONE)
+            {
+                // もしその位置に敵がいたら
+                for (int i = 0; i < activeEnemies.Count; i++)
+                {
+                    if (activeEnemies[i].positionIndex == position)
+                    {
+                        // ダメージ処理
+                        isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.BasicDamage, turnCharacter, activeEnemies[i]);
+                    }
+                }
+            }
+        }
+
+        // 戦闘不能チェック
+        if (isDying.All(value => value == true))
+        {
+            Debug.Log("戦闘不能");
+
+            battleState = BattleState.BUSY;
+            //yield return new WaitForSeconds(0.7f);
+            // 3Dモデルの削除
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                //Destroy(activePlayers[i].PlayerModel);
+            }
+            //フィールドのシーンに戻る
+            EndBattle();
+
+        }
+        else// 一体でも生き残っていれば
+        {
+            NextTurn();
+        }
+    }
+
     /// <summary>
     /// 次のターンに移行する
     /// </summary>
