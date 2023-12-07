@@ -1517,24 +1517,59 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (item != null)
         {
             // アイテムの効果を発動する
-            if (itemBase.Condition == STATUS_CONDITION_TYPE.NONE)
+            // 全アイテム共通：ダメージ処理
+            // もしその位置に敵がいたら
+            for (int i = 0; i < activeEnemies.Count; i++)
             {
-                // もしその位置に敵がいたら
+                if (activeEnemies[i].positionIndex == position)
+                {
+                    // ダメージ処理
+                    isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.BasicDamage, turnCharacter, activeEnemies[i]);
+                }
+            }
+            // HPSPの反映
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyUI.UpdateHp();
+            }
+            // 状態異常の処理
+            if (itemBase.Condition == STATUS_CONDITION_TYPE.POISON)
+            {
                 for (int i = 0; i < activeEnemies.Count; i++)
                 {
                     if (activeEnemies[i].positionIndex == position)
                     {
-                        Debug.Log("敵にアイテムのダメージを入れる");
-                        // ダメージ処理
-                        isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.BasicDamage, turnCharacter, activeEnemies[i]);
+                        // 状態異常：毒にする
+                        int duration = Random.Range(2, 4);
+                        StatusCondition condition = new StatusCondition(itemBase.Condition, duration);
+                        switch (itemBase.Condition)
+                        {
+                            // 毒状態
+                            case STATUS_CONDITION_TYPE.POISON:
+                                condition = new PoisonCondition(duration);
+                                break;
+                            // まひ状態
+                            case STATUS_CONDITION_TYPE.PARALYSIS:
+                                condition = new ParalysisCondition(duration);
+                                break;
+                            case STATUS_CONDITION_TYPE.BURN:
+                                condition = new BurnCondition(duration);
+                                break;
+                            case STATUS_CONDITION_TYPE.FREEZE:
+                                condition = new FreezeCondition(duration);
+                                break;
+                            case STATUS_CONDITION_TYPE.SLEEP:
+                                condition = new SleepCondition(duration);
+                                break;
+
+                        }
+                        // 状態異常にかかる　追加する方法がわからん
+                        activeEnemies[i].AddCondition(condition);
+                        Debug.Log("状態異常にかかった");
                     }
                 }
-                // HPSPの反映
-                for (int i = 0; i < activeEnemies.Count; i++)
-                {
-                    activeEnemies[i].EnemyUI.UpdateHp();
-                }
             }
+
         }
 
         // 戦闘不能チェック
