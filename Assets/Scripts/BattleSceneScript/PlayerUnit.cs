@@ -50,12 +50,12 @@ public class PlayerUnit : MonoBehaviour
         {
             // 早い順に順番にplayerをいれる
             players[j] = player.Key;
-            /*
+            
             //playerModelを生成
-            players[j].PlayerModel = Instantiate(players[j].PlayerBase.PlayerModel, PlayerBeforePos[j].transform);
-            players[j].PlayerAnimator = players[j].PlayerModel.GetComponent<Animator>();
-            */
+            //players[j].PlayerModel = Instantiate(players[j].PlayerBase.PlayerModel, PlayerBeforePos[j].transform);
+            
             players[j].PlayerBattleSprite = Instantiate(players[j].PlayerBase.PlayerBattleSceneSprite, playerPos[j].transform);
+            players[j].PlayerBattleAnimator = players[j].PlayerBattleSprite.GetComponent<Animator>();
             players[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
             players[j].battlePlayerUI.SetPlayerData(players[j]);
             //Debug.Log("ResultPanel/player" + j + "ResultPanel");

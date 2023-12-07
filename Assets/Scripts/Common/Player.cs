@@ -16,6 +16,7 @@ public class Player : Character
     public PlayerFieldUI playerUI;
     public BattlePlayerUI battlePlayerUI;
     public List<Item> items;
+    Animator playerBattleAnimator;
 
     // レベルに応じたHPを返す
     public int currentMaxHp
@@ -32,6 +33,7 @@ public class Player : Character
     // Start is called before the first frame update
     public List<Item> Items { get => items; set => items = value; }
     public int PlayerID { get => playerID;}
+    public Animator PlayerBattleAnimator { get => playerBattleAnimator; set => playerBattleAnimator = value; }
 
     public Player(PlayerBase pBase, int level,List<ItemBase> debugItemBase)
     {

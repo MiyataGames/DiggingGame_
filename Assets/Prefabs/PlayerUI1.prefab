@@ -67,7 +67,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -170,8 +170,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spBar: {fileID: 4503451891278375292}
-  spText: {fileID: 4503451893177933939}
-  maxSpText: {fileID: 4503451892359072624}
 --- !u!1 &4503451891293388232
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +237,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fcb8fa0a7a809fd4ba7d30ea23e852e4, type: 3}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -319,7 +317,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -401,7 +399,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -582,8 +580,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpBar: {fileID: 4503451892244974351}
-  hpText: {fileID: 4503451891261755139}
-  maxHpText: {fileID: 4503451891408590323}
 --- !u!1 &4503451892359072626
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +647,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -733,7 +729,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -891,7 +887,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: e9f9b08cf7dde4714b33200f1718e083, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -1006,7 +1002,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a675eae52d3e3814ca59c7e16f4dae48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player:
+    isPlayer: 0
+    isDying: 0
+    isFainted: 0
+    characterName: 
+    level: 0
+    currentMaxHp: 0
+    currentMaxSp: 0
+    currentHP: 0
+    currentSP: 0
+    currentMaxAtk: 0
+    currentMaxDef: 0
+    currentMaxAgi: 0
+    atk: 0
+    def: 0
+    agi: 0
+    isParalyzed: 0
+    playerUI: {fileID: 0}
+    battlePlayerUI: {fileID: 0}
+    items: []
   statusPlayerNameText: {fileID: 4503451891293388246}
   statusPlayerHpText: {fileID: 4503451891261755139}
   statusPlayerMaxHpText: {fileID: 4503451891408590323}
