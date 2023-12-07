@@ -11833,7 +11833,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u30B9\u30AD\u30EB"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c72427644e6d2584ba69b91667a44049, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7555b227ae3cf46639be2a5c3b1348df, type: 2}
   m_sharedMaterial: {fileID: 8866462856780669400, guid: 7555b227ae3cf46639be2a5c3b1348df, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -13668,7 +13668,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 00b7b8ec98b6d4839815ea2ef1b81a18, type: 2}
   - {fileID: 11400000, guid: 3d5018b865d2e4a858dd993f35c3fe77, type: 2}
   - {fileID: 11400000, guid: e5fc4f0d0a73e445d9353356eb897532, type: 2}
-  - {fileID: 11400000, guid: 344dc9264039a43eeb23efc56032b197, type: 2}
+  - {fileID: 11400000, guid: b9fc0499d97cb446ab77789b22c6e7db, type: 2}
   - {fileID: 11400000, guid: da3025400afee45f38b840ca10fc6c3f, type: 2}
 --- !u!4 &1202718909 stripped
 Transform:
@@ -14287,7 +14287,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u9003\u3052\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c72427644e6d2584ba69b91667a44049, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7555b227ae3cf46639be2a5c3b1348df, type: 2}
   m_sharedMaterial: {fileID: 8866462856780669400, guid: 7555b227ae3cf46639be2a5c3b1348df, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -17960,7 +17960,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u30A2\u30A4\u30C6\u30E0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c72427644e6d2584ba69b91667a44049, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7555b227ae3cf46639be2a5c3b1348df, type: 2}
   m_sharedMaterial: {fileID: 8866462856780669400, guid: 7555b227ae3cf46639be2a5c3b1348df, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

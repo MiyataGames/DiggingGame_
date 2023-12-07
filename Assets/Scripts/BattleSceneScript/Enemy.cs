@@ -153,8 +153,9 @@ public class Enemy : Character
     public override bool TakeItemDamage(int basicDamage, Character turnCharacter, Character damagedCharacter)
     {
         // 合計ダメージ = (基本ダメージ + 攻撃力修正 + レベル修正) × クリティカルヒット倍率 - 敵の防御力
-        int damage = basicDamage + turnCharacter.atk + turnCharacter.level;
+        int damage = basicDamage; // + turnCharacter.atk + turnCharacter.level;
         currentHP -= damage;
+        Debug.Log("ダメージ" + damage + "げんざいのHP は" + currentHP);
         if (currentHP <= 0)
         {
             currentHP = 0;

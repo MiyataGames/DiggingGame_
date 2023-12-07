@@ -1509,6 +1509,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     void CheckHolePosition(int position)
     {
         Debug.Log("穴チェック" + battleState);
+
         bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
         Item item = diggingGridManager.gridItems[position];
         TrapItemBase itemBase = item.ItemBase as TrapItemBase;
@@ -1523,14 +1524,42 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     if (activeEnemies[i].positionIndex == position)
                     {
+                        Debug.Log("敵にアイテムのダメージを入れる");
                         // ダメージ処理
                         isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.BasicDamage, turnCharacter, activeEnemies[i]);
                     }
+                }
+                // HPSPの反映
+                for (int i = 0; i < activeEnemies.Count; i++)
+                {
+                    activeEnemies[i].EnemyUI.UpdateHp();
                 }
             }
         }
 
         // 戦闘不能チェック
+        for (int i = 0; i < activeEnemies.Count; i++)
+        {
+            // 戦闘不能な敵を消す
+            if (isDying[i] == true)
+            {
+                // i番目の敵のモデルを消す
+                //activeEnemies[i].EnemyModel.SetActive(false);
+                Destroy(activeEnemies[i].EnemyPrefab);
+                // i番目の敵のUIを消す
+                activeEnemies[i].EnemyUI.UnActiveUIPanel();
+                // i番目の敵のisDyingをtrueにする
+                characters.Find(value => value == activeEnemies[i]).isDying = true;
+            }
+        }
+        // 全員戦闘不能ならメッセージ
+        // 戦闘不能の敵を検索してリムーブする
+        List<Enemy> deadEnemies = activeEnemies.FindAll(value => value.isDying == true);
+        for (int i = 0; i < deadEnemies.Count; i++)
+        {
+            activeEnemies.Remove(deadEnemies[i]);
+        }
+        // 全体の戦闘不能チェック
         if (isDying.All(value => value == true))
         {
             Debug.Log("戦闘不能");
