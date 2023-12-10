@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     public static GameStatus currentGameStatus;
 
+    private Animator myAnim;
+
     // プレイヤー 仮
     //[SerializeField] private PlayerBase[] playerBasies;
 
@@ -95,6 +97,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        myAnim = GetComponent<Animator>();
         currentGameStatus = GameStatus.DIGGING;
         currentMenuCommandNum = 0;
         currentItemNum = 0;
@@ -141,12 +144,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKey(KeyCode.A))
             {
                 vx = -speed;
+                myAnim.SetFloat("isLeft",1);
             }
             else
             // D：右
             if (Input.GetKey(KeyCode.D))
             {
                 vx = speed;
+                myAnim.SetFloat("isLeft",0);
             }
 
             if (Input.GetKey("space") && groundFlag == true)
