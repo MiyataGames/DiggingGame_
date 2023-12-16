@@ -60,7 +60,7 @@ public class EnemyUnit : MonoBehaviour
             // 敵のモデルを生成
             enemies[j].EnemyPrefab = Instantiate(enemies[j].EnemyBase.EnemyPrefab, enemyPos9[enemies[j].positionIndex].transform.position, Quaternion.identity, enemyPos9[enemies[j].positionIndex].transform);
             // アニメーターをいれる
-            // enemies[j].EnemyAnimator = enemies[j].EnemyModel.GetComponent<Animator>();
+            enemies[j].EnemyAnimator = enemies[j].EnemyPrefab.GetComponent<Animator>();
             // EnemyUIのオブジェクトをみつける
             //enemies[j].EnemyUIObject = enemyPos3[j].transform.Find("Child/EnemyCanvas").gameObject;
             // EnemyUIをEnemyPosの子オブジェクトに生成

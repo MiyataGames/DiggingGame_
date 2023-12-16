@@ -12,7 +12,7 @@ public class Enemy : Character
 
     public int Level { get => level; }
     public GameObject EnemyPrefab { get; set; }
-    // public Animator EnemyAnimator { get; set; }
+    public Animator EnemyAnimator { get; set; }
 
     public BattleEnemyUI EnemyUI { get; set; }
     public int positionIndex;
