@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
 
 public delegate void CellButtonClickedDelegate(int value);
+
 public class ItemCellView : EnhancedScrollerCellView
 {
     private ItemCellData itemCellData;
@@ -15,10 +16,10 @@ public class ItemCellView : EnhancedScrollerCellView
     // These delegates will publish events when a button is clicke
 
     // アイテムの名前のテキスト
-    public Text itemNameText;
+    public TextMeshProUGUI itemNameText;
 
     // アイテムの数のテキスト
-    public Text itemCountText;
+    public TextMeshProUGUI itemCountText;
 
     public void SetData(ItemCellData data)
     {
@@ -49,5 +50,4 @@ public class ItemCellView : EnhancedScrollerCellView
         // fire event if anyone has subscribed to it
         if (cellButtonClicked != null) cellButtonClicked(selectedItemIndex);
     }
-
 }
