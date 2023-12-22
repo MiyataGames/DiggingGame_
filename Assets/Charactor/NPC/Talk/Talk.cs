@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -12,6 +13,7 @@ public class NpcTalkData{
     public int id;
     public string command;
     public string character;
+    public string imageFolderName;
     public int imageNum;
     public string main_text;
     public bool set_branch;
@@ -48,17 +50,26 @@ public class Talk : MonoBehaviour
     private bool isPlayerInErea = false; //エリア内にプレイヤーがいるかのフラグ
     private bool isTalkingNow = false; //会話中かフラグ
     private bool isCanNextText = true;
+    private int j = 0;
 
     void Awake(){
         //テキストファイルの読み込ませるクラス
         TextAsset textAsset = new TextAsset();
-        //キャライメージの読み込み
-        charaImage = Resources.LoadAll<Sprite>("NPCCharaImage/NPC" + npcNum);
 
         //用意したcsvファイルを読み込む
         textAsset = Resources.Load("NpcTalkData/NPC" + npcNum,typeof(TextAsset)) as TextAsset;
         //実際にデータを変数に格納
         npcTalkDatas = CSVSerializer.Deserialize<NpcTalkData>(textAsset.text);
+
+        charaImage = new Sprite[npcTalkDatas.Length];
+
+        for(int i = 0 ; i < npcTalkDatas.Length;i++){
+            if(npcTalkDatas[i].imageFolderName != null ){
+                //キャライメージの読み込み
+                charaImage[i] = Resources.Load<Sprite>("CharaImage/" + npcTalkDatas[i].imageFolderName + "/" + npcTalkDatas[i].imageNum);
+            }
+        }
+        
     }
 
     void Update(){
@@ -137,7 +148,7 @@ public class Talk : MonoBehaviour
                     ShowBranchText(npcTalkDatas[currentTextID].yes_text, npcTalkDatas[currentTextID].no_text);
                 }
 
-                image.sprite = charaImage[npcTalkDatas[currentTextID].imageNum -1];
+                image.sprite = charaImage[currentTextID];
                 break;
             case "fade_blackIn":
                 break;

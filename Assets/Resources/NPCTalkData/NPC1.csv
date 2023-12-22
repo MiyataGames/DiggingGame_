@@ -1,7 +1,7 @@
-﻿id,command,character,imageNum,main_text,set_branch,yes_text,no_text,chose_yes,chose_no,skip_id
-0,set_bgm,,,,FALSE,,,,,
-1,set_text,コポル,1,ここはミヤタの村。CGの町だよ。,FALSE,,,,,
-2,set_text,コポル,1,君もBRDFを研究しないかい？,TRUE,御意,否,3,4,
-3,set_text,コポル,1,これから僕らは家族だ！,FALSE,,,,,5
-4,set_text,コポル,1,そうかい。残念だよ。,FALSE,,,,,5
-5,set_text,コポル,1,ゆっくりしていってね。,FALSE,,,,,
+﻿id,command,character,imageFolderName,imageNum,main_text,set_branch,yes_text,no_text,chose_yes,chose_no,skip_id
+0,set_bgm,,,,,FALSE,,,,,
+1,set_text,コポル,NPC1,1,ここはミヤタの村。CGの町だよ。,FALSE,,,,,
+2,set_text,コポル,NPC1,1,君もBRDFを研究しないかい？,TRUE,御意,否,3,4,
+3,set_text,コポル,Player,1,これから僕らは家族だ！,FALSE,,,,,5
+4,set_text,コポル,NPC1,1,そうかい。残念だよ。,FALSE,,,,,5
+5,set_text,コポル,NPC1,1,ゆっくりしていってね。,FALSE,,,,,
