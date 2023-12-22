@@ -54,12 +54,15 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private bool pushFlag;
     private bool jumpFlag;
     private bool groundFlag;
+    
     private Define.DirectionNumber currentDirectionNumber;
     [SerializeField] private Menu menu;
 
     public static GameStatus currentGameStatus;
 
     private Animator myAnim;
+
+    public bool isLeft = false;
 
     // プレイヤー 仮
     //[SerializeField] private PlayerBase[] playerBasies;
@@ -144,6 +147,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKey(KeyCode.A))
             {
                 vx = -speed;
+                isLeft = true;
                 myAnim.SetFloat("isLeft",1);
             }
             else
@@ -151,6 +155,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKey(KeyCode.D))
             {
                 vx = speed;
+                isLeft = false;
                 myAnim.SetFloat("isLeft",0);
             }
 

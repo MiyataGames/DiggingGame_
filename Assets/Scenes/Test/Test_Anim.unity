@@ -3829,6 +3829,7 @@ MonoBehaviour:
   jumpPower: 9
   rb: {fileID: 0}
   menu: {fileID: 1092008184}
+  isLeft: 0
   party: {fileID: 4493679613633154106}
   saveLoadCtrl: {fileID: 0}
   itemPanel: {fileID: 1098993992}
@@ -4029,6 +4030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6957ff78c9c0bbb42a62f5085c83201e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 4493679613874932076}
   playerAnimController: {fileID: 4493679613874932119}
   digCollider: {fileID: 4493679613247580045}
 --- !u!58 &4925588449461265728
