@@ -585,8 +585,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void HandleActionSelection()
     {
         Player player = turnCharacter as Player;
-        player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", true);
-        player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", false);
+        //player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", true);
+        //player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", false);
         ///////////// アニメーションの指定 /////////////
         // 10秒立ったら
         // 10秒ごとにフラフラするアニメーション
@@ -938,13 +938,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void PlayerEndSkillInput()
     {
         Debug.Log("PlayerEndInput()");
-        StartCoroutine(PerformPlayerSkill());
-        //PerformPlayerSkill();
+        //StartCoroutine(PerformPlayerSkill());
+        PerformPlayerSkill();
     }
 
     // 全体攻撃のモーションを変更中
     // スキルの発動 IEnumerator
-    private IEnumerator PerformPlayerSkill()
+    /*private IEnumerator*/void  PerformPlayerSkill()
     {
         battleState = BattleState.BUSY;
         // 技を決定
@@ -969,8 +969,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
             // ターンのプレイヤーのスキル発動モーション
             player.PlayerBattleAnimator.Play(hashSkill);
-            yield return null;// ステートの反映
-            yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
+            //yield return null;// ステートの反映
+            //yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
 
             // 全体攻撃だったら
             if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
@@ -985,7 +985,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     // ダメージモーション　敵のアニメーターにダメージのステート追加
                     activeEnemies[i].EnemyAnimator.Play(hashDamage);
-                    yield return null;
+                    //yield return null;
                 }
 
                 for (int i = 0; i < activeEnemies.Count; i++)
@@ -994,7 +994,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     isDying[i] = activeEnemies[i].TakeSkillDamage(playerSkill, (Player)TurnCharacter);
                 }
                 // 一体のダメージアニメーションがおわったらIdle状態にする
-                yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
+                //yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
               
                 // HPSPの反映
                 for (int i = 0; i < activeEnemies.Count; i++)
@@ -1013,9 +1013,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
                 // ダメージモーション
                 activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
-                yield return null;
+                //yield return null;
                 // ダメージアニメーションが終わるまで待つ
-                yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
+                //yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
                 // HPSPの反映
                 for (int i = 0; i < activeEnemies.Count; i++)
                 {
@@ -1046,14 +1046,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
             Debug.Log("EnemySkillまで1秒まつ");
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
             // 全員瀕死になったら戦闘不能
             if (isDying.All(value => value == true))
             {
                 Debug.Log("戦闘不能");
 
                 battleState = BattleState.BUSY;
-                yield return new WaitForSeconds(0.7f);
+                //yield return new WaitForSeconds(0.7f);
                 // 3Dモデルの削除
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
@@ -1132,9 +1132,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     // ダメージモーション
                     activeEnemies[i].EnemyAnimator.Play(hashDamage);
-                    yield return null;
+                   // yield return null;
                     // ダメージアニメーションが終わるまで待つ
-                    yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
+                   // yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
                 }
 
                 // HPSPの反映
@@ -1187,9 +1187,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeSkillDamage(playerSkill, activePlayers[0]);
                 // ダメージモーション
                 activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
-                yield return null;
+                //yield return null;
                 // ダメージアニメーションが終わるまで待つ
-                yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
+                //yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
                 // HPの反映
                 activeEnemies[selectedTargetIndex].EnemyUI.UpdateHp();
                 // 敵が確率で状態異常にかかる
@@ -1252,14 +1252,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
             Debug.Log("EnemySkillまで1秒まつ");
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
             // 全員瀕死になったら戦闘不能
             if (isDying.All(value => value == true))
             {
                 Debug.Log("戦闘不能");
 
                 battleState = BattleState.BUSY;
-                yield return new WaitForSeconds(0.7f);
+                //yield return new WaitForSeconds(0.7f);
                 // 3Dモデルの削除
                 // プレイヤーのスプライトを消す
                 for (int i = 0; i < activePlayers.Count; i++)
@@ -1280,8 +1280,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // ターンのプレイヤーのスキル発動モーション
 
             player.PlayerBattleAnimator.Play(hashSkill);
-            yield return null;// ステートの反映
-            yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
+            //yield return null;// ステートの反映
+            //yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
             /*
             player.PlayerBattleAnimator.SetBool("SkillToIdle", true);
             player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
@@ -1300,7 +1300,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     // 回復モーション
                 }
                 // 一体（回）分だけ待つ
-                yield return new WaitForAnimation(activePlayers[0].PlayerBattleAnimator, 0);
+                //yield return new WaitForAnimation(activePlayers[0].PlayerBattleAnimator, 0);
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
                     // 回復
@@ -1323,8 +1323,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
                 activePlayers[selectedTargetIndex].PlayerBattleAnimator.Play(hashHeal);
                 //activePlayers[selectedTargetIndex].PlayerBattleAnimator.SetBool("HealToIdle", true);
-                yield return null;// ステートの反映
-                yield return new WaitForAnimation(activePlayers[selectedTargetIndex].PlayerBattleAnimator, 0);
+                //yield return null;// ステートの反映
+                //yield return new WaitForAnimation(activePlayers[selectedTargetIndex].PlayerBattleAnimator, 0);
 
                 // HPSPの反映
                 for (int i = 0; i < activePlayers.Count; i++)
@@ -1341,17 +1341,17 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // 移動させる
             MoveEnemies(activeEnemies[selectedTargetIndex], Skill.Direction);
             // 1秒まつ
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
             // ダメージ処理
             // ダメージ決定　生きているキャラクター分の配列を用意
             bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
 
             // ターンのプレイヤーのスキル発動モーション
             player.PlayerBattleAnimator.Play(hashSkill);
-            yield return null;// ステートの反映
+            /*yield return null;// ステートの反映
             yield return null;// ステートの反映
             yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
-            /*
+            *//*
             player.PlayerBattleAnimator.SetBool("SkillToIdle", true);
             player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
             */
@@ -1365,9 +1365,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
             // 敵のダメージモーション
             activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
-            yield return null;
+            //yield return null;
             // ダメージアニメーションが終わるまで待つ
-            yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
+            //yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
 
             // HPSPの反映
             for (int i = 0; i < activeEnemies.Count; i++)
@@ -1404,7 +1404,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("戦闘不能");
 
                 battleState = BattleState.BUSY;
-                yield return new WaitForSeconds(0.7f);
+                //yield return new WaitForSeconds(0.7f);
                 // プレイヤーの削除
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
@@ -1421,8 +1421,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // NextTurn();
             }
         }
-        player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
-        player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", true);
+        //player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
+        //player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", true);
     }
 
     /// <summary>
@@ -1548,10 +1548,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
         bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
         Item item = diggingGridManager.gridItems[position];
-        TrapItemBase itemBase = item.ItemBase as TrapItemBase;
         // 敵の移動先の穴にアイテムが埋まっていたら
         if (item != null)
         {
+            TrapItemBase itemBase = item.ItemBase as TrapItemBase;
             // アイテムの効果を発動する
             // 全アイテム共通：ダメージ処理
             // もしその位置に敵がいたら
