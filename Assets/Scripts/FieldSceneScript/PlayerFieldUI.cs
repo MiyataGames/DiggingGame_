@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerFieldUI : MonoBehaviour
 {
     [SerializeField] private Player player;
-    [SerializeField] private Text statusPlayerNameText;
-    [SerializeField] private Text statusPlayerHpText;
-    [SerializeField] private Text statusPlayerMaxHpText;
-    [SerializeField] private Text statusPlayerSpText;
-    [SerializeField] private Text statusPlayerMaxSpText;
+    [SerializeField] private TextMeshProUGUI statusPlayerNameText;
+    [SerializeField] private TextMeshProUGUI statusPlayerHpText;
+    [SerializeField] private TextMeshProUGUI statusPlayerMaxHpText;
+    [SerializeField] private TextMeshProUGUI statusPlayerSpText;
+    [SerializeField] private TextMeshProUGUI statusPlayerMaxSpText;
     [SerializeField] private Image statusIconImage;
     [SerializeField] public GameObject frame;
 
@@ -21,10 +22,10 @@ public class PlayerFieldUI : MonoBehaviour
     {
         this.player = player;
         statusPlayerNameText.text = player.PlayerBase.PlayerName;
-        statusPlayerHpText.text = player.currentHP.ToString() + " / ";
-        statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
+        statusPlayerHpText.text = player.currentHP.ToString();
+        statusPlayerMaxHpText.text = " / "+player.currentMaxHp.ToString();
         statusPlayerSpText.text = player.currentSP.ToString() + " / ";
-        statusPlayerMaxSpText.text = player.currentMaxSp.ToString();
+        statusPlayerMaxSpText.text = " / "+player.currentMaxSp.ToString();
         statusIconImage.sprite = player.PlayerBase.PlayerFaceIcon;
     }
 

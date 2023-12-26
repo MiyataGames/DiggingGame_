@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: "\u3046\u3055\u304E"
   description: 
-  enemyPrefab: {fileID: 3513077936018562752, guid: 08deaff167cfa2745abe31b685fc3aea, type: 3}
+  enemyPrefab: {fileID: 7052581729758501505, guid: 6e6be0eb08ea79c4fbe3f95e4ef0d184, type: 3}
   maxHp: 10
-  physicPower: 10
+  atk: 0
   magicPower: 10
   def: 10
   agi: 10

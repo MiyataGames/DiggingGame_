@@ -17,3 +17,5 @@ MonoBehaviour:
   id: 0
   itemType: 3
   itemImageSprite: {fileID: 21300000, guid: 2692a630cc9d4446c9bc5b87cab5ccbe, type: 3}
+  basicDamage: 0
+  condition: 2

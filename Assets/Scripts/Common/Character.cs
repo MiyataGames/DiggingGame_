@@ -46,6 +46,10 @@ public class Character
     {
         return false;
     }
+    public virtual bool TakeItemDamage(int damage, Character turnCharacter, Character damagedCharacter)
+    {
+        return false;
+    }
     /// <summary>
     /// 状態異常によるダメージ 戦闘不能になったらtrueを返す
     /// </summary>
@@ -65,9 +69,9 @@ public class Character
 	/// レベルに応じた初期値を設定する関数
 	/// </summary>
     public virtual void InitStatusValue(int level)
-	{
+    {
 
-	}
+    }
 
     /// <summary>
     /// // ステータス変化技の関数
@@ -83,8 +87,8 @@ public class Character
         {
             if (status == STATUS.ATTACK)
             {
-               IncreaseAtk();
-               return;
+                IncreaseAtk();
+                return;
             }
             else if (status == STATUS.DEFENSE)
             {
@@ -121,7 +125,7 @@ public class Character
     public void ResetAtkStatus()
     {
         Debug.Log("攻撃力を戻したよ");
-        if(atkChangeLevel != 0)
+        if (atkChangeLevel != 0)
         {
             atk = currentMaxAtk;
             atkChangeLevel = 0;
@@ -260,7 +264,7 @@ public class Character
                 Debug.Log("まひにかかった");
                 break;
             case STATUS_CONDITION_TYPE.BURN:
-                ChangeStatus(STATUS.ATTACK,SKILL_STATUS_KIND.DOWN);
+                ChangeStatus(STATUS.ATTACK, SKILL_STATUS_KIND.DOWN);
                 Debug.Log("やけどにかかった");
                 break;
             case STATUS_CONDITION_TYPE.FREEZE:

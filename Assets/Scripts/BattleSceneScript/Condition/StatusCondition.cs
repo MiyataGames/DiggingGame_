@@ -4,6 +4,8 @@ using UnityEngine;
 
 public enum STATUS_CONDITION_TYPE
 {
+    NONE,
+
     POISON,
     PARALYSIS,
     BURN,
@@ -23,7 +25,7 @@ public class StatusCondition
     {
         this.type = type;
         this.duration = duration;
-        Debug.Log(type + ":"+duration+"ターン");
+        Debug.Log(type + ":" + duration + "ターン");
     }
 
     // 毎ターンの効果を適用するメソッド

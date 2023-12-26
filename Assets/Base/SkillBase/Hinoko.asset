@@ -20,4 +20,4 @@ MonoBehaviour:
   skillCategory: 0
   skillTargetKind: 1
   skillTargetNum: 0
-  skillRecieveEffect: {fileID: 0}
+  skillRecieveEffect: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
