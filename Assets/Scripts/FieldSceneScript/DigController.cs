@@ -53,23 +53,26 @@ public class DigController : MonoBehaviour
             dc.offset = new Vector2(0.0f, -0.85f); 
             dc.size = new Vector2(0.76f, 0.45f); 
             dc.direction = CapsuleDirection2D.Horizontal;
+            playerAnimController.SetBool("isUnderDigging",true);
         }else if(isPlayerLeft == true){
             dc.offset = new Vector2(-0.47f, -0.06f); 
             dc.size = new Vector2(0.45f, 0.76f);    
             dc.direction = CapsuleDirection2D.Vertical;
+            playerAnimController.SetBool("isDigging",true);
         }else if(isPlayerLeft == false){
             dc.offset = new Vector2(0.47f, -0.06f); 
             dc.size = new Vector2(0.45f, 0.76f);    
             dc.direction = CapsuleDirection2D.Vertical;
+            playerAnimController.SetBool("isDigging",true);
         }
 
         digCollider.SetActive(true);
-        playerAnimController.SetBool("isDigging",true);
     }
 
     void endDig(){
         isDigging = false; 
         digCollider.SetActive(false);
         playerAnimController.SetBool("isDigging",false);
+        playerAnimController.SetBool("isUnderDigging",false);
     }
 }

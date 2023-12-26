@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 vx = -speed;
                 isLeft = true;
                 myAnim.SetFloat("isLeft",1);
+                myAnim.SetBool("isWalk",true);
             }
             else
             // D：右
@@ -157,12 +158,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 vx = speed;
                 isLeft = false;
                 myAnim.SetFloat("isLeft",0);
+                myAnim.SetBool("isWalk",true);
+            }else{
+                myAnim.SetBool("isWalk",false);
             }
 
             if (Input.GetKey("space") && groundFlag == true)
             {
                 if (pushFlag == false)
                 {
+                    myAnim.SetBool("isJump",true);
                     jumpFlag = true;
                     pushFlag = true;
                 }
@@ -698,6 +703,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (other.gameObject.tag == "ground" || other.gameObject.tag == "digObject" || other.gameObject.tag == "Enemy")
         {
             groundFlag = true;
+            myAnim.SetBool("isJump",false);
         }
     }
 
