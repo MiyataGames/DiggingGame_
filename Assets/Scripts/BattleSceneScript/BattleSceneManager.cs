@@ -1445,70 +1445,76 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // ②移動
             movedEnemies = new List<MovedEnemy>();
-            float[] diff = { -1.0f, 0, 1.0f };
-            List<Enemy> enemiesToMove = new List<Enemy>();
-            enemiesToMove = enemiesToMove.OrderBy(enemy => GetDistanceToTarget(enemy.positionIndex, direction)).ToList();
+            float[] diff = { 0, 1.0f, 2.0f };
+            float[] diffY = { 0f, 1f, 2f };
+
             //enemiesToMove.Add(attackedEnemy);
             int currentPosition = attackedEnemy.positionIndex;
 
+            MovedEnemy movedenemy;
             // 軌道上の敵を検出
             foreach (Enemy enemy in activeEnemies)
             {
+                // 殴った敵の軌道上にいる敵をみつける
                 if (ShouldMoveEnemy(currentPosition, enemy.positionIndex, direction))
                 {
-                    enemiesToMove.Add(enemy);
+                    movedenemy.enemy = enemy;
+                    movedenemy.moveDirection = direction;
+                    movedenemy.targetPosition = -1;
+                    movedEnemies.Add(movedenemy);
                 }
             }
-            int i = 0;
-            MovedEnemy movedenemy;
-            foreach (Enemy enemy in enemiesToMove)
+            // rightとownなら小さい順
+            if (movedEnemies[0].moveDirection == Direction.RIGHT || movedEnemies[0].moveDirection == Direction.DOWN)
             {
-                i++;
-                targetPositionIndex = GetNewPositionIndex(enemy.positionIndex, direction);
-                if (targetPositionIndex != enemy.positionIndex)
+                movedEnemies = movedEnemies.OrderByDescending(enemy => enemy.enemy.positionIndex).ToList();
+            }
+            else
+            {
+                movedEnemies = movedEnemies.OrderBy(enemy => enemy.enemy.positionIndex).ToList();
+            }
+            int i = 0;
+            Vector3 enemyUIgroundPosition = movedEnemies[0].enemy.EnemyPrefab.transform.InverseTransformPoint(movedEnemies[0].enemy.EnemyUI.transform.position);
+            foreach (MovedEnemy enemy in movedEnemies)
+            {
+                targetPositionIndex = GetNewPositionIndex(enemy.enemy.positionIndex, direction);
+                if (targetPositionIndex != enemy.enemy.positionIndex)
                 {
-                    enemy.positionIndex = targetPositionIndex;
+                    enemy.enemy.positionIndex = targetPositionIndex;
                     if (direction == Direction.RIGHT)
                     {
-                        movedenemy.enemy = enemy;
-                        movedenemy.moveDirection = Direction.RIGHT;
-                        movedenemy.targetPosition = -1;
-                        movedEnemies.Add(movedenemy);
                         // 移動
-                        enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x + diff[i], diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
+                        enemy.enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x + diff[i], diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
+
+                        enemy.enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y + diffY[i], 0.5f);
                         //enemy.EnemyPrefab.transform.position = new Vector3(diggingPositions[newPositionIndex].transform.position.x + diff[i], diggingPositions[newPositionIndex].transform.position.y, diggingPositions[newPositionIndex].transform.position.z);
                     }
                     else if (direction == Direction.LEFT)
                     {
-                        movedenemy.enemy = enemy;
-                        movedenemy.moveDirection = Direction.LEFT;
-                        movedenemy.targetPosition = -1;
-                        movedEnemies.Add(movedenemy);
                         // 移動
-                        enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x + diff[i], diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
+                        enemy.enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x + diff[i], diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
+                        enemy.enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y + diffY[i], 0.5f);
                     }
                     else if (direction == Direction.UP)
                     {
-                        movedenemy.enemy = enemy;
-                        movedenemy.moveDirection = Direction.UP;
-                        movedenemy.targetPosition = -1;
-                        movedEnemies.Add(movedenemy);
                         // 移動
-                        enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z + diff[i]), 0.5f);
+                        enemy.enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z + diff[i]), 0.5f);
+                        enemy.enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y + diffY[i], 0.5f);
                     }
                     else if (direction == Direction.DOWN)
                     {
-                        movedenemy.enemy = enemy;
-                        movedenemy.moveDirection = Direction.DOWN;
-                        movedenemy.targetPosition = -1;
-                        movedEnemies.Add(movedenemy);
-                        enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z - diff[i]), 0.5f);
+                        enemy.enemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z - diff[i]), 0.5f);
+                        //enemy.enemy.EnemyUI.transform.DOMoveY(enemyUIgroundPosition.y + diffY[i], 0.5f);
+                        enemy.enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y + diffY[i], 0.5f);
                     }
                     // ちょっと時間をずらして移動
                     //yield return new WaitForSeconds(0.3f);
                 }
+
+                i++;
             }
             yield return new WaitForSeconds(0.5f);
+
             // 穴チェックに移行
             //  ③1回目の穴チェック
             Debug.Log("1回目の穴チェック");
@@ -1520,7 +1526,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
             // ④移動２
+            // UIを元の位置に戻す
+            for (int j = 0; j < movedEnemies.Count; j++)
+            {
+                Debug.Log("元の高さ" + enemyUIgroundPosition.y);
+                movedEnemies[j].enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
+            }
             ResolvePositionOverlap();
+
             //  ⑤２回目の穴チェック
             Debug.Log("2回目の穴チェック");
             foreach (MovedEnemy movedEnemy in movedEnemies)
@@ -1547,6 +1560,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    /*
     private bool ShouldMoveEnemy(int currentPosition, int enemyPosition, Direction direction)
     {
         // 敵を移動させるべきかどうかのロジック
@@ -1560,6 +1574,37 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 return enemyPosition % 3 == currentPosition % 3; // 同じ列にいる場合
             case Direction.DOWN:
                 return enemyPosition % 3 == currentPosition % 3; // 同じ列にいる場合
+            default:
+                return false;
+        }
+    }*/
+
+    private bool ShouldMoveEnemy(int currentPosition, int enemyPosition, Direction direction)
+    {
+        int currentRow = currentPosition / 3;
+        int currentColumn = currentPosition % 3;
+        int enemyRow = enemyPosition / 3;
+        int enemyColumn = enemyPosition % 3;
+
+        // 敵を移動させるべきかどうかのロジック
+        switch (direction)
+        {
+            case Direction.RIGHT:
+                // 同じ行で、現在位置の右側にいる場合
+                return enemyRow == currentRow && enemyColumn >= currentColumn;
+
+            case Direction.LEFT:
+                // 同じ行で、現在位置の左側にいる場合
+                return enemyRow == currentRow && enemyColumn <= currentColumn;
+
+            case Direction.UP:
+                // 同じ列で、現在位置の上側にいる場合
+                return enemyColumn == currentColumn && enemyRow <= currentRow;
+
+            case Direction.DOWN:
+                // 同じ列で、現在位置の下側にいる場合
+                return enemyColumn == currentColumn && enemyRow >= currentRow;
+
             default:
                 return false;
         }
@@ -1733,7 +1778,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             //foreach (MovedEnemy movedEnemy in movedEnemies)
             //{
-            MovedEnemy overlappingEnemy = movedEnemies.Find(e => e.enemy != movedEnemies[i].enemy && e.enemy.positionIndex == movedEnemies[i].enemy.positionIndex);
+            Enemy overlapEnemy = activeEnemies.Find(e => e != movedEnemies[i].enemy && e.positionIndex == movedEnemies[i].enemy.positionIndex);
+            MovedEnemy overlappingEnemy;
+            overlappingEnemy.enemy = overlapEnemy;
+            overlappingEnemy.moveDirection = movedEnemies[i].moveDirection;
+            overlappingEnemy.targetPosition = -1;
             if (overlappingEnemy.enemy != null)
             {
                 int newPositionIndex = FindNearestEmptyPosition(overlappingEnemy.enemy.positionIndex, overlappingEnemy.moveDirection);
