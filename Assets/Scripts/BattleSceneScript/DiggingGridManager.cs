@@ -134,4 +134,11 @@ public class DiggingGridManager : MonoBehaviour
         finishButton.gameObject.SetActive(false);
         UnInteractiveButton();
     }
+
+    // アイテムを消費
+    public void UseGridItem(int position)
+    {
+        buttons[position].GetComponent<Image>().sprite = null;
+        gridItems[position] = null;
+    }
 }
