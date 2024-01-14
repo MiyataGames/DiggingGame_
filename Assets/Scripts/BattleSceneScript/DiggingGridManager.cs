@@ -19,6 +19,9 @@ public class DiggingGridManager : MonoBehaviour
     private Item selectedItem; // 選択中のアイテムID
     private int selectedIndex;
     private int selectedItemNum;
+    public Sprite soilImage;
+    public Sprite holeImage;
+    public Sprite transparentImage;
     [SerializeField] private Button finishButton;
 
     private void Start()
@@ -45,32 +48,39 @@ public class DiggingGridManager : MonoBehaviour
 
     public void GridButtonClicked(int index)
     {
+        Debug.Log("選んだぼたんは" + index);
         //int row = index / 3;
         //int col = index % 3;
 
         // 埋まっていなかったらアイテムを埋める
+        
         if (gridItems[index] == null)
         {
+            
             if (selectItemDelegate(selectedItem) == true)
             {
                 selectedItemNum++;
                 gridItems[index] = selectedItem;
-                Image image = buttons[index].GetComponent<Image>();
+                Image soilImage = buttons[index].GetComponent<Image>();
+                Image itemImage = buttons[index].transform.GetChild(0).GetComponent<Image>();
                 Debug.Log(selectedItem.ItemBase.ItemName);
                 TrapItemBase selectedItemBase = selectedItem.ItemBase as TrapItemBase;
                 // スプライトをセットする
-                Debug.Log("イメージ" + image);
+                Debug.Log("イメージ" + soilImage);
                 Debug.Log(selectedItemBase.ItemName);
                 Debug.Log("アイテムのイメージ" + selectedItemBase.itemImageSprite);
-                image.sprite = selectedItemBase.itemImageSprite;
+                // 穴の画像にする
+                soilImage.sprite = holeImage;
+                // アイテムの画像を入れる
+                itemImage.sprite = selectedItemBase.itemImageSprite;
                 // あとでデリゲート
                 // アイテムを探して減らす
-                /*if (battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount > 0)
-                {
-                    battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount--;
-                    Debug.Log(battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount);
-                    // パネルの更新
-                }*/
+                //if (battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount > 0)
+                //{
+                //    battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount--;
+                //    Debug.Log(battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount);
+                //    // パネルの更新
+                //}
                 if (selectedItemNum >= 3)
                 {
                     OnFinishDigging();
@@ -81,7 +91,7 @@ public class DiggingGridManager : MonoBehaviour
                 Debug.Log("使えないよ！");
             }
         }
-
+    
         /*
         if (selectedItem >= 0)
         {
@@ -98,6 +108,7 @@ public class DiggingGridManager : MonoBehaviour
         {
             FinishDigging();
         }*/
+        
     }
 
     // ボタンをきくようにする
@@ -108,7 +119,7 @@ public class DiggingGridManager : MonoBehaviour
         {
             for (int j = 0; j < gridButtons.GetLength(1); j++)
             {
-                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = null;
+                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
                 gridButtons[i, j].GetComponent<Button>().interactable = true;
             }
         }
@@ -138,7 +149,8 @@ public class DiggingGridManager : MonoBehaviour
     // アイテムを消費
     public void UseGridItem(int position)
     {
-        buttons[position].GetComponent<Image>().sprite = null;
+        Image itemImage = buttons[position].transform.GetChild(0).GetComponent<Image>();
+        itemImage.sprite = transparentImage;
         gridItems[position] = null;
     }
 }
