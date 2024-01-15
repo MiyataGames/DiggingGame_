@@ -31,18 +31,28 @@ public class ItemCellView : EnhancedScrollerCellView
     // UIの更新
     // RefreshCellViewメソッドをオーバーライドすると、
     // データを再読み込みすることなくUIを更新することができます。
-    public override void RefreshCellView()
+  public override void RefreshCellView()
+{
+    // itemCellDataがnullでないことを確認
+    if (itemCellData != null)
     {
-        //base.RefreshCellView();
-        if (itemCellData.isSelected == true)
+        // selectedIconがnullでないことを確認
+        if (selectedIcon != null)
         {
-            selectedIcon.SetActive(true);
+            // selectedIconの表示/非表示を切り替え
+            selectedIcon.SetActive(itemCellData.isSelected);
         }
         else
         {
-            selectedIcon.SetActive(false);
+           
         }
     }
+    else
+    {
+        
+    }
+}
+ 
 
     public void CellButton_OnClick(int selectedItemIndex)
     {

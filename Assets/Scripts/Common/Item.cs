@@ -16,7 +16,7 @@ public class Item
 {
     [SerializeField] private ItemBase itemBase;
     private int itemCount = 0;
-    private int id;
+    public int id;
 
     public Item(ItemBase iBase)
     {
