@@ -5,4 +5,8 @@ using UnityEngine;
 public class FieldCoin : MonoBehaviour
 {
     [SerializeField] private CoinBase CoinBase;
+    public int Price
+    {
+        get { return CoinBase.Price; }
+    }
 }

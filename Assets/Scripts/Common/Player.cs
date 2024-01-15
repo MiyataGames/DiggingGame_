@@ -18,6 +18,10 @@ public class Player : Character
     public List<Item> items;
     Animator playerBattleAnimator;
 
+        // 所持金
+    public int gold = 1000;
+    public int Gold { get => gold; set => gold = value; }
+
     // レベルに応じたHPを返す
     public int currentMaxHp
     {

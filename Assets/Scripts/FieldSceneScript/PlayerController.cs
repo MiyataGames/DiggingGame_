@@ -571,6 +571,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
             LoadItemData();
         }
+        if(other.tag == "Coin")
+        {
+            int coinValue = other.GetComponent<FieldCoin>().Price;
+            party.Players[0].Gold = party.Players[0].Gold + coinValue;
+            print("CoinValue:"+party.Players[0].Gold);
+            Destroy(other.gameObject);
+                        return;
+        }
 
     }
     #endregion
