@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public static int currentSceneIndex;
     private GameMode currentGameMode;
     [SerializeField] private BattleSceneManager battleSceneManager;
+    [SerializeField] private ResultSceneMangaer resultSceneManager;
     // [SerializeField] private ResultSceneMangaer resultSceneManager;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private PlayerTownController playerTownController;
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<Enemy> enemies;
 
-    // [SerializeField] private ExpSheet expSheet;// 経験値表
+    [SerializeField] private ExpSheet expSheet;// 経験値表
 
     private void Update()
     {
@@ -127,14 +128,14 @@ public class GameManager : MonoBehaviour
 
     public void EndBattle()
     {
-        ActivateCurrentScene((int)GameMode.FIELD_SCENE);
-        /*
+        //ActivateCurrentScene((int)GameMode.FIELD_SCENE);
+        
         ActivateCurrentScene((int)GameMode.RESULT_SCENE);
         StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
-        */
+        
     }
 
-    /*
+    
     public IEnumerator UpdateExpAnimation()
     {
         // 経験値の処理
@@ -145,7 +146,7 @@ public class GameManager : MonoBehaviour
             exp += expSheet.sheets[0].list[enemies[i].Level - 1].exp;
         }
         // floatでよみこまなきゃだめ？
-        Debug.Log("getExp" + exp);
+        Debug.Log("getExp" + exp);//9
         IEnumerator enumerator = null;
         for (int i = 0; i < players.Count; i++)
         {
@@ -158,6 +159,6 @@ public class GameManager : MonoBehaviour
         }
         yield return enumerator;
         //ActivateCurrentScene((int)World.GameMode.FIELD_SCENE);
-    }*/
+    }
 }
 

@@ -6,6 +6,14 @@ using System;
 public class Player : Character
 {
     int playerID;
+    private ExpSheet expSheet;// 経験値表
+    public int Exp
+    {
+        get; set;
+    }
+
+    private int nextExp;// 次のレベルまでの経験値
+    public int NextExp { get => nextExp; set => nextExp = value; }
 
     public GameObject PlayerBattleSprite { get; set; }
 
@@ -15,6 +23,7 @@ public class Player : Character
     // UI
     public PlayerFieldUI playerUI;
     public BattlePlayerUI battlePlayerUI;
+    public ResultPlayerUI ResultPlayerUI;
     public List<Item> items;
     Animator playerBattleAnimator;
 
@@ -41,6 +50,8 @@ public class Player : Character
         PlayerBase = pBase;
         characterName = PlayerBase.name;
         playerID = pBase.PlayerId;
+        expSheet = (ExpSheet)Resources.Load("levelExp");
+        NextExp = expSheet.sheets[0].list[level - 1].nextExp;
         //        Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
         this.level = level;
@@ -167,4 +178,46 @@ public class Player : Character
     {
         currentSP -= playerSkill.skillBase.Sp;
     }
+
+
+
+    // expを更新して上がった経験値分のnextExpを返す
+    public ExpPair GetExp(int getExp)
+    {
+        ExpPair expPair;
+        expPair.oldLevel = level;
+        List<float> currentExps = new List<float>();
+        List<float> nextExps = new List<float>();
+        nextExp = nextExp - Exp;// 次の経験値までの経験値
+        Exp += getExp;
+        nextExps.Add(nextExp);
+        int remainExp = nextExp - getExp;// 次のレベルまでのexp
+        float remainGetExp = getExp;
+        while (remainExp <= 0)// 次のレベルまでのexpが－だったら
+        {
+            // レベルアップ
+            level += 1;
+            remainGetExp -= nextExp;
+            currentExps.Add(nextExp);
+            // 次までの経験値の更新
+            nextExp = expSheet.sheets[0].list[level - 1].nextExp;
+            nextExps.Add(nextExp);
+            int deltaExp = Mathf.Abs(Exp - nextExp);// 余った経験値
+            remainExp = nextExp - deltaExp;
+        }
+        Exp = (int)remainGetExp;
+        currentExps.Add(remainGetExp);
+        expPair.getExp = currentExps;
+        expPair.nextExp = nextExps;
+        expPair.newLevel = level;
+        return expPair;
+    }
+}
+
+public struct ExpPair
+{
+    public int oldLevel;// 前のレベル
+    public int newLevel;// 新しいレベル
+    public List<float> getExp;// 得た経験値
+    public List<float> nextExp;// 次の経験値までの経験値
 }

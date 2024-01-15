@@ -22,7 +22,8 @@ public class PlayerUnit : MonoBehaviour
 
     public GameObject[] PlayerPos { get => playerPos; }
     //public Transform[] PlayerBeforePos { get => playerBeforePos; }
-    // [SerializeField] private GameObject resultCanvas;
+    [SerializeField] GameObject resultPlayerUI;
+    [SerializeField] private GameObject resultAreaPanel;
 
 
     // テスト用
@@ -59,10 +60,10 @@ public class PlayerUnit : MonoBehaviour
             players[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
             players[j].battlePlayerUI.SetPlayerData(players[j]);
             //Debug.Log("ResultPanel/player" + j + "ResultPanel");
-            /*
-            players[j].ResultbattlePlayerUI = resultCanvas.transform.Find("ResultPanel/player" + j + "ResultPanel").GetComponent<ResultbattlePlayerUI>();
-            players[j].ResultbattlePlayerUI.SetUpResultPanel(players[j]);
-            */
+            
+            players[j].ResultPlayerUI = Instantiate(resultPlayerUI, Vector3.zero, Quaternion.identity, resultAreaPanel.transform).GetComponent<ResultPlayerUI>();
+            players[j].ResultPlayerUI.SetUpResultPanel(players[j]);
+            
             j++;
         }
     }

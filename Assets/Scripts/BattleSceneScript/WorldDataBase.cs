@@ -33,6 +33,7 @@ public enum GameMode
     FIELD_SCENE,
     BATTLE_SCENE,
     BOSS_SCENE,
+    RESULT_SCENE,
     TOWN_SCENE,
 }
 
