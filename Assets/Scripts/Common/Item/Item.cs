@@ -7,7 +7,7 @@ public enum ItemType
     MATERIAL,
     TOOL,
     HEAL_ITEM,
-    WEAPON
+    WEAPON,
 }
 [System.Serializable]
 public class Item

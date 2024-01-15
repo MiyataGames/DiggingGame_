@@ -2103,7 +2103,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             battleCommand.ActivateSkillCommandPanel(false);
             // 使えるアイテムだったら
             // 回復アイテム
-            if (mainPlayer.items[selectedItemIndex].ItemBase.itemType == ItemType.HEAL_ITEM)
+            if (mainPlayer.items[selectedItemIndex].ItemBase.ItemType == ItemType.HEAL_ITEM)
             {
                 InitItemTarget();
                 inputItemStatement = ChangeInputItemStatement();
@@ -2440,7 +2440,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         int j = 0;
         for (int i = 0; i < playerItemDatas.Count; i++)
         {
-            if (playerItemDatas[i].ItemBase.itemType == ItemType.WEAPON)
+            if (playerItemDatas[i].ItemBase.ItemType == ItemType.WEAPON)
             {
                 itemCellDatas.Add(new ItemCellData()
                 {

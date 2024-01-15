@@ -325,7 +325,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         Item item = party.Players[0].Items[selectedItemIndex];
 
         // 回復アイテムだったら
-        if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
+        if (item.ItemBase.ItemType == ItemType.HEAL_ITEM)
         {
             HealItemBase healItem = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             // アイテムパネルを消す
@@ -349,7 +349,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         // 衝突したのがアイテムだったら
         if (other.tag == "Item")
         {
-            Item newItem = other.GetComponent<Item>();
+            Item newItem = other.GetComponent<FieldItem>().Item;
             // 同じアイテムがあるか検索
             if (party.Players[0].Items.Count > 0)
             {
@@ -365,7 +365,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
                 }
             }
             // なければ新しく追加する
-            party.Players[0].Items.Add(other.GetComponent<Item>());
+            party.Players[0].Items.Add(other.GetComponent<FieldItem>().Item);
             party.Players[0].Items[party.Players[0].Items.Count - 1].ItemCount++;
             Debug.Log(party.Players[0].Items[0].ItemBase.ItemName);
             Destroy(other.gameObject);
