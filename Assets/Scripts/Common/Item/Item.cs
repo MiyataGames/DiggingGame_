@@ -19,7 +19,7 @@ public class Item
     public Item(ItemBase iBase)
     {
         ItemBase = iBase;
-        Debug.Log("アイテムの名前"+itemBase.ItemName);
+        // Debug.Log("アイテムの名前"+itemBase.ItemName);
         id = iBase.Id;
     }
 

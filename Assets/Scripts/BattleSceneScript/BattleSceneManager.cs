@@ -683,6 +683,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             //player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
             //player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", false);
         }
+        // 逃げる
+        if((Move)currentMove == Move.ESCAPE)
+        {
+            EscapeBattle();
+        }
     }
 
     //  スキルの入力の状態を遷移する関数
@@ -2549,6 +2554,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         GameManager.instance.EndBattle();
         playerSkillPanel.gameObject.SetActive(false);
     }
+    private void EscapeBattle()
+    {
+        GameManager.instance.EscapeBattle();
+        playerSkillPanel.gameObject.SetActive(false);
+    }
 
     /// ===================================
 
@@ -2643,7 +2653,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void LoadDiggingItemData(List<Item> playerItemDatas)
     {
-        Debug.Log("アイテムをロード");
         // 適当なデータを設定する
         itemCellDatas = new List<ItemCellData>();
         int j = 0;
@@ -2660,10 +2669,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 j++;
             }
         }
-        for (int i = 0; i < itemCellDatas.Count; i++)
+        /*for (int i = 0; i < itemCellDatas.Count; i++)
         {
             Debug.Log("入っているアイテムは" + itemCellDatas[i].itemText);
-        }
+        }*/
 
         // データが揃ったのでスクローラーをリロードする
         playerSkillPanel.ReloadData();

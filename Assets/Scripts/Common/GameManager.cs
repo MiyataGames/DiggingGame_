@@ -33,9 +33,10 @@ public class GameManager : MonoBehaviour
     private List<Player> players;
     Player mainPlayer;
 
+    // フィールド上の敵のシンボル
+    GameObject enemySymbol;
     [SerializeField]
-    private List<Enemy> enemies;
-
+    private List<Enemy> enemies;// バトル中の敵
     [SerializeField] private ExpSheet expSheet;// 経験値表
 
     private void Update()
@@ -85,8 +86,9 @@ public class GameManager : MonoBehaviour
 
     private bool FirstBattle = true;
 
-    public void StartBattle()
+    public void StartBattle(GameObject enemyObj)
     {
+        enemySymbol = enemyObj;
         ActivateCurrentScene((int)GameMode.BATTLE_SCENE);
         battleSceneManager.StartBattle();
         // 生成
@@ -132,7 +134,20 @@ public class GameManager : MonoBehaviour
         
         ActivateCurrentScene((int)GameMode.RESULT_SCENE);
         StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
+        if(enemySymbol != null)
+        {
+            Destroy(enemySymbol);
+        }
         
+    }
+
+    // 逃げる
+    public void EscapeBattle()
+    {
+        ActivateCurrentScene((int)GameMode.FIELD_SCENE);
+        Debug.Log("逃げる");
+        Debug.Log(enemySymbol.GetComponent<FieldEnemy>());
+        StartCoroutine(enemySymbol.GetComponent<FieldEnemy>().Blinking());
     }
 
     
@@ -146,7 +161,6 @@ public class GameManager : MonoBehaviour
             exp += expSheet.sheets[0].list[enemies[i].Level - 1].exp;
         }
         // floatでよみこまなきゃだめ？
-        Debug.Log("getExp" + exp);//9
         IEnumerator enumerator = null;
         for (int i = 0; i < players.Count; i++)
         {

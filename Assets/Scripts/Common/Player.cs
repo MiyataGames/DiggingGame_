@@ -69,7 +69,7 @@ public class Player : Character
         // 主人公なら
         if (playerID == 0)
         {
-            Debug.Log(debugItemBase.Count);
+           //  Debug.Log(debugItemBase.Count);
 
             // デバッグアイテムが入っていれば
             for (int i = 0; i < debugItemBase.Count; i++)

@@ -30,7 +30,6 @@ public class Enemy_TypeA : FieldEnemy
     private Vector3 moveStartPos; //移動開始位置
     private Vector3 previousPos; //前フレームの位置
 
-
     protected override void Start()
     {
         base.Start();
@@ -50,11 +49,22 @@ public class Enemy_TypeA : FieldEnemy
         base.FixedUpdate();
     }
 
+    // 追加
+    private void OnEnable()
+    {
+        waitFlag = false;
+    }
+
     public override void FieldMove()
     {
+        // 追加 フィールドシーン以外は動かない
+        if (GameManager.instance.CurrentSceneIndex != (int)GameMode.FIELD_SCENE|| IsBlinking == true)
+        {
+            return;
+        }
         bool isHitWall = hitWallCheck();
         bool isOverStepDis = WalkDistanceCheck();
-
+        //Debug.Log(waitFlag);
         if (isHitWall || isOverStepDis) //壁に当たる、もしくは移動可能量を上回ったら
         {
             moveFlag = false; //いったん待機
@@ -67,6 +77,7 @@ public class Enemy_TypeA : FieldEnemy
                 }));
 
                 waitFlag = true; //待機フラグをtrue
+                Debug.Log("waitFlagをtrue");
             }
         }
         else if (StopCheck() == true && waitFlag == false) //壁に当たってない＆＆移動可能距離内なのに止まってたら
@@ -120,6 +131,7 @@ public class Enemy_TypeA : FieldEnemy
 
     private void Flip()
     {
+        Debug.Log("Flip");
         Vector3 myScale = transform.localScale;
         myScale = new Vector3(-myScale.x, myScale.y, myScale.z);
         transform.localScale = myScale;

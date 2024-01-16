@@ -715,9 +715,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // バトルシーンに移動する
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
-            GameManager.instance.StartBattle();
+            GameManager.instance.StartBattle(collision.gameObject);
             // 敵オブジェクトを破壊
-            Destroy(collision.gameObject);
+            // Destroy(collision.gameObject);
         }else if(collision.gameObject.tag == "Town")
         {
             // 街へ入る

@@ -510,24 +510,5 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         groundFlag = false;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log(collision.gameObject.tag);
-        if (collision.gameObject.tag == "Enemy")
-        {
-            Debug.Log("敵に当たった");
-            // バトルシーンに移動する
-            //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
-            // バトルシーンに移動する
-            GameManager.instance.StartBattle();
-            // 敵オブジェクトを破壊
-            Destroy(collision.gameObject);
-        }
-        else if (collision.gameObject.tag == "Town")
-        {
-            // 街へ入る
-            GameManager.instance.CurrentSceneIndex = (int)GameMode.TOWN_SCENE;
-        }
-    }
 
 }

@@ -55,8 +55,19 @@ public class Enemy_TypeB : FieldEnemy
         base.FixedUpdate();
     }
 
+    // 追加
+    private void OnEnable()
+    {
+        waitFlag = false;
+    }
+
     public override void FieldMove()
     {
+        // 追加 フィールドシーン以外は動かない
+        if(GameManager.instance.CurrentSceneIndex != (int)GameMode.FIELD_SCENE || IsBlinking == true)
+        {
+            return;
+        }
         bool isHitWall = hitWallCheck();
         bool isOverStepDis = WalkDistanceCheck();
 

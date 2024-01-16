@@ -32,9 +32,9 @@ public class DiggingGridManager : MonoBehaviour
         {
             for (int j = 0; j < gridButtons.GetLength(1); j++)
             {
-                Debug.Log((i * gridButtons.GetLength(0)) + j);
+                // Debug.Log((i * gridButtons.GetLength(0)) + j);
                 gridButtons[i, j] = buttons[(i * gridButtons.GetLength(0)) + j];
-                Debug.Log(i + "," + j + ":" + (i * gridButtons.GetLength(0) + j));
+                // Debug.Log(i + "," + j + ":" + (i * gridButtons.GetLength(0) + j));
             }
         }
         finishButton.gameObject.SetActive(true);
@@ -43,12 +43,12 @@ public class DiggingGridManager : MonoBehaviour
     public void SetSelectedItem(Item item)
     {
         selectedItem = item;
-        Debug.Log("選んだアイテムは" + selectedItem.ItemBase.ItemName);
+        // Debug.Log("選んだアイテムは" + selectedItem.ItemBase.ItemName);
     }
 
     public void GridButtonClicked(int index)
     {
-        Debug.Log("選んだぼたんは" + index);
+        // Debug.Log("選んだぼたんは" + index);
         //int row = index / 3;
         //int col = index % 3;
 
