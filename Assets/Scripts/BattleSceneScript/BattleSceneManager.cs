@@ -1980,6 +1980,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     /// </summary>
     private void NextTurn()
     {
+        // スキルを一番上からにする
+        selectedSkillIndex = 0;
         if (turnCharacterIndex < characters.Count - 1)
         {
             turnCharacterIndex++;
