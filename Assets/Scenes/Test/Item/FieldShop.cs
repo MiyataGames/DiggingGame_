@@ -34,6 +34,11 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
     //サウンド　
     public AudioClip buyButtonSound; // Buyボタンのサウンド
     public AudioClip sellButtonSound; // Sellボタンのサウンド
+    public AudioClip purchaseSound; //Purchaseボタンのサウンド
+    public AudioClip EndSound;//Endボタンのサウンド
+    public AudioClip ScrollSound; //スクロールボタンのサウンド
+    public AudioClip UpButtonSound;//Upボタンのサウンド
+    public AudioClip DownButtonSound;　//Downボタンのサウンド
     private AudioSource audioSource; // オーディオソース
 
 
@@ -172,12 +177,14 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 		}
 	}
 
-	    /// <summary>
-	    /// ScriptableObjectのshopBaseを
-	    /// </summary>
-	    // 購入するときにitemShopからボタンを生成
-public void OnItemButtonClick(Item item)
-{
+	/// <summary>
+	/// ScriptableObjectのshopBaseを
+	/// </summary>
+	// 購入するときにitemShopからボタンを生成
+    public void OnItemButtonClick(Item item)
+    {
+
+        PlaySound(ScrollSound);
         Debug.Log(item.id);
         selectedItemEntry = item;
 
@@ -209,17 +216,20 @@ public void OnItemButtonClick(Item item)
     }
 
 
-	    // 選択したアイテムの個数を+1する
-	    public void UpButtonClick()
+	// 選択したアイテムの個数を+1する
+	public void UpButtonClick()
     {
+        PlaySound(UpButtonSound);
         if (tradeState) // 購入モードの場合
         {
-              //選んだアイテムの値段✖️個数 ＜　合計金額
-                if (selectedItemEntry.ItemBase.Price*quantity < party.Players[0].gold)
+            //選んだアイテムの値段✖️個数 ＜　合計金額
+            if (selectedItemEntry.ItemBase.Price*quantity < party.Players[0].gold)
             {
                 quantity++;
             }
+            sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
         }
+        
         else // 売却モードの場合
         {
             Debug.Log(quantity);
@@ -227,124 +237,138 @@ public void OnItemButtonClick(Item item)
             {
                 quantity++;
             }
+            sellPriceField.text = "Price: " + ((selectedItemEntry.ItemBase.Price / 2) * quantity).ToString();
         }
-
-        OnItemButtonClick(selectedItemEntry);
+        quantityField.text = quantity.ToString();
+        // OnItemButtonClick(selectedItemEntry);
     }
 
     // 選択したアイテムの個数を-1する
     public void DownButtonClick()
     {
+        PlaySound(DownButtonSound);
         if (quantity > 0)
         {
             quantity--;
         }
 
-        OnItemButtonClick(selectedItemEntry);
+        quantityField.text = quantity.ToString();
+        if (tradeState) // 購入の場合
+        {
+            sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
+        }
+        else // 売却の場合
+        {
+            sellPriceField.text = "Price: " + ((selectedItemEntry.ItemBase.Price / 2) * quantity).ToString();
+
+        }
+        //OnItemButtonClick(selectedItemEntry);
     }
 	    // 購入する
-	    public void OnClickPurchase()
-	    {
-        if (tradeState == true)//tradestate=true つまり購入成立だったら
+	public void OnClickPurchase()
+	{
+    if (tradeState == true)//tradestate=true つまり購入成立だったら
+    {
+
+        int totalPrice = selectedItemEntry.Price * quantity;// totalpriceは選択したアイテム金額の合計
+        if (totalPrice > party.Players[0].gold || quantity <= 0)//もしアイテム金額の合計がプレイヤーの現在の所持金と選択した個数が０以下なら
         {
-            int totalPrice = selectedItemEntry.Price * quantity;// totalpriceは選択したアイテム金額の合計
-            if (totalPrice > party.Players[0].gold || quantity <= 0)//もしアイテム金額の合計がプレイヤーの現在の所持金と選択した個数が０以下なら
-            {
-                // 購入不可のメッセージを表示
-                Debug.Log("購入できません"); //購入できない
-                return;
-            }
-
-            // 購入可能な場合の処理
-            party.Players[0].gold -= totalPrice;//現在の所持金-選択したアイデムの合計金額
-
-            bool itemFound = false;
-            for (int i = 0; i < party.Players[0].Items.Count; i++) //i=０と定義、iが選択したアイテム個数より少なかったら、i++
-            {
-                if (shopItems[choiceId].ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)//もし選んだアイテム番号とプレイヤーの所持アイテムが一致したら
-                {
-                    party.Players[0].Items[i].ItemCount += quantity;//プレイヤーの所持数にその分の個数を足す
-                    itemFound = true;
-                    break;
-                }
-            }
-
-            if (!itemFound)//みつからなかった場合
-            {
-                party.Players[0].Items.Add(shopItems[choiceId]);//プレイヤーの所持アイテム欄に選んだアイテム追加
-                shopItems[choiceId].ItemCount = quantity;//選んだ個数分を追加
-            }
-
-            OnItemButtonClick(selectedItemEntry);// 購入ボタン出現
-            Debug.Log("購入" + shopItems[choiceId].ItemBase.Id);
-
-		    quantity = 1;
-            quantityField.text = quantity.ToString();
-
-            // UIの更新
-            sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
-            itemCount.text = "myCount:" + selectedItemEntry.ItemCount.ToString();
-            descriptionField.text = selectedItemEntry.ItemBase.Description.ToString();
-        }
-        else//売却の場合
-        {
-            var selectedItem = shopItems[choiceId];
-
-            for (int i = 0; i < party.Players[0].Items.Count; i++)//プレイヤーが持っているアイテム数だけくり返す
-            {
-                Item item = party.Players[0].Items[i];//アイテムオブジェクトを取得
-
-                if (item.ItemBase.Id == selectedItem.ItemBase.Id)//もし選んだアイテムと売るアイテムが一致したら
-                {
-                    // int sellableQuantity = Mathf.Min(item.ItemCount, quantity);//アイテムの所持数と選択した個数の小さい方を取得、売却できる最大個数を求める
-                    int sellableQuantity = quantity;
-                    int sellPrice = item.ItemBase.Price / 2 * sellableQuantity;//売却金＝選択したアイテムの購入価格の半値✖️個数
-                    party.Players[0].gold += sellPrice;//現在の所持金＋売却金額
-                    party.Players[0].Items[i].ItemCount -= sellableQuantity;//現在持っているアイテム数から売ったアイテム数の個数をひく
-                    // 0個になったらUIを更新
-                    if (party.Players[0].Items[i].ItemCount == 0)
-                    {
-                        Debug.Log("実行");
-
-                        party.Players[0].Items.Remove(item);
-                        for (int k = 0; k < party.Players[0].Items.Count; k++)
-                        {
-                            Debug.Log("アイテム" + party.Players[0].Items[k].id);
-                        }
-                        int j = 0;
-                        _data = new List<ScrollerData>();
-                        foreach (var sellItem in party.Players[0].Items)
-                        {
-                            _data.Add(new ScrollerData()
-                            {
-                                id = j,
-                                cellText = sellItem.ItemBase.ItemName
-                            });
-                            j++;
-                        }
-                        myScroller.ReloadData();
-                    }
-                    OnItemButtonClick(selectedItemEntry);
-                    // 売った後のUI更新 あとでなおす
-                    /*
-                    quantity = 1;
-                    quantityField.text = quantity.ToString();
-                    sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
-                    itemCount.text = "myCount:" + selectedItemEntry.ItemCount.ToString();
-                    descriptionField.text = selectedItemEntry.ItemBase.Description.ToString();
-                    */
-                    }
-                    else
-                {
-                    Debug.Log("リストにあるけど持っていない");
-                }
-            }
-
-            Debug.Log("購入できない");
+            // 購入不可のメッセージを表示
+            Debug.Log("購入できません"); //購入できない
+            return;
         }
 
+        // 購入可能な場合の処理
+        PlaySound(purchaseSound);
+        party.Players[0].gold -= totalPrice;//現在の所持金-選択したアイデムの合計金額
+
+        bool itemFound = false;
+        for (int i = 0; i < party.Players[0].Items.Count; i++) //i=０と定義、iが選択したアイテム個数より少なかったら、i++
+        {
+            if (shopItems[choiceId].ItemBase.Id == party.Players[0].Items[i].ItemBase.Id)//もし選んだアイテム番号とプレイヤーの所持アイテムが一致したら
+            {
+                party.Players[0].Items[i].ItemCount += quantity;//プレイヤーの所持数にその分の個数を足す
+                itemFound = true;
+                break;
+            }
+        }
+
+        if (!itemFound)//みつからなかった場合
+        {
+            party.Players[0].Items.Add(shopItems[choiceId]);//プレイヤーの所持アイテム欄に選んだアイテム追加
+            shopItems[choiceId].ItemCount = quantity;//選んだ個数分を追加
+        }
+
+        OnItemButtonClick(selectedItemEntry);// 購入ボタン出現
+        Debug.Log("購入" + shopItems[choiceId].ItemBase.Id);
+
+		quantity = 1;
+        quantityField.text = quantity.ToString();
+
+        // UIの更新
+        sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
         itemCount.text = "myCount:" + selectedItemEntry.ItemCount.ToString();
+        descriptionField.text = selectedItemEntry.ItemBase.Description.ToString();
     }
+    else//売却の場合
+    {
+        var selectedItem = shopItems[choiceId];
+
+        for (int i = 0; i < party.Players[0].Items.Count; i++)//プレイヤーが持っているアイテム数だけくり返す
+        {
+            Item item = party.Players[0].Items[i];//アイテムオブジェクトを取得
+
+            if (item.ItemBase.Id == selectedItem.ItemBase.Id)//もし選んだアイテムと売るアイテムが一致したら
+            {
+                // int sellableQuantity = Mathf.Min(item.ItemCount, quantity);//アイテムの所持数と選択した個数の小さい方を取得、売却できる最大個数を求める
+                int sellableQuantity = quantity;
+                int sellPrice = item.ItemBase.Price / 2 * sellableQuantity;//売却金＝選択したアイテムの購入価格の半値✖️個数
+                party.Players[0].gold += sellPrice;//現在の所持金＋売却金額
+                party.Players[0].Items[i].ItemCount -= sellableQuantity;//現在持っているアイテム数から売ったアイテム数の個数をひく
+                // 0個になったらUIを更新
+                if (party.Players[0].Items[i].ItemCount == 0)
+                {
+                    Debug.Log("実行");
+
+                    party.Players[0].Items.Remove(item);
+                    for (int k = 0; k < party.Players[0].Items.Count; k++)
+                    {
+                        Debug.Log("アイテム" + party.Players[0].Items[k].id);
+                    }
+                    int j = 0;
+                    _data = new List<ScrollerData>();
+                    foreach (var sellItem in party.Players[0].Items)
+                    {
+                        _data.Add(new ScrollerData()
+                        {
+                            id = j,
+                            cellText = sellItem.ItemBase.ItemName
+                        });
+                        j++;
+                    }
+                    myScroller.ReloadData();
+                }
+                OnItemButtonClick(selectedItemEntry);
+                // 売った後のUI更新 あとでなおす
+                /*
+                quantity = 1;
+                quantityField.text = quantity.ToString();
+                sellPriceField.text = "Price: " + (selectedItemEntry.ItemBase.Price * quantity).ToString();
+                itemCount.text = "myCount:" + selectedItemEntry.ItemCount.ToString();
+                descriptionField.text = selectedItemEntry.ItemBase.Description.ToString();
+                */
+                }
+                else
+            {
+                Debug.Log("リストにあるけど持っていない");
+            }
+        }
+
+        Debug.Log("購入できない");
+    }
+
+    itemCount.text = "myCount:" + selectedItemEntry.ItemCount.ToString();
+}
 
 
 	    // >>>>>>>>>>>> UI制御系 >>>>>>>>>>>>
@@ -405,6 +429,7 @@ public void OnItemButtonClick(Item item)
     // 選択からゲーム画面に戻る
     public void OnEndButtonClick()
     {
+        PlaySound(EndSound);
 	    CommonHud.enabled=false;
         ShopHud.enabled = false;
     }
@@ -418,6 +443,7 @@ public void OnItemButtonClick(Item item)
 	    public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
 	    {
 		    // ここではセルビューを生成し、データを設定します
+          
 		    CallView cellView = scroller.GetCellView(cellViewPrefab) as CallView;
 		    cellView.SetData(_data[dataIndex]);
 		    cellView.cellButtonDataIntegerClicked = CellButtonDataIntegerClicked;
