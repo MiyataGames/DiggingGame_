@@ -97,7 +97,10 @@ public class PlayerUnit : MonoBehaviour
 
             SortedBattlePlayers[j].PlayerBattleSprite = Instantiate(SortedBattlePlayers[j].PlayerBase.PlayerBattleSceneSprite, playerPos[j].transform);
             SortedBattlePlayers[j].PlayerBattleAnimator = SortedBattlePlayers[j].PlayerBattleSprite.GetComponent<Animator>();
-            SortedBattlePlayers[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
+            SortedBattlePlayers[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvasTextMeshPro/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
+            Debug.Log(SortedBattlePlayers[j].battlePlayerUI.gameObject.activeSelf);
+            Debug.Log(SortedBattlePlayers[j].battlePlayerUI.gameObject.name);
+            SortedBattlePlayers[j].battlePlayerUI.gameObject.SetActive(true);
             // 選択矢印の生成
             Vector3 selectArrowPosition = new Vector3(SortedBattlePlayers[j].PlayerBattleSprite.transform.position.x, SortedBattlePlayers[j].PlayerBattleSprite.transform.position.y + 2, SortedBattlePlayers[j].PlayerBattleSprite.transform.position.z);
             GameObject selectArrow = Instantiate(selectArrowPref, selectArrowPosition, Quaternion.identity,PlayerPos[j].transform);
