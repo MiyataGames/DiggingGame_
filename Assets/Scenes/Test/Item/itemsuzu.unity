@@ -12336,6 +12336,8 @@ MonoBehaviour:
   tradeTextField: {fileID: 777813792}
   myScroller: {fileID: 1589343731}
   cellViewPrefab: {fileID: 6769216843780700808, guid: 69241a1c562c9c648ae17802a0be7ba9, type: 3}
+  buyButtonSound: {fileID: 8300000, guid: 266ea221310b3478e9267287766b7344, type: 3}
+  sellButtonSound: {fileID: 8300000, guid: 2aaf3ec9f9a0c4d9090ea21e24d5068b, type: 3}
   party: {fileID: 4493679613633154106}
 --- !u!1 &2023080244
 GameObject:

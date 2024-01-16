@@ -31,10 +31,20 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 	public EnhancedScroller myScroller;
 	public CallView cellViewPrefab;
 
-	[SerializeField] Party party;
+    //サウンド　
+    public AudioClip buyButtonSound; // Buyボタンのサウンド
+    public AudioClip sellButtonSound; // Sellボタンのサウンド
+    private AudioSource audioSource; // オーディオソース
+
+
+
+
+
+    [SerializeField] Party party;
 
     void Start()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
         party.Setup();
         party = party.GetComponent<Party>();
         InitializeShopItems();
@@ -350,7 +360,8 @@ public void OnItemButtonClick(Item item)
     // 購入画面の表示
     public void OnBuyButtonClick()
     {
-	    tradeState = true;
+        PlaySound(buyButtonSound);//Buyボタンを押したら購入ボタンのサウンド再生
+        tradeState = true;
 	    CreateCell();
 	    CommonHud.enabled=true;
         selectedItemEntry = shopItems[0];
@@ -368,12 +379,28 @@ public void OnItemButtonClick(Item item)
     // 売却画面の表示
     public void OnSellButtonClick()
     {
-	    tradeState = false;
+        PlaySound(sellButtonSound);//Sellボタンを押したら売却ボタンのサウンド再生
+        tradeState = false;
 	    CreateCell();
 	    CommonHud.enabled=true;
 	    tradeTextField.text = "Sell";
 	    moneyField.text = party.Players[0].gold.ToString() + "Gold";
     }
+
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            Debug.Log("Playing sound: " + clip.name);
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.Log("Clip is null");
+        }
+    }
+
 
     // 選択からゲーム画面に戻る
     public void OnEndButtonClick()
