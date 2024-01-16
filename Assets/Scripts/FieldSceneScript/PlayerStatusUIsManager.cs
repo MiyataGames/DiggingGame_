@@ -34,8 +34,8 @@ public class PlayerStatusUIsManager : MonoBehaviour
             // ステータス画面のPrefabをInstantiateする
             for (int i = 0; i < players.Count; i++)
             {
-                GameObject playerFieldUIObject = Instantiate(playerUIPrefab, playerStatusUIsManager.transform);
-                PlayerFieldUI playerFieldUI = playerFieldUIObject.GetComponent<PlayerFieldUI>();
+                GameObject playerStatusCell = Instantiate(playerUIPrefab, playerStatusUIsManager.transform);
+                PlayerFieldUI playerFieldUI = playerStatusCell.GetComponent<PlayerFieldUI>();
                 // ステータスUIマネジャーに追加する
                 playerFieldUIs.Add(playerFieldUI);
                 // プレイヤーのUIに追加
@@ -45,12 +45,12 @@ public class PlayerStatusUIsManager : MonoBehaviour
                 // UIの更新
                 players[i].playerUI.UpdateHpSp();
                 // ボタンに関数の追加
-                Button button = playerFieldUIObject.GetComponent<Button>();
+                Button button = playerStatusCell.GetComponent<Button>();
                 int buttonIndex = i;
                 button.onClick.AddListener(() => OnClickStatus(buttonIndex));
                 if (isAllSelect == false)
                 {
-                    EventTrigger eventTrigger = playerFieldUIObject.GetComponent<EventTrigger>();
+                    EventTrigger eventTrigger = playerStatusCell.GetComponent<EventTrigger>();
                     EventTrigger.Entry entry = new EventTrigger.Entry();
                     entry.eventID = EventTriggerType.PointerEnter;
                     entry.callback.AddListener((eventDate) => selectStatus(buttonIndex));

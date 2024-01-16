@@ -23,18 +23,21 @@ public class GameManager : MonoBehaviour
 
     public static int currentSceneIndex;
     private GameMode currentGameMode;
+    public GameState currentGameState;
     [SerializeField] private BattleSceneManager battleSceneManager;
     [SerializeField] private ResultSceneMangaer resultSceneManager;
     // [SerializeField] private ResultSceneMangaer resultSceneManager;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private PlayerTownController playerTownController;
+    [SerializeField] Party party;// パーティ情報　ID順
     [SerializeField] private PlayerUnit playerUnit;
     [SerializeField] private EnemyUnit enemyUnit;
-    private List<Player> players;
     Player mainPlayer;
 
     // フィールド上の敵のシンボル
     GameObject enemySymbol;
+    // バトル中のプレイヤー
+    List<Player> battlePlayers;
     [SerializeField]
     private List<Enemy> enemies;// バトル中の敵
     [SerializeField] private ExpSheet expSheet;// 経験値表
@@ -68,10 +71,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public Party Party { get => party; set => party = value; }
+
     // Start is called before the first frame update
     private void Start()
     {
+
+    }
+
+    // ゲームの全ての初期設定を行う
+    public void InitGame(Party party)
+    {
         currentSceneIndex = (int)GameMode.FIELD_SCENE;
+        this.Party = party;
     }
 
     private void ActivateCurrentScene(int sceneIndex)
@@ -91,41 +103,24 @@ public class GameManager : MonoBehaviour
         enemySymbol = enemyObj;
         ActivateCurrentScene((int)GameMode.BATTLE_SCENE);
         battleSceneManager.StartBattle();
+        battlePlayers = new List<Player>();
         // 生成
-        players = new List<Player>();
         enemies = new List<Enemy>();
-        if (FirstBattle == true)
-        {
-            playerUnit.SetUpFirst(1);
-            FirstBattle = false;
-        }
-        else
-        {
-            playerUnit.SetUp();
-        }
+        playerUnit.SetUpBattle(Party);
         // モンスターの生成
         enemyUnit.SetUp(1, 3);
-        for (int i = 0; i < playerUnit.Players.Length; i++)
+        battlePlayers = new List<Player>(playerUnit.SortedBattlePlayers);
+        for(int i = 0;i<battlePlayers.Count; i++)
         {
-            players.Add(playerUnit.Players[i]);
+            Debug.Log("バトルに出たプレイヤーID"+battlePlayers[i].PlayerBase.PlayerId);
         }
-        for (int i = 0; i < enemyUnit.Enemies.Length; i++)
-        {
-            enemies.Add(enemyUnit.Enemies[i]);
-        }
+        enemies = new List<Enemy>(enemyUnit.Enemies);
         Debug.Log("enemyCount" + enemies.Count);
 
         // 主人公を探す
-        mainPlayer = players[0];
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].PlayerID == 0)
-            {
-                mainPlayer = players[i];
-            }
-        }
+        mainPlayer = Party.Players[0];
 
-        battleSceneManager.InitBattle(players, enemies,mainPlayer);
+        battleSceneManager.InitBattle(battlePlayers, enemies,mainPlayer);
     }
 
     public void EndBattle()
@@ -162,12 +157,12 @@ public class GameManager : MonoBehaviour
         }
         // floatでよみこまなきゃだめ？
         IEnumerator enumerator = null;
-        for (int i = 0; i < players.Count; i++)
+        for (int i = 0; i < battlePlayers.Count; i++)
         {
-            Debug.Log(players[i].PlayerBase.PlayerName);
-            ExpPair expPair = players[i].GetExp(exp);
-            players[i].ResultPlayerUI.SetPlayerNameText();
-            enumerator = players[i].ResultPlayerUI.UpdateExp(expPair);
+            Debug.Log(battlePlayers[i].PlayerBase.PlayerName);
+            ExpPair expPair = battlePlayers[i].GetExp(exp);
+            battlePlayers[i].ResultPlayerUI.SetPlayerNameText();
+            enumerator = battlePlayers[i].ResultPlayerUI.UpdateExp(expPair);
             StartCoroutine(enumerator);
             //players[i].ResultPlayerUI.SetPlayerLevelText();
         }

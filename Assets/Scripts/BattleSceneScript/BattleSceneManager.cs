@@ -20,6 +20,13 @@ public enum BattleState
     END_BATTLE,
 }
 
+public enum StatusState
+{
+    STATUS_All,
+    STATUS_DISCRIPTION,
+    END
+}
+
 public enum CHECK_HOLE_POSITION_PHASE
 {
     FIRST,
@@ -30,6 +37,7 @@ public enum Move
 {
     ATTACK,
     ITEM,
+    STATUS,
     ESCAPE,
     END
 }
@@ -64,8 +72,12 @@ public enum InputDiggingStatement
 // 前のターンに気絶していたかどうか
 public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    //[SerializeField] private GameManager gameManager;
-
+    // ステータス関係 =====================
+    [SerializeField] GameObject statusPanel;
+    [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
+    [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
+    private int selectedStatusIndex;
+    // バトル関係 ==========================
     [SerializeField] private List<Enemy> activeEnemies;
 
     [SerializeField] private List<Player> activePlayers;
@@ -75,10 +87,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     //[SerializeField] private DialogBox dialogBox;
 
     [SerializeField] private BattleCommand battleCommand;
-
     public BattleState battleState = BattleState.BUSY;
     private InputSkillStatement inputSkillStatement;
     private InputItemStatement inputItemStatement;
+    StatusState statusState = StatusState.STATUS_All;
 
     [SerializeField]
     private List<Character> characters;// 戦闘に参加してるキャラクター
@@ -162,7 +174,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void Start()
     {
-        //StartBattle();
+        playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
     }
 
     public void HandleUpdate()
@@ -204,7 +216,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (battleState == BattleState.PLAYER_ACTION_SELECT)
         {
-            HandleActionSelection();
+                HandleActionSelection();
+
+            
         }
         else if (battleState == BattleState.PLAYER_MOVE)
         {
@@ -245,6 +259,16 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 else if (inputItemStatement == InputItemStatement.END_INPUT)
                 {
                     PlayerEndItemInput();
+                }
+            }else if ((Move)currentMove == Move.STATUS)
+            {
+                if (statusState == StatusState.STATUS_All)
+                {
+                    HandleStatusSelect();
+                }
+                else if (statusState == StatusState.STATUS_DISCRIPTION)
+                {
+                    HandleStatusDescription();
                 }
             }
         }
@@ -683,13 +707,78 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             //player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
             //player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", false);
         }
+        // ステータス画面を開く
+        if ((Move)currentMove == Move.STATUS)
+        {
+            Debug.Log(currentMove);
+            statusPanel.SetActive(true);
+            InitStatus();
+        }
         // 逃げる
-        if((Move)currentMove == Move.ESCAPE)
+        if ((Move)currentMove == Move.ESCAPE)
         {
             EscapeBattle();
         }
     }
 
+    // ステータス画面 ==========================
+    // 操作
+    private void HandleStatusSelect()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // ステータス画面をとじる
+            statusPanel.SetActive(false);
+            //currentMove = Move()
+            // メインパネルを表示する
+            battleCommand.ActivateBattleCommandPanel(true);
+            battleState = BattleState.PLAYER_ACTION_SELECT;
+        }
+    }
+    // ステータス画面の初期化
+    private void InitStatus()
+    {
+        statusState = StatusState.STATUS_All;
+        // ステータス選択画面だったら
+        playerStatusUIsManager.SetUpPlayerStatusUI(GameManager.instance.Party.Players, TARGET_NUM.SINGLE);
+        playerStatusUIsManager.selectStatus(selectedStatusIndex);
+    }
+
+    
+    // マウスでステータスを選択
+    public void SelectStatusButton(int selectStatusIndex)
+    {
+        selectedStatusIndex = selectStatusIndex;
+        //playerStatusUIsManager.selectStatus(selectedStatusIndex);
+        // 選択
+        // 決定キーを押したら
+        Debug.Log(selectedStatusIndex);
+        InitStatusDiscription();
+    }
+
+    // 詳細を表示
+    public void InitStatusDiscription()
+    {
+        statusState = StatusState.STATUS_DISCRIPTION;
+        Debug.Log("詳細パネルをつける");
+        Debug.Log((Move)currentMove);
+        Debug.Log(battleState);
+        statusDescriptionUIManager.gameObject.SetActive(true);
+        statusDescriptionUIManager.SetUpStatusDescription(GameManager.instance.Party.Players[selectedStatusIndex]);
+    }
+
+    private void HandleStatusDescription()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // ステータス詳細画面をとじる
+            statusDescriptionUIManager.gameObject.SetActive(false);
+            statusState = StatusState.STATUS_All;
+            // メインパネルを表示する
+            battleCommand.ActivateBattleCommandPanel(true);
+        }
+    }
+    // バトル ==============================
     //  スキルの入力の状態を遷移する関数
     private InputSkillStatement ChangeInputSkillStatement()
     {

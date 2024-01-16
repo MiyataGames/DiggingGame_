@@ -64,7 +64,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         selectedItemIndex = 0;
         selectedStatusIndex = 0;
         selectedItemTargetIndex = 0;
-        party.Setup();
+        party.SetupFirst();
         // デリゲート
         menu.menuSelectButtonClickedDelegate = SelectMenuButton;
         menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;

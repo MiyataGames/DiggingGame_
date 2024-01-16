@@ -28,6 +28,12 @@ public enum STATUS
     EVASION
 }
 
+public enum GameState
+{
+    PLAYING,
+    POSE
+}
+
 public enum GameMode
 {
     FIELD_SCENE,

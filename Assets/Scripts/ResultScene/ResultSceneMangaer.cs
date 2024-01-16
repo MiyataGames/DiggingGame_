@@ -25,6 +25,7 @@ public class ResultSceneMangaer : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 gameManager.CurrentSceneIndex = (int)GameMode.FIELD_SCENE;
+                // リザルトの子オブジェクトを削除
                 Destroy(playerModel);
                 resultPanel.SetActive(false);
             }

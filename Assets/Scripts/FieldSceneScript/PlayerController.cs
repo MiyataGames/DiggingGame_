@@ -107,7 +107,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         selectedItemIndex = 0;
         selectedStatusIndex = 0;
         selectedItemTargetIndex = 0;
-        party.Setup();
+        party.SetupFirst();
+        GameManager.instance.InitGame(party);
         // デリゲート
         menu.menuSelectButtonClickedDelegate = SelectMenuButton;
         menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;

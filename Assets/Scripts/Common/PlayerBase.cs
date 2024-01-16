@@ -7,6 +7,8 @@ public class PlayerBase : ScriptableObject
 {
     [SerializeField] private int playerId;
     [SerializeField] private string playerName;
+    [TextArea(1, 2)]
+    [SerializeField] private string playerDiscription;
     [SerializeField] private Sprite playerFaceIcon;
 
     [SerializeField] GameObject playerBattleSceneSprite;// 待機用のスプライト
@@ -33,4 +35,5 @@ public class PlayerBase : ScriptableObject
     public int PlayerMaxDef { get => playerMaxDef; }
     public int PlayerMaxAgi { get => playerMaxAgi; }
     public List<LearnableSkill> LearnablePlayerSkills { get => learnablePlayerSkills; }
+    public string PlayerDiscription { get => playerDiscription;}
 }
