@@ -63,7 +63,13 @@ public class PlayerStatusUIsManager : MonoBehaviour
             }
         }
         playersCount = players.Count;
+        // UIは人数に関係なく更新する
+        for (int i = 0; i < players.Count; i++)
+        {
+            players[i].playerUI.UpdateHpSp();
+        }
     }
+
 
     public void selectStatus(int index)
     {

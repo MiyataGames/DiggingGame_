@@ -740,6 +740,21 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         statusState = StatusState.STATUS_All;
         // ステータス選択画面だったら
+        Debug.Log("ステータス画面を更新");
+        for(int i = 0;i < activePlayers.Count; i++)
+        {
+            // パーティプレイヤーのHPとSPを更新
+            // バトル中のプレイヤーの情報
+            Player activePlayer = activePlayers[i];
+            // 更新先のパーティのプレイヤー
+            Player updatePlayer = GameManager.instance.Party.Players.Find(player => player.PlayerID == activePlayer.PlayerID);
+            // 更新
+            updatePlayer = activePlayer;
+        }
+        for(int i = 0;i < GameManager.instance.Party.Players.Count;i++)
+        {
+            Debug.Log("パーティプレイヤーを更新" + GameManager.instance.Party.Players[i].currentSP);
+        }
         playerStatusUIsManager.SetUpPlayerStatusUI(GameManager.instance.Party.Players, TARGET_NUM.SINGLE);
         playerStatusUIsManager.selectStatus(selectedStatusIndex);
     }

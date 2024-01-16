@@ -8,8 +8,8 @@ public class BattlePlayerUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerNameText;
     [SerializeField] private TextMeshProUGUI playerLevelText;
-    [SerializeField] private HPBar playerHpBar;
-    [SerializeField] private SPBar playerSpBar;
+    [SerializeField] private HPBarWithText playerHpBar;
+    [SerializeField] private SPBarWithText playerSpBar;
     [SerializeField] private TextMeshProUGUI hpText;
     [SerializeField] private TextMeshProUGUI spText;
 

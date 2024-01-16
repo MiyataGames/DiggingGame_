@@ -1025,6 +1025,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 654350ca3cbd41049bf8120c9c94756d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spText: {fileID: 2997957883388540154}
+  spMaxText: {fileID: 2997957883320741219}
   spBar: {fileID: 2997957883786501586}
 --- !u!1 &2997957883949270364
 GameObject:
@@ -1428,4 +1430,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5ff3cead545d545ac6aaa2c4927b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hpText: {fileID: 2997957883048030849}
+  hpMaxText: {fileID: 2997957883759289045}
   hpBar: {fileID: 2997957884699441341}
