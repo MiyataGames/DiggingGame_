@@ -1410,11 +1410,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
                     // 味方にスキル発動モーション
-                    Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[i].PlayerBattleSprite.transform.position, activePlayers[i].PlayerBattleSprite.transform.rotation);
+                    Vector3 healEffectPosition = new Vector3(activePlayers[i].PlayerBattleSprite.transform.position.x, activePlayers[i].PlayerBattleSprite.transform.position.y - 1.5f, activePlayers[i].PlayerBattleSprite.transform.position.z);
+                    Instantiate(playerSkill.skillBase.SkillRecieveEffect, healEffectPosition, activePlayers[i].PlayerBattleSprite.transform.rotation);
                 }
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
                     // 回復モーション
+                    activePlayers[i].PlayerBattleAnimator.Play(hashHeal);
                 }
                 // 一体（回）分だけ待つ
                 //yield return new WaitForAnimation(activePlayers[0].PlayerBattleAnimator, 0);
@@ -1432,7 +1434,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
             else//対象が単体だったら
             {
-                Instantiate(playerSkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.position, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.rotation);
+                Vector3 healEffectPosition = new Vector3(activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.position.x, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.position.y - 1.5f, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.position.z);
+                Instantiate(playerSkill.skillBase.SkillRecieveEffect, healEffectPosition, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.rotation);
                 // ここ
                 activePlayers[selectedTargetIndex].TakeHeal(playerSkill, activePlayers[selectedTargetIndex]);
 
@@ -2613,6 +2616,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 // 回復モーション
                 activePlayers[i].PlayerBattleAnimator.Play(hashHeal);
+                // ここをかえる
             }
             // 一体（回）分だけ待つ
             yield return new WaitForAnimation(activePlayers[0].PlayerBattleAnimator, 0);

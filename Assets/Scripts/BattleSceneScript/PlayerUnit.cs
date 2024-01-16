@@ -20,7 +20,7 @@ public class PlayerUnit : MonoBehaviour
 
     //public Transform[] PlayerBeforePos { get => playerBeforePos; }
 
-
+    [SerializeField] GameObject selectArrowPref;
 
     // テスト用
     public List<ItemBase> debugItemBase;
@@ -98,6 +98,11 @@ public class PlayerUnit : MonoBehaviour
             SortedBattlePlayers[j].PlayerBattleSprite = Instantiate(SortedBattlePlayers[j].PlayerBase.PlayerBattleSceneSprite, playerPos[j].transform);
             SortedBattlePlayers[j].PlayerBattleAnimator = SortedBattlePlayers[j].PlayerBattleSprite.GetComponent<Animator>();
             SortedBattlePlayers[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
+            // 選択矢印の生成
+            Vector3 selectArrowPosition = new Vector3(SortedBattlePlayers[j].PlayerBattleSprite.transform.position.x, SortedBattlePlayers[j].PlayerBattleSprite.transform.position.y + 2, SortedBattlePlayers[j].PlayerBattleSprite.transform.position.z);
+            GameObject selectArrow = Instantiate(selectArrowPref, selectArrowPosition, Quaternion.identity,PlayerPos[j].transform);
+            SortedBattlePlayers[j].battlePlayerUI.SelectedArrow = selectArrow;
+            SortedBattlePlayers[j].battlePlayerUI.SelectedArrow.SetActive(false);
             SortedBattlePlayers[j].battlePlayerUI.SetPlayerData(SortedBattlePlayers[j]);
             //Debug.Log("ResultPanel/player" + j + "ResultPanel");
             j++;

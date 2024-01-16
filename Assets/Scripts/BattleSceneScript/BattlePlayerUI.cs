@@ -29,7 +29,7 @@ public class BattlePlayerUI : MonoBehaviour
         [SerializeField] private Sprite[] statusSprites;
         [SerializeField] private Text[] statusTexts;
     */
-    public GameObject SelectedArrow { get => selectedArrow; }
+    public GameObject SelectedArrow { get => selectedArrow; set => selectedArrow = value; }
     public Transform PlayerPos { get => playerPos; set => playerPos = value; }
 
     public void SetPlayerData(Player player)
