@@ -13,6 +13,7 @@ public class Player : Character
     }
 
     private int nextExp;// 次のレベルまでの経験値
+    private int nextFullExp;// 次のレベルまでの経験値の初期値（最大値）
     public int NextExp { get => nextExp; set => nextExp = value; }
 
     public GameObject PlayerBattleSprite { get; set; }
@@ -109,16 +110,6 @@ public class Player : Character
 
     }
 
-    public void OverridePlayer(int level, int currentHP, int currentSP, int atk, int def, int agi)
-    {
-        this.level = level;
-        currentHP = currentHP;
-        currentSP = currentSP;
-        atk = atk;
-        def = def;
-        agi = agi;
-    }
-
     public bool TakeHealWithItem(Item healItem)
     {
         if (currentHP == currentMaxHp)
@@ -186,23 +177,25 @@ public class Player : Character
     {
         ExpPair expPair;
         expPair.oldLevel = level;
-        List<float> currentExps = new List<float>();
-        List<float> nextExps = new List<float>();
+        List<float> currentExps = new List<float>();//レベルごとの現在の経験値のリスト
+        List<float> nextExps = new List<float>();// レベルごとの次までの経験値のリスト
         nextExp = nextExp - Exp;// 次の経験値までの経験値
         Exp += getExp;
         nextExps.Add(nextExp);
-        int remainExp = nextExp - getExp;// 次のレベルまでのexp
+        Debug.Log("次までの経験値" + nextExp+ "現在の経験値" + Exp);
+        int remainExp = nextExp - getExp;// 次のレベルまでの経験値から取得した経験値を引いた1回目のあまり
+        Debug.Log("残りの経験値は" + remainExp);
         float remainGetExp = getExp;
         while (remainExp <= 0)// 次のレベルまでのexpが－だったら
         {
             // レベルアップ
             level += 1;
             remainGetExp -= nextExp;
-            currentExps.Add(nextExp);
+            currentExps.Add(nextExp);// -だったら次までの経験値を更新する前のマックス値
             // 次までの経験値の更新
             nextExp = expSheet.sheets[0].list[level - 1].nextExp;
             nextExps.Add(nextExp);
-            int deltaExp = Mathf.Abs(Exp - nextExp);// 余った経験値
+            int deltaExp = Mathf.Abs(Exp - nextExp);// さらに余った経験値
             remainExp = nextExp - deltaExp;
         }
         Exp = (int)remainGetExp;
@@ -210,6 +203,7 @@ public class Player : Character
         expPair.getExp = currentExps;
         expPair.nextExp = nextExps;
         expPair.newLevel = level;
+        Debug.Log("経験値を得た後のレベルは" + level);
         return expPair;
     }
 }

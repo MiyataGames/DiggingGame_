@@ -12,11 +12,19 @@ public class ResultPlayerUI : MonoBehaviour
     public void SetUpResultPanel(Player player)
     {
         this.player = player;
+
     }
 
     public IEnumerator UpdateExp(ExpPair expPair)
     {
-        Debug.Log("updateExp");
+        //playerExpBar.PlayerExpBar.fillAmount = (float)player.Exp / (float)player.NextExp;
+        Debug.Log("現在の経験値"+player.Exp);
+        Debug.Log("割合"+(float)player.Exp/(float)player.NextExp);
+        for(int i = 0; i < expPair.getExp.Count; i++)
+        {
+            Debug.Log("i"+i+"得た経験値"+expPair.getExp[i]);
+            Debug.Log("i" + i + "次までの経験値" + expPair.nextExp[i]);
+        }
         IEnumerator enumerator = playerExpBar.SetExpSmooth(expPair);
         yield return enumerator;
     }

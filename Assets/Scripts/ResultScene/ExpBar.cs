@@ -6,9 +6,11 @@ using TMPro;
 
 public class ExpBar : MonoBehaviour
 {
-    [SerializeField] private Image expBar;
+    [SerializeField] private Image playerExpBar;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI remainExpText;
+
+    public Image PlayerExpBar { get => playerExpBar; set => playerExpBar = value; }
 
     public IEnumerator SetExpSmooth(ExpPair expPair)
     {
@@ -23,30 +25,30 @@ public class ExpBar : MonoBehaviour
             sumNextExp += expPair.nextExp[i];
             sumGetExp += expPair.getExp[i];
         }
-
+        // 経験値初期値
+        float currentExp = PlayerExpBar.fillAmount * expPair.nextExp[0];
+        Debug.Log("expBarの初期の割合"+playerExpBar.fillAmount);
+        Debug.Log("exp初期値" + currentExp);
+        
         for (int i = 0; i < expPair.getExp.Count; i++)
         {
             float changeAmount;
-            float currentExp = expBar.fillAmount;
             float remainNextExp = expPair.nextExp[i];
-            //
             changeAmount = remainNextExp * Time.deltaTime;
             while (currentExp <= expPair.getExp[i])
             {
                 currentExp += changeAmount;
                 remainNextExp -= changeAmount;
-                //Debug.Log(remainNextExp);
                 remainExpText.text = remainNextExp.ToString("f0");
-                float expFill = (expPair.nextExp[i] - remainNextExp) / expPair.nextExp[i];
-                expBar.fillAmount = (expPair.nextExp[i] - remainNextExp) / expPair.nextExp[i];
-                //Debug.Log("??????????"+expFill);
+                // 現在のExp/レベルが上がるまでの残りの経験値 ここへん？
+                playerExpBar.fillAmount = currentExp / expPair.nextExp[i];
                 yield return new WaitForEndOfFrame();
             }
-            expBar.fillAmount = expPair.getExp[i] / expPair.nextExp[i];
+            playerExpBar.fillAmount = expPair.getExp[i] / expPair.nextExp[i];
 
-            if (expBar.fillAmount >= 1)
+            if (playerExpBar.fillAmount >= 1)
             {
-                expBar.fillAmount = 0;
+                playerExpBar.fillAmount = 0;
                 currentLevel += 1;
                 levelText.text = "Lv" + currentLevel.ToString();
             }

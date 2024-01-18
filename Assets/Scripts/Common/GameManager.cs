@@ -154,6 +154,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < enemies.Count; i++)
         {
             exp += expSheet.sheets[0].list[enemies[i].Level - 1].exp;
+            Debug.Log("倒した敵の経験値は" + expSheet.sheets[0].list[enemies[i].Level - 1].exp);
         }
         // floatでよみこまなきゃだめ？
         IEnumerator enumerator = null;

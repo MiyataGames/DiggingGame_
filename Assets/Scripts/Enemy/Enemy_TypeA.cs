@@ -77,7 +77,6 @@ public class Enemy_TypeA : FieldEnemy
                 }));
 
                 waitFlag = true; //待機フラグをtrue
-                Debug.Log("waitFlagをtrue");
             }
         }
         else if (StopCheck() == true && waitFlag == false) //壁に当たってない＆＆移動可能距離内なのに止まってたら
@@ -131,7 +130,6 @@ public class Enemy_TypeA : FieldEnemy
 
     private void Flip()
     {
-        Debug.Log("Flip");
         Vector3 myScale = transform.localScale;
         myScale = new Vector3(-myScale.x, myScale.y, myScale.z);
         transform.localScale = myScale;

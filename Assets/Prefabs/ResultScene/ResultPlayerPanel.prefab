@@ -498,7 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17249ba406e5f4b24b976b28a55c5c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expBar: {fileID: 1192006652}
+  playerExpBar: {fileID: 1192006652}
   levelText: {fileID: 946051003}
   remainExpText: {fileID: 674177264}
 --- !u!1 &1630801083
