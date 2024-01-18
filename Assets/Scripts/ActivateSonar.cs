@@ -4,6 +4,10 @@ public class ActivateSonar : MonoBehaviour
 {
     public GameObject sonar;
     private Tween scaleTween; // Tween型の変数scaleTween
+    [SerializeField] Vector3 sarchScale = new Vector3(5f, 5f, 5f);
+    [SerializeField] float scaleTime = 3;
+    [SerializeField] float shrinkTime = 2;
+
     void Update()
     {
         // 左Shiftか右Shiftのいずれかが押されたとき
@@ -19,7 +23,7 @@ public class ActivateSonar : MonoBehaviour
                 }
                 // 現在のスケールから2へアニメーションする
                 Vector3 currentScale = sonar.transform.localScale;
-                scaleTween = sonar.transform.DOScale(new Vector3(2f, 2f, 2f), 3f).From(currentScale);
+                scaleTween = sonar.transform.DOScale(sarchScale, scaleTime).From(currentScale);
             }
         }
         // 左Shiftか右Shiftのいずれかを離したとき
@@ -33,7 +37,7 @@ public class ActivateSonar : MonoBehaviour
                 }
                 // 現在のスケールから0へアニメーションする
                 Vector3 currentScale = sonar.transform.localScale;
-                scaleTween = sonar.transform.DOScale(Vector3.zero, 2f).From(currentScale).OnComplete(() => {
+                scaleTween = sonar.transform.DOScale(Vector3.zero, shrinkTime).From(currentScale).OnComplete(() => {
                     sonar.SetActive(false); // アニメーション完了後、ゲームオブジェクトを非アクティブにする
                 });
             }
