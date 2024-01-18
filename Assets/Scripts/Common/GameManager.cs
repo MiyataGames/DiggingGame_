@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayMode{
+    DEBUG,
+    RELEASE
+};
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -22,6 +27,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] fieldObjects;
 
     public static int currentSceneIndex;
+    public static PlayMode playMode;
     private GameMode currentGameMode;
     public GameState currentGameState;
     [SerializeField] private BattleSceneManager battleSceneManager;
@@ -41,6 +47,20 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<Enemy> enemies;// バトル中の敵
     [SerializeField] private ExpSheet expSheet;// 経験値表
+
+    // デバッグ用のボタン
+    [SerializeField] GameObject skipButton;
+    void Start()
+    {
+        if (playMode == PlayMode.DEBUG)
+        {
+            skipButton.SetActive(true);
+        }
+        else
+        {
+            skipButton.SetActive(false);
+        }
+    }
 
     private void Update()
     {
@@ -72,12 +92,6 @@ public class GameManager : MonoBehaviour
     }
 
     public Party Party { get => party; set => party = value; }
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-
-    }
 
     // ゲームの全ての初期設定を行う
     public void InitGame(Party party)
