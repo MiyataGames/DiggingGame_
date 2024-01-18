@@ -190,6 +190,9 @@ public class Player : Character
         {
             // レベルアップ
             level += 1;
+            // レベルアップしたら体力とSP全回復する
+            currentHP = currentMaxHp;
+            currentSP = currentMaxSp;
             remainGetExp -= nextExp;
             currentExps.Add(nextExp);// -だったら次までの経験値を更新する前のマックス値
             // 次までの経験値の更新
