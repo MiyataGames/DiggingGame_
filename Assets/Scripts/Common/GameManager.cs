@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] fieldObjects;
 
     public static int currentSceneIndex;
-    public static PlayMode playMode;
+    public PlayMode playMode;
     private GameMode currentGameMode;
     public GameState currentGameState;
     [SerializeField] private BattleSceneManager battleSceneManager;
