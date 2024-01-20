@@ -5,13 +5,13 @@ using UnityEngine;
 public class FieldItem : MonoBehaviour
 {
     private Item item;
-    public ItemBase itemBase; // ƒCƒ“ƒXƒyƒNƒ^‚©‚çİ’è
+    public ItemBase itemBase; // ï¿½Cï¿½ï¿½ï¿½Xï¿½yï¿½Nï¿½^ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 
     public Item Item { get => item; set => item = value; }
 
     void Start()
     {
-        item = new Item(itemBase);// ‰Šú‰»
+        item = new Item(itemBase);// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
     public void ApplyItemAffect(Item item)
@@ -29,7 +29,7 @@ public class FieldItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Õ“Ë");
+            Debug.Log("ï¿½Õ“ï¿½");
             ApplyItemAffect(item);
         }
     }
