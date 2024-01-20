@@ -19,5 +19,5 @@ MonoBehaviour:
   accuracy: 10
   skillCategory: 1
   skillTargetKind: 0
-  skillTargetNum: 0
+  skillTargetNum: 1
   skillRecieveEffect: {fileID: 7986504087968017091, guid: 12a56ee4630040c4eb17ae9707ed4cef, type: 3}

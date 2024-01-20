@@ -6,6 +6,15 @@ using System;
 public class Player : Character
 {
     int playerID;
+    private ExpSheet expSheet;// 経験値表
+    public int Exp
+    {
+        get; set;
+    }
+
+    private int nextExp;// 次のレベルまでの経験値
+    private int nextFullExp;// 次のレベルまでの経験値の初期値（最大値）
+    public int NextExp { get => nextExp; set => nextExp = value; }
 
     public GameObject PlayerBattleSprite { get; set; }
 
@@ -15,6 +24,7 @@ public class Player : Character
     // UI
     public PlayerFieldUI playerUI;
     public BattlePlayerUI battlePlayerUI;
+    public ResultPlayerUI ResultPlayerUI;
     public List<Item> items;
     Animator playerBattleAnimator;
 
@@ -45,6 +55,8 @@ public class Player : Character
         PlayerBase = pBase;
         characterName = PlayerBase.name;
         playerID = pBase.PlayerId;
+        expSheet = (ExpSheet)Resources.Load("levelExp");
+        NextExp = expSheet.sheets[0].list[level - 1].nextExp;
         //        Debug.Log("ID" + playerID);
         // あとでレベルごとに変える
         this.level = level;
@@ -62,7 +74,7 @@ public class Player : Character
         // 主人公なら
         if (playerID == 0)
         {
-            Debug.Log(debugItemBase.Count);
+           //  Debug.Log(debugItemBase.Count);
 
             // デバッグアイテムが入っていれば
             for (int i = 0; i < debugItemBase.Count; i++)
@@ -100,16 +112,6 @@ public class Player : Character
     public override void InitStatusValue(int level)
     {
 
-    }
-
-    public void OverridePlayer(int level, int currentHP, int currentSP, int atk, int def, int agi)
-    {
-        this.level = level;
-        currentHP = currentHP;
-        currentSP = currentSP;
-        atk = atk;
-        def = def;
-        agi = agi;
     }
 
     public bool TakeHealWithItem(Item healItem)
@@ -171,4 +173,52 @@ public class Player : Character
     {
         currentSP -= playerSkill.skillBase.Sp;
     }
+
+
+
+    // expを更新して上がった経験値分のnextExpを返す
+    public ExpPair GetExp(int getExp)
+    {
+        ExpPair expPair;
+        expPair.oldLevel = level;
+        List<float> currentExps = new List<float>();//レベルごとの現在の経験値のリスト
+        List<float> nextExps = new List<float>();// レベルごとの次までの経験値のリスト
+        nextExp = nextExp - Exp;// 次の経験値までの経験値
+        Exp += getExp;
+        nextExps.Add(nextExp);
+        Debug.Log("次までの経験値" + nextExp+ "現在の経験値" + Exp);
+        int remainExp = nextExp - getExp;// 次のレベルまでの経験値から取得した経験値を引いた1回目のあまり
+        Debug.Log("残りの経験値は" + remainExp);
+        float remainGetExp = getExp;
+        while (remainExp <= 0)// 次のレベルまでのexpが－だったら
+        {
+            // レベルアップ
+            level += 1;
+            // レベルアップしたら体力とSP全回復する
+            currentHP = currentMaxHp;
+            currentSP = currentMaxSp;
+            remainGetExp -= nextExp;
+            currentExps.Add(nextExp);// -だったら次までの経験値を更新する前のマックス値
+            // 次までの経験値の更新
+            nextExp = expSheet.sheets[0].list[level - 1].nextExp;
+            nextExps.Add(nextExp);
+            int deltaExp = Mathf.Abs(Exp - nextExp);// さらに余った経験値
+            remainExp = nextExp - deltaExp;
+        }
+        Exp = (int)remainGetExp;
+        currentExps.Add(remainGetExp);
+        expPair.getExp = currentExps;
+        expPair.nextExp = nextExps;
+        expPair.newLevel = level;
+        Debug.Log("経験値を得た後のレベルは" + level);
+        return expPair;
+    }
+}
+
+public struct ExpPair
+{
+    public int oldLevel;// 前のレベル
+    public int newLevel;// 新しいレベル
+    public List<float> getExp;// 得た経験値
+    public List<float> nextExp;// 次の経験値までの経験値
 }

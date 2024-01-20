@@ -6,9 +6,8 @@ using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.EventSystems;
 using System.Linq;
-using System;
 
-public enum GameStatus
+public enum FieldGameState
 {
     DIGGING,
     MENU,
@@ -60,11 +59,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private Define.DirectionNumber currentDirectionNumber;
     [SerializeField] private Menu menu;
 
-    public static GameStatus currentGameStatus;
+    public static FieldGameState filedGameStatus;
 
+    // プレイヤーのアニメーション
     private Animator myAnim;
-
     public bool isLeft = false;
+
 
     // プレイヤー 仮
     //[SerializeField] private PlayerBase[] playerBasies;
@@ -76,7 +76,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // メニュー画面 =======================
     private int currentMenuCommandNum;
     // アイテム関係 ======================
-
     private ItemUseStatus currentItemUseStatus;
     private int currentItemNum;
     private List<ItemCellData> itemCellData;
@@ -93,23 +92,25 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
 
     // ステータス関係 ==========================
+    StatusState statusState = StatusState.STATUS_All;
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
-
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
+    [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
 
     // Start is called before the first frame update
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         myAnim = GetComponent<Animator>();
-        currentGameStatus = GameStatus.DIGGING;
+        filedGameStatus = FieldGameState.DIGGING;
         currentMenuCommandNum = 0;
         currentItemNum = 0;
         selectedItemIndex = 0;
         selectedStatusIndex = 0;
         selectedItemTargetIndex = 0;
-        party.Setup();
+        party.SetupFirst();
+        GameManager.instance.InitGame(party);
         // デリゲート
         menu.menuSelectButtonClickedDelegate = SelectMenuButton;
         menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;
@@ -120,8 +121,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     public void HandleUpdate()
     {
-        // 穴掘り中だったら
-        if (currentGameStatus == GameStatus.DIGGING)
+        // ゲームがポーズ中でないかつ穴掘り中だったら
+        if (GameManager.instance.currentGameState == GameState.PLAYING || filedGameStatus == FieldGameState.DIGGING)
         {
             // サーチ
             if (Input.GetKeyDown(KeyCode.Space))
@@ -131,8 +132,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // メニュー画面
             if (Input.GetKeyDown(KeyCode.Tab))
             {
+                // ポーズ中にする
+                GameManager.instance.currentGameState = GameState.POSE;
                 // メニュー画面をひらく
-                currentGameStatus = GameStatus.MENU;
+                filedGameStatus = FieldGameState.MENU;
                 menu.ActivateMenuPanel(true);
                 menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
             }
@@ -150,6 +153,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = -speed;
                 isLeft = true;
+                myAnim.SetBool("isWalking", true);
                 myAnim.SetFloat("isLeft",1);
             }
             else
@@ -158,7 +162,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = speed;
                 isLeft = false;
+                // isLeftを0にすると右のアニメーション
+                myAnim.SetBool("isWalking", true);
                 myAnim.SetFloat("isLeft",0);
+            }
+
+            
+            // 移動キーを離したら
+            if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            {
+                //
+                myAnim.SetBool("isWalking", false);
             }
 
             if (Input.GetKey("space") && groundFlag == true)
@@ -176,22 +190,29 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
 
         // メインパネルを選択中だったら
-        else if (currentGameStatus == GameStatus.MENU)
+        else if (filedGameStatus == FieldGameState.MENU)
         {
             HandleMenuSelect();
         }
         // アイテムを選択中だったら
-        else if (currentGameStatus == GameStatus.ITEM)
+        else if (filedGameStatus == FieldGameState.ITEM)
         {
             HandleItemSelect();
         }
         // ステータスを選択中だったら
-        else if (currentGameStatus == GameStatus.STATUS)
+        else if (filedGameStatus == FieldGameState.STATUS)
         {
-            HandleStatusSelect();
+            if (statusState == StatusState.STATUS_All)
+            {
+                HandleStatusSelect();
+            }
+            else if (statusState == StatusState.STATUS_DISCRIPTION)
+            {
+                HandleStatusDescription();
+            }
         }
         // システムを選択中だったら
-        else if (currentGameStatus == GameStatus.SYSTEM)
+        else if (filedGameStatus == FieldGameState.SYSTEM)
         {
             HandleSystemSelect();
         }
@@ -242,7 +263,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // メニュー画面を閉じる
             menu.ActivateMenuPanel(false);
-            currentGameStatus = GameStatus.DIGGING;
+            // ポーズ終了
+            GameManager.instance.currentGameState = GameState.PLAYING;
+            filedGameStatus = FieldGameState.DIGGING;
         }
     }
 
@@ -256,7 +279,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // アイテムパネルを開く
             menu.ActivateItemPanel(true);
-            currentGameStatus = GameStatus.ITEM;
+            filedGameStatus = FieldGameState.ITEM;
             menu.ActivateMenuPanel(false);
             InitItem();
         }
@@ -264,14 +287,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             menu.ActivateMenuPanel(false);
             menu.ActivateStatusPanel(true);
-            currentGameStatus = GameStatus.STATUS;
+            filedGameStatus = FieldGameState.STATUS;
             InitStatus();
         }
         if (currentMenuCommandNum == (int)MenuCommand.SYSTEM)
         {
             menu.ActivateSystemPanel(true);
             menu.ActivateMenuPanel(false);
-            currentGameStatus = GameStatus.SYSTEM;
+            filedGameStatus = FieldGameState.SYSTEM;
         }
     }
     private void HandleItemSelect()
@@ -340,7 +363,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // アイテム画面を閉じてメニュー画面を開く
                 menu.ActivateMenuPanel(true);
                 menu.ActivateItemPanel(false);
-                currentGameStatus = GameStatus.MENU;
+                filedGameStatus = FieldGameState.MENU;
                 currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
             }
         }
@@ -400,7 +423,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // ステータス画面を閉じてアイテム画面を開く
                 menu.ActivateStatusPanel(false);
                 menu.ActivateItemPanel(true);
-                currentGameStatus = GameStatus.ITEM;
+                filedGameStatus = FieldGameState.ITEM;
                 currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
             }
         }
@@ -432,7 +455,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // アイテム画面を閉じてメニュー画面を開く
             menu.ActivateMenuPanel(true);
             menu.ActivateStatusPanel(false);
-            currentGameStatus = GameStatus.MENU;
+            filedGameStatus = FieldGameState.MENU;
         }
     }
 
@@ -443,7 +466,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // システム画面を閉じてメニュー画面を開く
             menu.ActivateMenuPanel(true);
             menu.ActivateSystemPanel(false);
-            currentGameStatus = GameStatus.MENU;
+            filedGameStatus = FieldGameState.MENU;
         }
     }
 
@@ -587,12 +610,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void InitStatus()
     {
         // ステータス選択画面だったら
-        if (currentGameStatus == GameStatus.STATUS)
+        if (filedGameStatus == FieldGameState.STATUS)
         {
             playerStatusUIsManager.SetUpPlayerStatusUI(party.Players, TARGET_NUM.SINGLE);
             playerStatusUIsManager.selectStatus(selectedStatusIndex);
         }
-        else if (currentGameStatus == GameStatus.ITEM)
+        else if (filedGameStatus == FieldGameState.ITEM)
         {
             // ここ
             HealItemBase healItemBase = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
@@ -608,15 +631,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public void SelectStatusButton(int selectStatusIndex)
     {
         // ステータス選択画面だったら
-        if (currentGameStatus == GameStatus.STATUS)
+        if (filedGameStatus == FieldGameState.STATUS)
         {
             selectedStatusIndex = selectStatusIndex;
+            // ステータス画面の表示
             //playerStatusUIsManager.selectStatus(selectedStatusIndex);
             // 選択
-            // 決定キーを押したら
+            // 決定キーを押したら詳細パネルを初期化・表示する
+            InitStatusDiscription();
             Debug.Log(selectedStatusIndex);
         }
-        else if (currentGameStatus == GameStatus.ITEM)
+        else if (filedGameStatus == FieldGameState.ITEM)
         {
             List<bool> usedItem = new List<bool>();
             HealItemBase healItemBase = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
@@ -679,6 +704,26 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             }
         }
     }
+
+    // ステータス詳細を表示
+    public void InitStatusDiscription()
+    {
+        statusState = StatusState.STATUS_DISCRIPTION;
+        statusDescriptionUIManager.SetUpStatusDescription(GameManager.instance.Party.Players[selectedStatusIndex]);
+        Debug.Log("詳細パネルをつける");
+        statusDescriptionUIManager.gameObject.SetActive(true);
+    }
+
+    // ステータス詳細画面の操作
+    private void HandleStatusDescription()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // ステータス詳細画面をとじる
+            statusDescriptionUIManager.gameObject.SetActive(false);
+            statusState = StatusState.STATUS_All;
+        }
+    }
     #endregion
     // システム関係　=======================
     // マウスでセーブを選択
@@ -729,7 +774,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             Fade.Instance.StartFadeOut();
             // GameManager.instance.StartBattle();
             // 敵オブジェクトを破壊
-            Destroy(collision.gameObject);
+            // Destroy(collision.gameObject);
         }else if(collision.gameObject.tag == "Town")
         {
             // 街へ入る

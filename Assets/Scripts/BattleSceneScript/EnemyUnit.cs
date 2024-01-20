@@ -66,6 +66,7 @@ public class EnemyUnit : MonoBehaviour
             // EnemyUIをEnemyPosの子オブジェクトに生成
             Vector3 uiPosition = new Vector3(enemyPos9[enemies[j].positionIndex].transform.position.x, enemyPos9[enemies[j].positionIndex].transform.position.y + 2.5f, enemyPos9[enemies[j].positionIndex].transform.position.z + 1);
             enemies[j].EnemyUI = Instantiate(enemyCanvas, uiPosition, Quaternion.identity, enemies[j].EnemyPrefab.transform).gameObject.GetComponent<BattleEnemyUI>();
+            Debug.Log(enemies[j].EnemyUI);
             // EnemyUIのセットアップ
             enemies[j].EnemyUI.SetEnemyData(enemies[j]);
             // EnemyUIのパネルを表示する
