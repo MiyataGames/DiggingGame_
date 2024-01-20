@@ -30,6 +30,7 @@ public class PlayerFieldUI : MonoBehaviour
         statusPlayerMaxSpText.text = " / "+player.currentMaxSp.ToString();
         */
         statusIconImage.sprite = player.PlayerBase.PlayerFaceIcon;
+        Debug.Log("????????");
     }
 
     public void UpdateHpSp()

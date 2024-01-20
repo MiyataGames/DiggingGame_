@@ -942,8 +942,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -254, y: -32}
-  m_SizeDelta: {x: 191, y: 304}
+  m_AnchoredPosition: {x: -249.32, y: -26.013}
+  m_SizeDelta: {x: 172.7034, y: 301.55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7173192414346114261
 CanvasRenderer:
@@ -973,7 +973,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a72438596f5474a10847562d30ac7f80, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b4404dcd9009a47bf9e37f2e69e86fa0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1823,6 +1823,7 @@ MonoBehaviour:
   defText: {fileID: 3049389234416016895}
   agiText: {fileID: 84767717634429430}
   remainExpText: {fileID: 8080502346722773036}
+  overviewImage: {fileID: 2450523132051652612}
   hpFilledImage: {fileID: 3114867247392658291}
   spFilledImage: {fileID: 4582896532081118879}
   expFilledImage: {fileID: 6599735868956304618}

@@ -18,6 +18,7 @@ public class StatusDescriptionUIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI agiText;
     [SerializeField] TextMeshProUGUI remainExpText;// 次のレベルまでの経験値
 
+    [SerializeField] Image overviewImage;
     [SerializeField] Image hpFilledImage;
     [SerializeField] Image spFilledImage;
     [SerializeField] Image expFilledImage;
@@ -35,8 +36,12 @@ public class StatusDescriptionUIManager : MonoBehaviour
         defText.text = player.currentMaxDef.ToString();
         agiText.text = player.currentMaxAgi.ToString();
         remainExpText.text = "あと "+(player.NextExp - player.Exp).ToString();
-
         Debug.Log((float)player.currentHP / (float)player.currentMaxHp);
+
+        Debug.Log(overviewImage);
+        Debug.Log(player.PlayerBase.PlayerOverView);
+        overviewImage.sprite = player.PlayerBase.PlayerOverView;
+        //overviewImage.SetNativeSize();
         hpFilledImage.fillAmount = (float)player.currentHP / (float)player.currentMaxHp;
         spFilledImage.fillAmount = (float)player.currentSP / (float)player.currentMaxSp;
         expFilledImage.fillAmount = (float)player.Exp / (float)player.NextExp;
