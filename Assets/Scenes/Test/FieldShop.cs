@@ -36,8 +36,7 @@ public class FieldShop : MonoBehaviour, IEnhancedScrollerDelegate
 
     void Start()
     {
-        party.Setup();
-        party = party.GetComponent<Party>();
+        party = GameManager.instance.Party;
         InitializeShopItems();
         _data = new List<ScrollerData>();
         //Debug.Log(party.Players[0].Items[0]);

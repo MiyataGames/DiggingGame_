@@ -179,7 +179,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // 攻撃アイテムがあれば
         foreach(Item item in mainPlayer.items)
         {
-            if(item.ItemBase.itemType == ItemType.WEAPON)
+            if(item.ItemBase.ItemType == ItemType.WEAPON)
             {
                 battleState = BattleState.DIGGING;
                 Debug.Log("穴掘りからスタート");

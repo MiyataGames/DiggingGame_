@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.EventSystems;
 using System.Linq;
+using System;
 
 public enum FieldGameState
 {
@@ -770,7 +771,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // バトルシーンに移動する
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
-            Fade.Instance.RegisterFadeOutEvent(new Action[] { () => GameManager.instance.StartBattle() });
+            Fade.Instance.RegisterFadeOutEvent(new Action[] { () => GameManager.instance.StartBattle(collision.gameObject) });
             Fade.Instance.StartFadeOut();
             // GameManager.instance.StartBattle();
             // 敵オブジェクトを破壊
