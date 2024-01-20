@@ -778,8 +778,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("詳細パネルをつける");
         Debug.Log((Move)currentMove);
         Debug.Log(battleState);
-        statusDescriptionUIManager.gameObject.SetActive(true);
         statusDescriptionUIManager.SetUpStatusDescription(GameManager.instance.Party.Players[selectedStatusIndex]);
+        statusDescriptionUIManager.gameObject.SetActive(true);
     }
 
     private void HandleStatusDescription()
