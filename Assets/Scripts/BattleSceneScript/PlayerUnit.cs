@@ -22,50 +22,6 @@ public class PlayerUnit : MonoBehaviour
 
     [SerializeField] GameObject selectArrowPref;
 
-    // テスト用
-    public List<ItemBase> debugItemBase;
-
-    /*
-    public void SetUpFirst(int level)
-    {
-        int playerNum = 2;
-        players = new Player[playerNum];
-        Dictionary<Player, int> agiPlayerDic = new Dictionary<Player, int>();
-
-        // agiPlayerDicにはプレイヤーの情報とAgiの情報を対にしていれる
-        for (int i = 0; i < playerNum; i++)
-        {
-            //List<Enemy> enemyList = this.gameObject.transform.Find("Player" + playerBasies[i].PlayerId + "Persona").GetComponent<PersonaParty>().EnemyList;
-            // レベル１で生成
-            Debug.Log(debugItemBase[0].ItemName);
-            Player player = new Player(playerBasies[i], level,debugItemBase);
-            agiPlayerDic.Add(player, player.PlayerBase.PlayerMaxAgi);
-        }
-
-        // 速さ順にInstantiate
-        int j = 0;
-        foreach (var player in agiPlayerDic.OrderByDescending(c => c.Value))
-        {
-            // 早い順に順番にplayerをいれる
-            players[j] = player.Key;
-            
-            //playerModelを生成
-            //players[j].PlayerModel = Instantiate(players[j].PlayerBase.PlayerModel, PlayerBeforePos[j].transform);
-            
-            players[j].PlayerBattleSprite = Instantiate(players[j].PlayerBase.PlayerBattleSceneSprite, playerPos[j].transform);
-            players[j].PlayerBattleAnimator = players[j].PlayerBattleSprite.GetComponent<Animator>();
-            players[j].battlePlayerUI = playerPos[j].transform.Find("PlayerCanvas/PlayerStatusPanel").gameObject.GetComponent<BattlePlayerUI>();
-            players[j].battlePlayerUI.SetPlayerData(players[j]);
-            //Debug.Log("ResultPanel/player" + j + "ResultPanel");
-            
-            players[j].ResultPlayerUI = Instantiate(resultPlayerUI, Vector3.zero, Quaternion.identity, resultAreaPanel.transform).GetComponent<ResultPlayerUI>();
-            players[j].ResultPlayerUI.SetUpResultPanel(players[j]);
-            
-            j++;
-        }
-    }
-    */
-
     // 前のレベルを引き継いでプレイヤーを生成する
     public void SetUpBattle(Party party)
     {

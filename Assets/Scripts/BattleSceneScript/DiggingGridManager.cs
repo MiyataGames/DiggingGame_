@@ -5,8 +5,8 @@ using System.Linq;
 using UnityEngine.UI;
 
 public delegate void DiggingFinishDelegate();
-
 public delegate bool SelectItemDelegate(Item item);
+public delegate void EnbeddingItemDelegate(Item item);
 
 public class DiggingGridManager : MonoBehaviour
 {
@@ -73,14 +73,7 @@ public class DiggingGridManager : MonoBehaviour
                 soilImage.sprite = holeImage;
                 // アイテムの画像を入れる
                 itemImage.sprite = selectedItemBase.itemImageSprite;
-                // あとでデリゲート
-                // アイテムを探して減らす
-                //if (battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount > 0)
-                //{
-                //    battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount--;
-                //    Debug.Log(battleSceneManager.mainPlayer.items.Find(item => item.ItemBase.ItemName == selectedItem.ItemBase.ItemName).ItemCount);
-                //    // パネルの更新
-                //}
+
                 if (selectedItemNum >= 3)
                 {
                     OnFinishDigging();
