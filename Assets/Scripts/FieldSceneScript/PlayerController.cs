@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.EventSystems;
 using System.Linq;
+
 public enum FieldGameState
 {
     DIGGING,
@@ -545,7 +546,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         Item item = party.Players[0].Items[selectedItemIndex];
 
         // 回復アイテムだったら
-        if (item.ItemBase.itemType == ItemType.HEAL_ITEM)
+        if (item.ItemBase.ItemType == ItemType.HEAL_ITEM)
         {
             HealItemBase healItem = party.Players[0].Items[selectedItemIndex].ItemBase as HealItemBase;
             // アイテムパネルを消す
@@ -569,7 +570,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // 衝突したのがアイテムだったら
         if (other.tag == "Item")
         {
-            Item newItem = other.GetComponent<Item>();
+            Item newItem = other.GetComponent<FieldItem>().Item;
             // 同じアイテムがあるか検索
             if (party.Players[0].Items.Count > 0)
             {
@@ -585,13 +586,21 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 }
             }
             // なければ新しく追加する
-            party.Players[0].Items.Add(other.GetComponent<Item>());
+            party.Players[0].Items.Add(other.GetComponent<FieldItem>().Item);
             party.Players[0].Items[party.Players[0].Items.Count - 1].ItemCount++;
             Debug.Log(party.Players[0].Items[0].ItemBase.ItemName);
             Destroy(other.gameObject);
             // idが早い順に並べる
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
             LoadItemData();
+        }
+        if(other.tag == "Coin")
+        {
+            int coinValue = other.GetComponent<FieldCoin>().Price;
+            party.Players[0].Gold = party.Players[0].Gold + coinValue;
+            print("CoinValue:"+party.Players[0].Gold);
+            Destroy(other.gameObject);
+                        return;
         }
 
     }
@@ -761,7 +770,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // バトルシーンに移動する
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
-            GameManager.instance.StartBattle(collision.gameObject);
+            Fade.Instance.RegisterFadeOutEvent(new Action[] { () => GameManager.instance.StartBattle() });
+            Fade.Instance.StartFadeOut();
+            // GameManager.instance.StartBattle();
             // 敵オブジェクトを破壊
             // Destroy(collision.gameObject);
         }else if(collision.gameObject.tag == "Town")

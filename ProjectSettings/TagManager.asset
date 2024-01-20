@@ -13,6 +13,7 @@ TagManager:
   - digObject
   - Enemy
   - Town
+  - Coin
   layers:
   - Default
   - TransparentFX
