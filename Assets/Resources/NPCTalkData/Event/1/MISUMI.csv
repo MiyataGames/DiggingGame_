@@ -1,0 +1,8 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,eventFlag,checkNeedEventNum,eventNum,afterEventSkipID,playAnimation
+0,set_bgm,,,,,FALSE,,,,,,,,,,
+1,check_EventFlag,,,,,,,,,,2,TRUE,0,1,2,
+2,set_text,ミスミ,MISUMI,1,最近泥棒が増えてるらしいんだよね,FALSE,,,,,,,,,,
+3,set_text,ミスミ,MISUMI,1,まったく、許せないよ,FALSE,,,,,,,,,,
+4,set_text,ミスミ,MISUMI,1,見かけたら捕まえちゃってね,FALSE,,,,,,,,,,
+5,set_EventFlag,,,,,FALSE,,,,,,,,1,,
+6,end_talk,,,,,FALSE,,,,,,,,,,
