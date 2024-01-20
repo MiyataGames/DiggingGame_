@@ -176,6 +176,18 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void Start()
     {
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
+        // 攻撃アイテムがあれば
+        foreach(Item item in mainPlayer.items)
+        {
+            if(item.ItemBase.itemType == ItemType.WEAPON)
+            {
+                battleState = BattleState.DIGGING;
+                Debug.Log("穴掘りからスタート");
+                return;
+            }
+        }
+        Debug.Log("スキルからスタート");
+        diggingGridManager.OnFinishDigging();
     }
 
     public void HandleUpdate()

@@ -24,7 +24,7 @@ public class DiggingGridManager : MonoBehaviour
     public Sprite transparentImage;
     [SerializeField] private Button finishButton;
 
-    private void Start()
+    private void Awake()
     {
         selectedItemNum = 0;
         gridItems = new Item[9];
