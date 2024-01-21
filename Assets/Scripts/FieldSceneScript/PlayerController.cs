@@ -173,6 +173,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     myAnim.SetBool("isWalking", true);
                 }
+                myAnim.SetFloat("isUp", 0);
                 myAnim.SetFloat("isLeft",1);
             }
             else
@@ -186,8 +187,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     myAnim.SetBool("isWalking", true);
                 }
-                // isLeftを0にすると右のアニメーション
-                myAnim.SetFloat("isLeft",0);
+                // isLeftを-1にすると右のアニメーション
+                myAnim.SetFloat("isUp", 0);
+                myAnim.SetFloat("isLeft",-1);
             }
 
             
@@ -196,6 +198,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 //
                 myAnim.SetBool("isWalking", false);
+            }
+
+            // 上キーを入力
+            if (Input.GetKey(KeyCode.W))
+            {
+                Debug.Log("上キーを入力");
+                myAnim.SetFloat("isUp", 1);
+            }
+            // 下キーを入力
+            else if (Input.GetKey(KeyCode.S))
+            {
+                Debug.Log("下キーを入力");
+                myAnim.SetFloat("isUp", -1);
             }
 
             if (Input.GetKey("space") && groundFlag == true)
@@ -248,6 +263,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         endDig();
     }
+    public void endDiggingDownUpAnim()
+    {
+        myAnim.SetFloat("isUp", 0);
+        endDig();
+    }
 
     void startDig()
     {
@@ -260,14 +280,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             dc.offset = new Vector2(0.0f, 0.68f);
             dc.size = new Vector2(0.76f, 0.45f);
             dc.direction = CapsuleDirection2D.Horizontal;
-            myAnim.SetFloat("isUp", 1);
         }
         else if (Input.GetKey(KeyCode.S))
         {
             dc.offset = new Vector2(0.0f, -0.85f);
             dc.size = new Vector2(0.76f, 0.45f);
             dc.direction = CapsuleDirection2D.Horizontal;
-            myAnim.SetFloat("isUp", 0);
         }
         else if (isLeft == true)
         {
@@ -293,7 +311,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         isDigging = false;
         digCollider.SetActive(false);
         myAnim.SetBool("isDigging", false);
-        Debug.Log("穴掘り終わり");
     }
     private void HandleMenuSelect()
     {
