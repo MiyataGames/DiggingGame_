@@ -75,7 +75,6 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     public void HandleUpdate()
     {
-        Debug.Log("実行中");
         // 穴掘り中だったら
         if (currentGameStatus == FieldGameState.DIGGING)
         {
