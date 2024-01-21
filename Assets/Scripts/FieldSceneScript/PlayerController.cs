@@ -872,9 +872,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // バトルシーンに移動する
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
-            Fade.Instance.RegisterFadeOutEvent(new Action[] { () => GameManager.instance.StartBattle(collision.gameObject) });
-            Fade.Instance.StartFadeOut();
-            // GameManager.instance.StartBattle();
+            Debug.Log("Faade");
+            GameManager.instance.StartBattle(collision.gameObject);  
+            //Fade.Instance.RegisterFadeOutEvent(new Action[] { () => GameManager.instance.StartBattle(collision.gameObject) });
+             //Fade.Instance.StartFadeOut();
+             Fade.Instance.StartFadeIn();
+             //GameManager.instance.StartBattle(collision.gameObject);
             // 敵オブジェクトを破壊
             // Destroy(collision.gameObject);
         }else if(collision.gameObject.tag == "Town")

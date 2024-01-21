@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class Fade : MonoBehaviour
 {
-    [Tooltip("ƒtƒF[ƒh‚³‚¹‚éUI")]
+    [Tooltip("ï¿½tï¿½Fï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UI")]
     [SerializeField]
     private Image _fadePanel = default;
-    [Tooltip("ÀsŠÔ")]
+    [Tooltip("ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½")]
     [SerializeField]
     private float _fadeTime = 1f;
 
@@ -32,14 +32,14 @@ public class Fade : MonoBehaviour
 
     private void Start()
     {
-        /*
-        if (_fadePanel)
-        {
-            _fadeTime = 0.5f;
-            RegisterFadeInEvent(new Action[] { () => _fadeTime = 1f });
-            StartFadeIn();
-        }
-        */
+        
+        // if (_fadePanel)
+        // {
+        //     _fadeTime = 0.5f;
+        //     RegisterFadeInEvent(new Action[] { () => _fadeTime = 1f });
+        //     StartFadeIn();
+        // }
+        
     }
 
     public void StartFadeIn() { StartCoroutine(FadeIn()); }
@@ -50,7 +50,7 @@ public class Fade : MonoBehaviour
     {
         _fadePanel.gameObject.SetActive(true);
 
-        //ƒ¿’l(“§–¾“x)‚ğ 1 -> 0 ‚É‚·‚é(­‚µ‚¸‚Â–¾‚é‚­‚·‚é)
+        //ï¿½ï¿½ï¿½l(ï¿½ï¿½ï¿½ï¿½ï¿½x)ï¿½ï¿½ 1 -> 0 ï¿½É‚ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â–ï¿½ï¿½é‚­ï¿½ï¿½ï¿½ï¿½)
         float alpha = 1f;
         Color color = _fadePanel.color;
 
@@ -73,7 +73,7 @@ public class Fade : MonoBehaviour
     {
         _fadePanel.gameObject.SetActive(true);
 
-        //ƒ¿’l(“§–¾“x)‚ğ 0 -> 1 ‚É‚·‚é(­‚µ‚¸‚ÂˆÃ‚­‚·‚é)
+        //ï¿½ï¿½ï¿½l(ï¿½ï¿½ï¿½ï¿½ï¿½x)ï¿½ï¿½ 0 -> 1 ï¿½É‚ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÂˆÃ‚ï¿½ï¿½ï¿½ï¿½ï¿½)
         float alpha = 0f;
         Color color = _fadePanel.color;
 
@@ -91,9 +91,9 @@ public class Fade : MonoBehaviour
         foreach (var action in _onCompleteFadeOut) { action?.Invoke(); }
     }
 
-    /// <summary> ƒtƒF[ƒhƒCƒ“ÀsŒã‚Ìˆ—‚ğ“o˜^iã‘‚«j‚·‚é </summary>
+    /// <summary> ï¿½tï¿½Fï¿½[ï¿½hï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½oï¿½^ï¿½iï¿½ã‘ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½ï¿½ </summary>
     public void RegisterFadeInEvent(Action[] actions) { _onCompleteFadeIn = actions; }
 
-    /// <summary> ƒtƒF[ƒhƒAƒEƒgÀsŒã‚Ìˆ—‚ğ“o˜^iã‘‚«j‚·‚é </summary>
+    /// <summary> ï¿½tï¿½Fï¿½[ï¿½hï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½sï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½oï¿½^ï¿½iï¿½ã‘ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½ï¿½ </summary>
     public void RegisterFadeOutEvent(Action[] actions) { _onCompleteFadeOut = actions; }
 }
