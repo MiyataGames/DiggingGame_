@@ -10,7 +10,7 @@ public class scop : MonoBehaviour
 
     void Update()
     {
-        if (PlayerController.currentGameStatus == GameStatus.DIGGING)
+        if (PlayerController.filedGameStatus == FieldGameState.DIGGING)
         {
             if (isRotating)
             {

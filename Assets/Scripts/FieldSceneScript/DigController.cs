@@ -4,13 +4,14 @@ using System.Data.Common;
 // using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+// 穴掘りの制御・アニメーションの制御
 public class DigController : MonoBehaviour
 {
     
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Animator playerAnimController;
     [SerializeField] private GameObject digCollider; 
-    private bool isDigging = false;
+    public bool isDigging = false;
     private bool isPlayerLeft = false; //プレイヤーが左を向いているか
 
     // Start is called before the first frame update
@@ -22,9 +23,15 @@ public class DigController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isDigging == false){
-            if(Input.GetMouseButtonDown(0)){
-                startDig();
+        // ポーズ中じゃなければ
+        if (GameManager.instance.currentGameState == GameState.PLAYING)
+        {
+            if (isDigging == false)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    startDig();
+                }
             }
         }
     }
@@ -53,23 +60,26 @@ public class DigController : MonoBehaviour
             dc.offset = new Vector2(0.0f, -0.85f); 
             dc.size = new Vector2(0.76f, 0.45f); 
             dc.direction = CapsuleDirection2D.Horizontal;
+            playerAnimController.SetBool("isUnderDigging",true);
         }else if(isPlayerLeft == true){
             dc.offset = new Vector2(-0.47f, -0.06f); 
             dc.size = new Vector2(0.45f, 0.76f);    
             dc.direction = CapsuleDirection2D.Vertical;
+            playerAnimController.SetBool("isDigging",true);
         }else if(isPlayerLeft == false){
             dc.offset = new Vector2(0.47f, -0.06f); 
             dc.size = new Vector2(0.45f, 0.76f);    
             dc.direction = CapsuleDirection2D.Vertical;
+            playerAnimController.SetBool("isDigging",true);
         }
 
         digCollider.SetActive(true);
-        playerAnimController.SetBool("isDigging",true);
     }
 
     void endDig(){
         isDigging = false; 
         digCollider.SetActive(false);
         playerAnimController.SetBool("isDigging",false);
+        playerAnimController.SetBool("isUnderDigging",false);
     }
 }

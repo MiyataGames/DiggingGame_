@@ -16,34 +16,36 @@ public class Party : MonoBehaviour
     // テスト用
     public List<ItemBase> debugItemBase;
 
+    [SerializeField] GameObject resultPlayerUI;
+    [SerializeField] private GameObject resultAreaPanel;
     // Start is called before the first frame update
     void Start()
     {
 
     }
 
-    public void Setup()
+    public void SetupFirst()
     {
         players = new List<Player>();
         for (int i = 0; i < playerBasies.Length; i++)
         {
             Player player = new Player(playerBasies[i], 1,debugItemBase);
-            Debug.Log(player.level);
+           //  Debug.Log(player.level);
             players.Add(player);
+            // リザルトパネル
+            Players[i].ResultPlayerUI = Instantiate(resultPlayerUI, Vector3.zero, Quaternion.identity, resultAreaPanel.transform).GetComponent<ResultPlayerUI>();
+            Players[i].ResultPlayerUI.SetUpResultPanel(Players[i]);
         }
     }
-    /*
-    public void LoadPlayerSetUp(List<string> dataStr)
+
+    // 仲間が加入した時に実行される
+    public void SetUp_JoinFriend(Player player)
     {
-        for (int i = 0; i < dataStr.Count; i++)
-        {
-            int id = dataStr[i].Value<>
-            // IDに該当するプレイヤーをさがす
-            Player player = players.Single(value => value.playerID == dataStr.);
-            //データを入れる
-            player = JsonUtility.FromJson<Player>(dataStr[i]);
-        }
-
-
-    }*/
+        Player newPlayer = player;
+        newPlayer.ResultPlayerUI = Instantiate(resultPlayerUI, Vector3.zero, Quaternion.identity, resultAreaPanel.transform).GetComponent<ResultPlayerUI>();
+        newPlayer.ResultPlayerUI.SetUpResultPanel(newPlayer);
+        players.Add(newPlayer);
+        // ID順にソート
+        players.Sort((player1, player2) => player1.PlayerID - player2.PlayerID);
+    }
 }
