@@ -11,7 +11,7 @@ public class DigController : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Animator playerAnimController;
     [SerializeField] private GameObject digCollider; 
-    private bool isDigging = false;
+    public bool isDigging = false;
     private bool isPlayerLeft = false; //プレイヤーが左を向いているか
 
     // Start is called before the first frame update
