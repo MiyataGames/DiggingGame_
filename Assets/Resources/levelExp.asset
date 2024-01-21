@@ -1,0 +1,417 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c7e886de615e46fcbfd0deb6b807d71, type: 3}
+  m_Name: levelExp
+  m_EditorClassIdentifier: 
+  sheets:
+  - name: Sheet1
+    list:
+    - level: 1
+      exp: 2
+      sumExp: 0
+      nextExp: 12
+    - level: 2
+      exp: 4
+      sumExp: 12
+      nextExp: 24
+    - level: 3
+      exp: 5
+      sumExp: 36
+      nextExp: 30
+    - level: 4
+      exp: 8
+      sumExp: 66
+      nextExp: 48
+    - level: 5
+      exp: 12
+      sumExp: 114
+      nextExp: 72
+    - level: 6
+      exp: 18
+      sumExp: 186
+      nextExp: 108
+    - level: 7
+      exp: 27
+      sumExp: 294
+      nextExp: 162
+    - level: 8
+      exp: 41
+      sumExp: 456
+      nextExp: 246
+    - level: 9
+      exp: 62
+      sumExp: 702
+      nextExp: 372
+    - level: 10
+      exp: 92
+      sumExp: 1074
+      nextExp: 552
+    - level: 11
+      exp: 138
+      sumExp: 1626
+      nextExp: 828
+    - level: 12
+      exp: 208
+      sumExp: 2454
+      nextExp: 1248
+    - level: 13
+      exp: 311
+      sumExp: 3702
+      nextExp: 1866
+    - level: 14
+      exp: 467
+      sumExp: 5568
+      nextExp: 2802
+    - level: 15
+      exp: 701
+      sumExp: 8370
+      nextExp: 4206
+    - level: 16
+      exp: 1051
+      sumExp: 12576
+      nextExp: 6306
+    - level: 17
+      exp: 1576
+      sumExp: 18882
+      nextExp: 9456
+    - level: 18
+      exp: 2365
+      sumExp: 28338
+      nextExp: 14190
+    - level: 19
+      exp: 3547
+      sumExp: 42528
+      nextExp: 21282
+    - level: 20
+      exp: 5320
+      sumExp: 63810
+      nextExp: 31920
+    - level: 21
+      exp: 7981
+      sumExp: 95730
+      nextExp: 47886
+    - level: 22
+      exp: 11971
+      sumExp: 143616
+      nextExp: 71826
+    - level: 23
+      exp: 17956
+      sumExp: 215442
+      nextExp: 107736
+    - level: 24
+      exp: 26935
+      sumExp: 323178
+      nextExp: 161610
+    - level: 25
+      exp: 40402
+      sumExp: 484788
+      nextExp: 242412
+    - level: 26
+      exp: 60603
+      sumExp: 727200
+      nextExp: 363618
+    - level: 27
+      exp: 90904
+      sumExp: 1090818
+      nextExp: 545424
+    - level: 28
+      exp: 136356
+      sumExp: 1636242
+      nextExp: 818136
+    - level: 29
+      exp: 204534
+      sumExp: 2454378
+      nextExp: 1227204
+    - level: 30
+      exp: 306802
+      sumExp: 3681582
+      nextExp: 1840812
+    - level: 31
+      exp: 460203
+      sumExp: 5522394
+      nextExp: 2761218
+    - level: 32
+      exp: 690304
+      sumExp: 8283612
+      nextExp: 4141824
+    - level: 33
+      exp: 1035456
+      sumExp: 12425436
+      nextExp: 6212736
+    - level: 34
+      exp: 1553184
+      sumExp: 18638172
+      nextExp: 9319104
+    - level: 35
+      exp: 2329775
+      sumExp: 27957276
+      nextExp: 13978650
+    - level: 36
+      exp: 3494663
+      sumExp: 41935926
+      nextExp: 20967978
+    - level: 37
+      exp: 5241995
+      sumExp: 62903904
+      nextExp: 31451970
+    - level: 38
+      exp: 7862992
+      sumExp: 94355874
+      nextExp: 47177952
+    - level: 39
+      exp: 11794488
+      sumExp: 141533826
+      nextExp: 70766928
+    - level: 40
+      exp: 17691732
+      sumExp: 212300754
+      nextExp: 106150392
+    - level: 41
+      exp: 26537598
+      sumExp: 318451146
+      nextExp: 159225588
+    - level: 42
+      exp: 39806396
+      sumExp: 477676734
+      nextExp: 238838376
+    - level: 43
+      exp: 59709595
+      sumExp: 716515110
+      nextExp: 358257570
+    - level: 44
+      exp: 89564392
+      sumExp: 1074772680
+      nextExp: 537386352
+    - level: 45
+      exp: 134346588
+      sumExp: 1612159032
+      nextExp: 806079528
+    - level: 46
+      exp: 201519882
+      sumExp: -1876728736
+      nextExp: 1209119292
+    - level: 47
+      exp: 302279822
+      sumExp: -667609444
+      nextExp: 1813678932
+    - level: 48
+      exp: 453419733
+      sumExp: 1146069488
+      nextExp: -1574448898
+    - level: 49
+      exp: 680129600
+      sumExp: -428379410
+      nextExp: -214189696
+    - level: 50
+      exp: 1020194400
+      sumExp: -642569106
+      nextExp: 1826199104
+    - level: 51
+      exp: 1530291601
+      sumExp: 1183629998
+      nextExp: 591815014
+    - level: 52
+      exp: -1999529895
+      sumExp: 1775445012
+      nextExp: 887722518
+    - level: 53
+      exp: -851811195
+      sumExp: -1631799766
+      nextExp: -815899874
+    - level: 54
+      exp: 869766856
+      sumExp: 1847267656
+      nextExp: 923633840
+    - level: 55
+      exp: -842833364
+      sumExp: -1524065800
+      nextExp: -762032888
+    - level: 56
+      exp: -1264250047
+      sumExp: 2008868608
+      nextExp: 1004434310
+    - level: 57
+      exp: 251108578
+      sumExp: -1281664378
+      nextExp: 1506651468
+    - level: 58
+      exp: 376662867
+      sumExp: 224987090
+      nextExp: -2034990094
+    - level: 59
+      exp: 564994301
+      sumExp: -1810003004
+      nextExp: -905001490
+    - level: 60
+      exp: -1299992197
+      sumExp: 1579962802
+      nextExp: 789981410
+    - level: 61
+      exp: -1949988295
+      sumExp: -1925023084
+      nextExp: 1184972118
+    - level: 62
+      exp: -777498795
+      sumExp: -740050966
+      nextExp: -370025474
+    - level: 63
+      exp: 981235455
+      sumExp: -1110076440
+      nextExp: 1592445434
+    - level: 64
+      exp: 1471853183
+      sumExp: 482368994
+      nextExp: 241184506
+    - level: 65
+      exp: 60296127
+      sumExp: 723553500
+      nextExp: 361776762
+    - level: 66
+      exp: 90444190
+      sumExp: 1085330262
+      nextExp: 542665140
+    - level: 67
+      exp: 135666285
+      sumExp: 1627995402
+      nextExp: 813997710
+    - level: 68
+      exp: 203499428
+      sumExp: -1852974184
+      nextExp: 1220996568
+    - level: 69
+      exp: -1842234506
+      sumExp: -631977616
+      nextExp: 1831494852
+    - level: 70
+      exp: -615868112
+      sumExp: 1199517236
+      nextExp: 599758624
+    - level: 71
+      exp: -923802167
+      sumExp: 1799275860
+      nextExp: -1247845706
+    - level: 72
+      exp: 761780397
+      sumExp: 551430154
+      nextExp: 275715086
+    - level: 73
+      exp: -1004813053
+      sumExp: 827145240
+      nextExp: -1733911022
+    - level: 74
+      exp: -1507219579
+      sumExp: -906765782
+      nextExp: -453382882
+    - level: 75
+      exp: -113345720
+      sumExp: -1360148664
+      nextExp: -680074320
+    - level: 76
+      exp: -170018581
+      sumExp: -2040222984
+      nextExp: -1020111486
+    - level: 77
+      exp: 1892455777
+      sumExp: 1234632826
+      nextExp: -1530167226
+    - level: 78
+      exp: 691200018
+      sumExp: -295534400
+      nextExp: -147767188
+    - level: 79
+      exp: -1110683622
+      sumExp: -443301588
+      nextExp: 1925832860
+    - level: 80
+      exp: 481458215
+      sumExp: 1482531272
+      nextExp: -1406218006
+    - level: 81
+      exp: -1425296325
+      sumExp: 76313266
+      nextExp: 38156642
+    - level: 82
+      exp: 9539161
+      sumExp: 114469908
+      nextExp: 57234966
+    - level: 83
+      exp: -2133174907
+      sumExp: 171704874
+      nextExp: 85852446
+    - level: 84
+      exp: 1095204935
+      sumExp: 257557320
+      nextExp: -2018704982
+    - level: 85
+      exp: 1642807402
+      sumExp: -1761147662
+      nextExp: 1266909820
+    - level: 86
+      exp: 316727460
+      sumExp: -494237840
+      nextExp: 1900364760
+    - level: 87
+      exp: 475091180
+      sumExp: 1406126920
+      nextExp: -1444420216
+    - level: 88
+      exp: -1434846868
+      sumExp: -38293296
+      nextExp: -19146616
+    - level: 89
+      exp: -4786654
+      sumExp: -57439904
+      nextExp: -28719920
+    - level: 90
+      exp: -7179996
+      sumExp: -86159824
+      nextExp: -43079976
+    - level: 91
+      exp: -10769944
+      sumExp: -129239808
+      nextExp: -64619664
+    - level: 92
+      exp: -16155016
+      sumExp: -193859456
+      nextExp: -96930112
+    - level: 93
+      exp: 2123251224
+      sumExp: -290789568
+      nextExp: -145394560
+    - level: 94
+      exp: -1110090464
+      sumExp: -436184064
+      nextExp: 1929391808
+    - level: 95
+      exp: 482347904
+      sumExp: 1493207808
+      nextExp: -1400879872
+    - level: 96
+      exp: 723521920
+      sumExp: 92327936
+      nextExp: 46164224
+    - level: 97
+      exp: -1062201280
+      sumExp: 138491904
+      nextExp: -2078240256
+    - level: 98
+      exp: 554182720
+      sumExp: -1939748352
+      nextExp: -969870848
+    - level: 99
+      exp: -1316210048
+      sumExp: 1385348096
+      nextExp: 692674560
+    - level: 100
+      exp: 173168128
+      sumExp: 2078022656
+      nextExp: 1039008768

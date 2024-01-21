@@ -551,14 +551,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3019758, g: 0.735849, b: 0.7358489, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 74383c2c3a1f247339f5c177e78921fe, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 49c77aeb1746e47a3b89c43774307634, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -580,6 +580,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 654350ca3cbd41049bf8120c9c94756d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spText: {fileID: 4291758035304673958}
+  spMaxText: {fileID: 2040592237320443568}
   spBar: {fileID: 4503451891278375292}
 --- !u!1 &4503451891293388232
 GameObject:
@@ -860,8 +862,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0000038146973, y: 7.000003}
-  m_SizeDelta: {x: 94.775, y: 82.4337}
+  m_AnchoredPosition: {x: -0.8384, y: 4.2964}
+  m_SizeDelta: {x: 79.077, y: 79.077}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4503451891880599628
 CanvasRenderer:
@@ -891,7 +893,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2829e8f2106e60e429547be87bc724c3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 38742a5184184436abca2ff0625e0606, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -990,6 +992,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5ff3cead545d545ac6aaa2c4927b86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hpText: {fileID: 8826897389264194587}
+  hpMaxText: {fileID: 3163974073607963694}
   hpBar: {fileID: 4503451892244974351}
 --- !u!1 &4503451892359072626
 GameObject:
@@ -1981,12 +1985,9 @@ MonoBehaviour:
     isParalyzed: 0
     playerUI: {fileID: 0}
     battlePlayerUI: {fileID: 0}
+    ResultPlayerUI: {fileID: 0}
     items: []
   statusPlayerNameText: {fileID: 2851844782383735038}
-  statusPlayerHpText: {fileID: 8826897389264194587}
-  statusPlayerMaxHpText: {fileID: 3163974073607963694}
-  statusPlayerSpText: {fileID: 4291758035304673958}
-  statusPlayerMaxSpText: {fileID: 2040592237320443568}
   statusIconImage: {fileID: 4503451891880599629}
   frame: {fileID: 4503451893130338482}
   playerHpBar: {fileID: 2416687030397759781}

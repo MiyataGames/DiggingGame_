@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 0
   playerName: "\u30DE\u30AA"
-  playerFaceIcon: {fileID: 21300000, guid: 2829e8f2106e60e429547be87bc724c3, type: 3}
+  playerDiscription: "\u7121\u53E3\u3060\u304C\u5B9F\u884C\u529B\u304C\u3042\u308B\u3002\u7956\u7236\u306E\u907A\u8A00\u3092\u5B9F\u884C\u3059\u308B\u305F\u3081\u3001\u4EF2\u9593\u3092\u96C6\u3081\u306A\u304C\u3089\u5730\u4E0A\u3092\u76EE\u6307\u3057\u3066\u3044\u308B"
+  playerFaceIcon: {fileID: 21300000, guid: 38742a5184184436abca2ff0625e0606, type: 3}
+  playerOverView: {fileID: 21300000, guid: b4404dcd9009a47bf9e37f2e69e86fa0, type: 3}
   playerBattleSceneSprite: {fileID: 7337802774343779779, guid: b5ef308cb4bf7b049bc259c1d7221de4, type: 3}
   playerMaxLv: 20
   playerMaxHp: 10000

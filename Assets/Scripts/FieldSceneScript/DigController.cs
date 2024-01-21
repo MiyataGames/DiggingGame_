@@ -4,13 +4,14 @@ using System.Data.Common;
 // using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+// 穴掘りの制御・アニメーションの制御
 public class DigController : MonoBehaviour
 {
     
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Animator playerAnimController;
     [SerializeField] private GameObject digCollider; 
-    private bool isDigging = false;
+    public bool isDigging = false;
     private bool isPlayerLeft = false; //プレイヤーが左を向いているか
 
     // Start is called before the first frame update
@@ -22,9 +23,15 @@ public class DigController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isDigging == false){
-            if(Input.GetMouseButtonDown(0)){
-                startDig();
+        // ポーズ中じゃなければ
+        if (GameManager.instance.currentGameState == GameState.PLAYING)
+        {
+            if (isDigging == false)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    startDig();
+                }
             }
         }
     }
