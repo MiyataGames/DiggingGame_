@@ -27,8 +27,8 @@ public class EventDatas{
     public int checkNeedEventNum;
     public int eventNum;
     public int afterEventSkipID;
-    public int chractorFunction;
-    public int animNum;
+    public string chractorFunction;
+    public string animFuncName;
     public string SEpath;
 }
 
@@ -43,6 +43,8 @@ public class StoryEventScript : MonoBehaviour
     public string eventNum;
     public EventDatas[] EventDatas;
 
+    public bool moveFlag = false;
+
     private Sprite[] charaImage;
 
     public int currentTextID = 0;
@@ -53,12 +55,19 @@ public class StoryEventScript : MonoBehaviour
 
     [Header("イベント発火にエリア内でFキーを押すか(falseなら範囲内に入った時点でイベント開始)")]
     [SerializeField] private bool TriggerIsFkey = true;
+
     [Header("ストーリーのフラグ管理をするマネージャー。StoryEventManagerがアタッチされたオブジェクトが必要")]
     [SerializeField] private StoryEventManager storyEventManager;
-     [Header("フェードの管理をするマネージャー。FadeControllerがアタッチされたオブジェクトが必要")]
+
+    [Header("フェードの管理をするマネージャー。FadeControllerがアタッチされたオブジェクトが必要")]
     [SerializeField] private FadeController fadeController;
-     [Header("se鳴らすやつ。AudioSourseがアタッチされたオブジェクトが必要")]
+
+    [Header("se鳴らすやつ。AudioSourseがアタッチされたオブジェクトが必要")]
     [SerializeField] private AudioSource audioSource;
+
+    [Header("キャラクター関数が詰め込まれたスクリプト。イベントごとに作ってください")]
+    [SerializeField] private CharactorFunction charactorFunction;
+
      [Header("ダイアログに必要なオブジェクトたち")]
     [SerializeField] private GameObject talkDialog; //会話用ダイアログ
     [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
@@ -207,6 +216,12 @@ public class StoryEventScript : MonoBehaviour
                 break;
             case "play_sound":
                 PlaySE(EventDatas[currentTextID].SEpath);
+                break;
+            case "chara_func":
+                charactorFunction.ExecuteCommand(EventDatas[currentTextID].chractorFunction,EventDatas[currentTextID].animFuncName);
+                if(moveFlag == false){
+                    ReadNextMessage();
+                }
                 break;
             case "check_EventFlag":
                 CheckEventAvailable(EventDatas[currentTextID].checkNeedEventNum,EventDatas[currentTextID].eventNum,EventDatas[currentTextID].afterEventSkipID);
