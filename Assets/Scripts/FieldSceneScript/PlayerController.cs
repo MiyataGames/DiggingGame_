@@ -122,6 +122,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
         // saveLoadCtrl.Load();
+        myAnim.SetFloat("isLeft", -1);
     }
 
     // Update is called once per frame
@@ -172,9 +173,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 if (isDigging == false && isJumping == false)
                 {
                     myAnim.SetBool("isWalking", true);
+                    myAnim.SetFloat("isUp", 0);
+                    myAnim.SetFloat("isLeft", 1);
                 }
-                myAnim.SetFloat("isUp", 0);
-                myAnim.SetFloat("isLeft",1);
             }
             else
             // D：右
@@ -186,10 +187,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 if (isDigging == false && isJumping == false)
                 {
                     myAnim.SetBool("isWalking", true);
+                    // isLeftを-1にすると右のアニメーション
+                    myAnim.SetFloat("isUp", 0);
+                    myAnim.SetFloat("isLeft", -1);
                 }
-                // isLeftを-1にすると右のアニメーション
-                myAnim.SetFloat("isUp", 0);
-                myAnim.SetFloat("isLeft",-1);
             }
 
             
@@ -203,13 +204,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // 上キーを入力
             if (Input.GetKey(KeyCode.W))
             {
-                Debug.Log("上キーを入力");
                 myAnim.SetFloat("isUp", 1);
             }
             // 下キーを入力
             else if (Input.GetKey(KeyCode.S))
             {
-                Debug.Log("下キーを入力");
                 myAnim.SetFloat("isUp", -1);
             }
 
