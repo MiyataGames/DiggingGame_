@@ -216,6 +216,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 if (pushFlag == false)
                 {
+                    myAnim.SetBool("isJump",true);
                     jumpFlag = true;
                     isJumping = true;
                     pushFlag = true;
