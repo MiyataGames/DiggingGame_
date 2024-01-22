@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
 
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         myAnim = GetComponent<Animator>();
@@ -123,6 +123,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
         // saveLoadCtrl.Load();
         myAnim.SetFloat("isLeft", -1);
+    }
+
+    void OnEnable()
+    {
+        isDigging = false;
     }
 
     // Update is called once per frame
@@ -873,13 +878,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
             Debug.Log("Faade");
-            GameManager.instance.StartBattle(collision.gameObject);  
-            //Fade.Instance.RegisterFadeOutEvent(new Action[] { () => GameManager.instance.StartBattle(collision.gameObject) });
-             //Fade.Instance.StartFadeOut();
-             Fade.Instance.StartFadeIn();
-             //GameManager.instance.StartBattle(collision.gameObject);
-            // 敵オブジェクトを破壊
-            // Destroy(collision.gameObject);
+            GameManager.instance.StartBattle(collision.gameObject);
+
         }else if(collision.gameObject.tag == "Town")
         {
             // 街へ入る

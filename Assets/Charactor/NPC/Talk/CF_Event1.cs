@@ -54,26 +54,41 @@ public class CF_Event1 : CharactorFunction
         }
     }
 
+    /// <summary>
+    /// ショウをフィールドシーン上に生成する
+    /// </summary>
     private void SpawanSyo_Filed()
     {
         syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
     }
 
+    /// <summary>
+    /// ショウをストーリーシーン上に生成する関数
+    /// </summary>
     private void SpawnSyo_Story()
     {
         syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(3, 0), StoryParent);
     }
 
+    /// <summary>
+    /// 村長をストーリーシーン上に生成する関数
+    /// </summary>
     private void SpawnSontyo_Story()
     {
         sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 10), StoryParent);
     }
 
+    /// <summary>
+    /// 村へ移動する関数
+    /// </summary>
     private void Move2Village()
     {
         SideView2TopDown();
     }
 
+    /// <summary>
+    /// 村長が移動する関数
+    /// </summary>
     private void SontyoMove()
     {
         storyEventScript.moveFlag = true;
@@ -88,7 +103,9 @@ public class CF_Event1 : CharactorFunction
     }
 
 
-
+    /// <summary>
+    /// 移動が完了したら実行する関数
+    /// </summary>
     private void moveCompleteFunc()
     {
         Animator anim = sontyo.GetComponent<Animator>();
