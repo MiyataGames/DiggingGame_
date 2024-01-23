@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject[] fieldObjects;
 
-    public static int currentSceneIndex;
+    private int currentSceneIndex;
     public PlayMode playMode;
     private GameMode currentGameMode;
     public GameState currentGameState;
@@ -64,15 +64,19 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(currentSceneIndex);
         if (currentSceneIndex == (int)GameMode.FIELD_SCENE)
         {
+            Debug.Log("フィールド実行中でーす");
             playerController.HandleUpdate();
         }
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {
+            Debug.Log("バトル実行中でーす");
             battleSceneManager.HandleUpdate();
         }else if(currentSceneIndex == (int)GameMode.TOWN_SCENE)
         {
+            Debug.Log("タウン実行中でーす");
             playerTownController.HandleUpdate();
         }
         /*
@@ -87,6 +91,7 @@ public class GameManager : MonoBehaviour
         set
         {
             currentSceneIndex = value;
+            Debug.Log(currentSceneIndex);
             ActivateCurrentScene(currentSceneIndex);
         }
     }
@@ -100,7 +105,7 @@ public class GameManager : MonoBehaviour
         this.Party = party;
     }
 
-    private void ActivateCurrentScene(int sceneIndex)
+    public void ActivateCurrentScene(int sceneIndex)
     {
         currentSceneIndex = sceneIndex;
         for (int i = 0; i < fieldObjects.Length; i++)
