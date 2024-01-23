@@ -140,29 +140,38 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
             // 移動
             vx = 0;
             vy = 0;
+            myAnim.SetBool("isWalk", false);
 
             if (Input.GetKey(KeyCode.A))// A：左
             {
                 vx = -speed;
                 playerVec = PlayerVec.Left;
+                myAnim.SetBool("isWalk", true);
                 myAnim.SetFloat("x", -1);
+                myAnim.SetFloat("y", 0);
             }
             else if (Input.GetKey(KeyCode.D))// D：右
             {
                 vx = speed;
                 playerVec = PlayerVec.Right;
+                myAnim.SetBool("isWalk", true);
                 myAnim.SetFloat("x", 1);
+                myAnim.SetFloat("y", 0);
             }
             else if (Input.GetKey(KeyCode.W))// 上キーを入力
             {
                 vy = speed;
                 playerVec = PlayerVec.Up;
+                myAnim.SetBool("isWalk", true);
+                myAnim.SetFloat("x", 0);
                 myAnim.SetFloat("y", 1);
             }
             else if (Input.GetKey(KeyCode.S))// 下キーを入力
             {
                 vy = -speed;
                 playerVec = PlayerVec.Down;
+                myAnim.SetBool("isWalk", true);
+                myAnim.SetFloat("x", 0);
                 myAnim.SetFloat("y", -1);
             }
 
@@ -170,8 +179,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
             // 移動キーを離したら
             if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
             {
-                //
-                myAnim.SetBool("isWalking", false);
+                
             }
 
         }
