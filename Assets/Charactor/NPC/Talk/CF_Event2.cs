@@ -11,6 +11,7 @@ public class CF_Event2 : CharactorFunction
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject sontyo_StoryPrefab;
+    [SerializeField] private GameObject mother_StoryPrefab;
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
@@ -18,6 +19,7 @@ public class CF_Event2 : CharactorFunction
     private GameObject syo;
 
     private GameObject sontyo;
+    private GameObject mother;
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -33,6 +35,9 @@ public class CF_Event2 : CharactorFunction
                     break;
                 case "SpawnSontyo_Story":
                     SpawnSontyo_Story();
+                    break;
+                case "SpawnMother_Story":
+                    SpawnMother_Story();
                     break;
                 case "Move2Village":
                     Move2Village();
@@ -70,12 +75,17 @@ public class CF_Event2 : CharactorFunction
         syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(3, 0), StoryParent);
     }
 
+    private void SpawnMother_Story()
+    {
+        Debug.Log("a");
+        mother = SpawnCharactor(mother_StoryPrefab, player_Story.transform.position + new Vector3(3.5f, 0), StoryParent);
+    }
     /// <summary>
     /// 村長をストーリーシーン上に生成する関数
     /// </summary>
     private void SpawnSontyo_Story()
     {
-        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 10), StoryParent);
+        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(4.0f, 0), StoryParent);
     }
 
     /// <summary>
