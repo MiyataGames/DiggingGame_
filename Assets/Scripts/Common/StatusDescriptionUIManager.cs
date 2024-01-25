@@ -29,21 +29,21 @@ public class StatusDescriptionUIManager : MonoBehaviour
         playerLvText.text = "Lv" + player.level.ToString();
         playerDiscriptionText.text = player.PlayerBase.PlayerDiscription;
         hPText.text = player.currentHP.ToString();
-        maxHpText.text = "/" + player.currentMaxHp.ToString();
+        maxHpText.text = "/" + player.CurrentMaxHp.ToString();
         spText.text = player.currentSP.ToString();
-        MaxSpText.text = "/"+ player.currentMaxSp.ToString();
+        MaxSpText.text = "/"+ player.CurrentMaxSp.ToString();
         atkText.text = player.currentMaxAtk.ToString();
         defText.text = player.currentMaxDef.ToString();
         agiText.text = player.currentMaxAgi.ToString();
         remainExpText.text = "あと "+(player.NextExp - player.Exp).ToString();
-        Debug.Log((float)player.currentHP / (float)player.currentMaxHp);
+        Debug.Log((float)player.currentHP / (float)player.CurrentMaxHp);
 
         Debug.Log(overviewImage);
         Debug.Log(player.PlayerBase.PlayerOverView);
         overviewImage.sprite = player.PlayerBase.PlayerOverView;
         //overviewImage.SetNativeSize();
-        hpFilledImage.fillAmount = (float)player.currentHP / (float)player.currentMaxHp;
-        spFilledImage.fillAmount = (float)player.currentSP / (float)player.currentMaxSp;
+        hpFilledImage.fillAmount = (float)player.currentHP / (float)player.CurrentMaxHp;
+        spFilledImage.fillAmount = (float)player.currentSP / (float)player.CurrentMaxSp;
         expFilledImage.fillAmount = (float)player.Exp / (float)player.NextExp;
     }
 }

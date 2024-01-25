@@ -24,7 +24,7 @@ public class EnemyUnit : MonoBehaviour
     public List<Enemy> Enemies { get => enemies; }
     int[] debugPositionIndexs = { 7, 8, 4 };
     Dictionary<Enemy, int> enemyKindNums;// エネミーごとの数
-    public void SetUp(int lowLevel, int highLevel)
+    public void SetUp()
     {
         int enemyNum = 3; /*= Random.Range(1,3);*/
         // レベル帯1-3のダンジョン
@@ -36,7 +36,7 @@ public class EnemyUnit : MonoBehaviour
         for (int i = 0; i < enemyNum; i++)
         {
             enemyKindNum = UnityEngine.Random.Range(0, enemyBasiesList[enemyBaseNumber].enemyBases.Count);
-            Enemy enemy = new Enemy(enemyBasiesList[enemyBaseNumber].enemyBases[enemyKindNum], UnityEngine.Random.Range(lowLevel, highLevel));
+            Enemy enemy = new Enemy(enemyBasiesList[enemyBaseNumber].enemyBases[enemyKindNum]);
             Debug.Log(enemy.EnemyBase.EnemyName);
             agiEnemyDic.Add(enemy, enemy.EnemyBase.Agi);
         }

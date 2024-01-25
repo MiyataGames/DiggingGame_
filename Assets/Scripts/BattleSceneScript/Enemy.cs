@@ -10,41 +10,52 @@ public class Enemy : Character
     // ベースとなるデータ
     public EnemyBase EnemyBase { get => enemyBase; }
     private string enemyBattleName;// 敵のバトル上での名前
+    int dropGold;// ドロップするお金
+    List<Item> dropItems = new List<Item>();// ドロップするアイテム
     bool counted;
 
     public int Level { get => level; }
     public GameObject EnemyPrefab { get; set; }
     public Animator EnemyAnimator { get; set; }
-
     public BattleEnemyUI EnemyUI { get; set; }
     public int positionIndex;
-
-    // レベルに応じたHPを返す
-    public int currentMaxHp
-    {
-        get { return Mathf.FloorToInt((EnemyBase.MaxHp * level) / 100f) + 10; }
-    }
 
     public string EnemyBattleName { get => enemyBattleName; set => enemyBattleName = value; }
     public bool Counted { get => counted; set => counted = value; }
 
 
     // コンストラクタ:生成時の初期設定
-    public Enemy(EnemyBase eBase, int eLevel)
+    public Enemy(EnemyBase eBase)
     {
-        //しょきか
+        // ステータスの初期化
         isPlayer = false;
         enemyBase = eBase;
-        characterName = enemyBase.name;
-        level = eLevel;
-        currentHP = currentMaxHp;
+        // ドロップするものの決定
+        dropGold = Random.Range(enemyBase.MinDropGold, enemyBase.MaxDropGold);
+        List<Item> items = new List<Item>();
+        for(int i = 0;i < enemyBase.DropItemBase.Count; i++)
+        {
+            Item item = new Item(enemyBase.DropItemBase[i]);
+            items.Add(item);
+        }
+        // ドロップするアイテムの数
+        int dropItemNum = Random.Range(0, enemyBase.DropItemBase.Count);
+        for(int i = 0;i<dropItemNum; i++)
+        {
+            int itemNumber = Random.Range(0, items.Count);
+            Item item = items[itemNumber];
+            dropItems.Add(item);
+        }
+        characterName = enemyBase.EnemyName;
+        level = enemyBase.Level;
+        currentHP = enemyBase.MaxHp;
+        currentMaxHp = enemyBase.MaxHp;
         currentMaxAtk = EnemyBase.Atk;
         currentMaxDef = enemyBase.Def;
         currentMaxAgi = EnemyBase.Agi;
         atk = currentMaxAtk;
         def = currentMaxDef;
         agi = currentMaxAgi;
-        //		agi = eBase.Agi;
         Skills = new List<EnemySkill>();
         // 覚える技のレベル以上ならslillsに追加
         foreach (LearnableSkill learableSkill in eBase.LearableEnemySkills)
@@ -61,13 +72,6 @@ public class Enemy : Character
         }
     }
 
-    /// <summary>
-    /// レベルに応じた初期値を設定する関数
-    /// </summary>
-    public override void InitStatusValue(int level)
-    {
-
-    }
 
     /*
         public bool isEffective(EnemySkill playerSkill)
@@ -139,12 +143,24 @@ public class Enemy : Character
         {
             effectiveness = 0;
         }*/
-        float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
-        float a = (2 * player.level + 10) / 250f;
-        float d = a * playerSkill.skillBase.Power * ((float)player.atk / def) + 2;
-        int damage = Mathf.FloorToInt(d * modifiers);
+        float skillPower = playerSkill.skillBase.Power;// スキル倍率
+
+        int damage = 0;
+        // デバッグモードはプレイヤーの技が強くて敵がめっちゃ弱い
+        if (GameManager.instance.playMode == PlayMode.DEBUG)
+        {
+            damage = 100;
+        }
+        else if(GameManager.instance.playMode == PlayMode.RELEASE)
+        {
+            float randSeed = Random.Range(0.83f, 1.17f);
+            // （攻撃力/2-守備力/4）×変数(5/6~7/6)
+            damage = (int)((player.atk/2 - def/4) * randSeed *skillPower);
+        }
+        Debug.Log("ダメージ" + damage);
 
         currentHP -= damage;
+        Debug.Log("現在の体力"+currentHP);
         if (currentHP <= 0)
         {
             currentHP = 0;

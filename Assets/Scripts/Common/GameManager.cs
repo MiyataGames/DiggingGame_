@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour
         enemies = new List<Enemy>();
         playerUnit.SetUpBattle(Party);
         // モンスターの生成
-        enemyUnit.SetUp(1, 3);
+        enemyUnit.SetUp();
         battlePlayers = new List<Player>(playerUnit.SortedBattlePlayers);
         for(int i = 0;i<battlePlayers.Count; i++)
         {

@@ -9,6 +9,7 @@ public class EnemyBase : ScriptableObject
     [SerializeField] private int enemyID;
 
     [SerializeField] private string enemyName;
+    [SerializeField] private int level;
 
     [TextArea]
     [SerializeField] private string description;
@@ -18,7 +19,6 @@ public class EnemyBase : ScriptableObject
 
     // ステータス
     [SerializeField] private int maxHp;
-
     [SerializeField] private int atk;// 力
     [SerializeField] private int magicPower;// 魔
     [SerializeField] private int def;// 耐
@@ -27,6 +27,12 @@ public class EnemyBase : ScriptableObject
 
     // 覚える技一覧
     [SerializeField] private List<LearnableSkill> learnableEnemySkills;
+
+    // ドロップアイテム あとで割合にする
+    [SerializeField] List<ItemBase> dropItemBase;
+    // ドロップゴールド
+    [SerializeField] int maxDropGold;
+    [SerializeField] int minDropGold;
 
     public int MaxHp { get => maxHp; }
     public int Agi { get => agi; }
@@ -39,6 +45,10 @@ public class EnemyBase : ScriptableObject
     public string Description { get => description; }
     public GameObject EnemyPrefab { get => enemyPrefab; }
     public int EnemyID { get => enemyID; set => enemyID = value; }
+    public int Level { get => level; set => level = value; }
+    public int MaxDropGold { get => maxDropGold; set => maxDropGold = value; }
+    public int MinDropGold { get => minDropGold; set => minDropGold = value; }
+    public List<ItemBase> DropItemBase { get => dropItemBase; set => dropItemBase = value; }
 }
 
 // 覚える技：どのレベルで何を覚えるのか
