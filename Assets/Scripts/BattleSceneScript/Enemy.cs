@@ -9,6 +9,8 @@ public class Enemy : Character
 
     // ベースとなるデータ
     public EnemyBase EnemyBase { get => enemyBase; }
+    private string enemyBattleName;// 敵のバトル上での名前
+    bool counted;
 
     public int Level { get => level; }
     public GameObject EnemyPrefab { get; set; }
@@ -22,6 +24,9 @@ public class Enemy : Character
     {
         get { return Mathf.FloorToInt((EnemyBase.MaxHp * level) / 100f) + 10; }
     }
+
+    public string EnemyBattleName { get => enemyBattleName; set => enemyBattleName = value; }
+    public bool Counted { get => counted; set => counted = value; }
 
 
     // コンストラクタ:生成時の初期設定

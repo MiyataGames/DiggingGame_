@@ -24,7 +24,7 @@ public class BattleEnemyUI : MonoBehaviour
     public void SetEnemyData(Enemy enemy)
     {
         this.enemy = enemy;
-        enemyNameText.text = enemy.EnemyBase.EnemyName;
+        enemyNameText.text = enemy.EnemyBattleName;
         enemyLevelText.text = "Lv." + enemy.Level.ToString();
         enemyHpBar.SetHP(enemy.currentHP, enemy.currentMaxHp);
         //weakImage.SetActive(false);

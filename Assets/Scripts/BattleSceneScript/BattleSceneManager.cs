@@ -72,6 +72,8 @@ public enum InputDiggingStatement
 // 前のターンに気絶していたかどうか
 public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 {
+    // 全体UI
+    [SerializeField] Dialog dialog;
     // ステータス関係 =====================
     [SerializeField] GameObject statusPanel;
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
@@ -79,9 +81,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private int selectedStatusIndex;
     // バトル関係 ==========================
     [SerializeField] private List<Enemy> activeEnemies;
-
     [SerializeField] private List<Player> activePlayers;
-
     [SerializeField] private float speed;
 
     //[SerializeField] private DialogBox dialogBox;
@@ -94,20 +94,16 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     [SerializeField]
     private List<Character> characters;// 戦闘に参加してるキャラクター
-
     private int turnCharacterIndex;
     [SerializeField] private Character turnCharacter;// 行動順のキャラクター
-
     [SerializeField]
     private Enemy[] selectedEnemies;
-
     [SerializeField]
     private Player[] selectedPlayers;
     [SerializeField] int turnEndTime = 1;// ターン終了してから次のターンまでの時間
     [SerializeField] int endTime = 1; // 戦闘終了までの時間
     /// スキル関係==================================
     private List<SkillCellData> skillDatas;
-
     private int selectedSkillIndex;// リストの選択されたインデックス
 
     // デリゲートのためのスクローラー　
@@ -116,9 +112,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     // スクローラーの各セルのプレハブ
     public EnhancedScrollerCellView cellViewPrefab;
-
     public float cellSize;
-
     private int selectedTargetIndex;
 
     // アイテム関係==================================
@@ -130,10 +124,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     //アニメーション関係=============================================
     private static readonly int hashIdle = Animator.StringToHash("Base Layer.Idle");
-
     private static readonly int hashTurnIdle = Animator.StringToHash("Base Layer.TurnIdle");
     private static readonly int hashRun = Animator.StringToHash("Base Layer.Run");
-
     private static readonly int hashDamage = Animator.StringToHash("Base Layer.Damage");
     private static readonly int hashDeath = Animator.StringToHash("Base Layer.Death");
     private static readonly int hashNone = Animator.StringToHash("Base Layer.NoneAnimation");
@@ -153,7 +145,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     // 穴掘り関係 ================================
     [SerializeField] private DiggingGridManager diggingGridManager;
-
     public InputDiggingStatement inputDiggingStatement;
     private CHECK_HOLE_POSITION_PHASE checkHolePositionPhase;
     [SerializeField] private GameObject[] diggingPositions;
@@ -381,6 +372,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         //activePlayers = players;
         //activeEnemies = enemies;
         // リストは参照渡しになる
+        activePlayers = new List<Player>(players);
+        activeEnemies = new List<Enemy>(enemies);
+        /*
         for (int i = 0; i < players.Count; i++)
         {
             activePlayers.Add(players[i]);
@@ -388,7 +382,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         for (int i = 0; i < enemies.Count; i++)
         {
             activeEnemies.Add(enemies[i]);
-        }
+        }*/
 
         Dictionary<Character, int> agiCharaDictionary = new Dictionary<Character, int>();
 
@@ -1090,6 +1084,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         */
         EnemySkill playerSkill = player.Skills[selectedSkillIndex];
         // dialogBox.SetMessage("PlayerTurn " + playerSkill.skillBase.SkillName);
+        dialog.ShowMessageCoroutine(player.PlayerBase.PlayerName + "の" + playerSkill.skillBase.SkillName);
         Debug.Log("======" + player.PlayerBase.PlayerName + "PlayerTurn " + playerSkill.skillBase.SkillName + "======");
 
         Debug.Log("名前" + player.PlayerBase.PlayerName + "発動スキル" + playerSkill.skillBase.SkillName);
@@ -2066,10 +2061,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // 敵のスキルの発動
     private IEnumerator PerformEnemySkill(EnemySkill enemySkill)
     {
-        Enemy tmpenemy2 = (Enemy)turnCharacter;
-        Debug.Log("名前" + tmpenemy2.EnemyBase.EnemyName + "発動スキル" + enemySkill.skillBase.SkillName);
+        Enemy turnEnemy = (Enemy)turnCharacter;
+        Debug.Log("名前" + turnEnemy.EnemyBase.EnemyName + "発動スキル" + enemySkill.skillBase.SkillName);
         battleState = BattleState.BUSY;
 
+        dialog.ShowMessageCoroutine(turnEnemy.EnemyBase.EnemyName + "の" + enemySkill.skillBase.SkillName);
         // 攻撃魔法なら
         if (enemySkill.skillBase.SkillCategory == SKILL_CATEGORY.ATTACK)
         {

@@ -6,6 +6,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class EnemyBase : ScriptableObject
 {
+    [SerializeField] private int enemyID;
+
     [SerializeField] private string enemyName;
 
     [TextArea]
@@ -36,6 +38,7 @@ public class EnemyBase : ScriptableObject
     public string EnemyName { get => enemyName; }
     public string Description { get => description; }
     public GameObject EnemyPrefab { get => enemyPrefab; }
+    public int EnemyID { get => enemyID; set => enemyID = value; }
 }
 
 // 覚える技：どのレベルで何を覚えるのか
