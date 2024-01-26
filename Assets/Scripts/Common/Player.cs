@@ -241,7 +241,31 @@ public class Player : Character
         Debug.Log("経験値を得た後のレベルは" + level);
         return expPair;
     }
+
+    public void AddItem(Item addItem)
+    {
+        // 同じアイテムがあるか検索
+        if (items.Count > 0)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (addItem.ItemBase.Id == items[i].ItemBase.Id)
+                {
+                    // あったら個数を増やして破棄
+                    items[i].ItemCount++;
+                    return;
+                }
+            }
+        }
+        // なければ新しく追加する
+        items.Add(addItem);
+        items[items.Count - 1].ItemCount++;
+        // idが早い順に並べる
+        items.Sort((x, y) => y.Id - x.Id);
+    }
 }
+
+
 
 public struct ExpPair
 {

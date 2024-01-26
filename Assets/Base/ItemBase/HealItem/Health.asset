@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: aaaaa
   description: aaaaa
   price: 100
-  id: 0
+  id: 3
   itemType: 0
   targetNum: 0
   healPoint: 0
