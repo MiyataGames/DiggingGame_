@@ -40,7 +40,6 @@ public class ResultSceneMangaer : MonoBehaviour
                 resultDropPanel.SetActive(true);
                 // 必要な情報を書き込む
                 ShowDropObjectsText();
-                Debug.Log("結果２を表示");
             }
         }else if(resultState == ResultState.RESULT_DROP)
         {
@@ -51,8 +50,6 @@ public class ResultSceneMangaer : MonoBehaviour
                 // リザルトの子オブジェクトを削除
                 Destroy(playerModel);
                 resultPanel.SetActive(false);
-                Debug.Log("結果を非表示");
-
             }
 
         }
