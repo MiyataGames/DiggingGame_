@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 1
   playerName: "\u30B7\u30E7\u30A6"
+  weakTypes: 06000000
+  resistanceTypes: 05000000
   playerDiscription: "\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042"
   playerFaceIcon: {fileID: 21300000, guid: 038de84945c5a46fb9e7a2f714724f84, type: 3}
   playerOverView: {fileID: 21300000, guid: 96ca99ea30e1846a6bb99e6e17e937af, type: 3}

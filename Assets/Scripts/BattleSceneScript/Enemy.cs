@@ -77,44 +77,31 @@ public class Enemy : Character
     }
 
 
-    /*
-        public bool isEffective(EnemySkill playerSkill)
+    
+    public bool isEffective(EnemySkill playerSkill)
+    {
+        for (int i = 0; i < this.EnemyBase.WeakTypes.Length; i++)
         {
-            for (int i = 0; i < this.EnemyBase.WeakTypes.Length; i++)
+            if (playerSkill.skillBase.MagicType == this.EnemyBase.WeakTypes[i])
             {
-                if (playerSkill.skillBase.MagicType == this.EnemyBase.WeakTypes[i])
-                {
-                    return true;
-                }
+                return true;
             }
-            return false;
         }
+        return false;
+    }
 
-        public bool isResist(EnemySkill playerSkill)
+    public bool isResist(EnemySkill playerSkill)
+    {
+        for (int i = 0; i < this.EnemyBase.ResistanceTypes.Length; i++)
         {
-            for (int i = 0; i < this.EnemyBase.ResistanceTypes.Length; i++)
+            // 使われたスキルが耐性だったら
+            if (playerSkill.skillBase.MagicType == this.EnemyBase.ResistanceTypes[i])
             {
-                // 使われたスキルが耐性だったら
-                if (playerSkill.skillBase.MagicType == this.EnemyBase.ResistanceTypes[i])
-                {
-                    return true;
-                }
+                return true;
             }
-            return false;
         }
-
-        public bool isInvalid(EnemySkill playerSkill)
-        {
-            for (int i = 0; i < this.EnemyBase.InvalidTypes.Length; i++)
-            {
-                if (playerSkill.skillBase.MagicType == this.EnemyBase.InvalidTypes[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        */
+        return false;
+    }
 
     private float critical = 1;
 
@@ -134,19 +121,16 @@ public class Enemy : Character
         // クリティカル
         // 相性
         float effectiveness = 1;// 効果量
-        /*
+        
         if (isEffective(playerSkill))
         {
-            effectiveness = 1.5f;
+            effectiveness = 1.2f;
         }
         else if (isResist(playerSkill))
         {
-            effectiveness = 0.5f;
+            effectiveness = 0.7f;
         }
-        else if (isInvalid(playerSkill))
-        {
-            effectiveness = 0;
-        }*/
+
         float skillPower = playerSkill.skillBase.Power;// スキル倍率
 
         int damage = 0;
@@ -157,9 +141,10 @@ public class Enemy : Character
         }
         else if(GameManager.instance.playMode == PlayMode.RELEASE)
         {
+            Debug.Log("効果量" + effectiveness);
             float randSeed = Random.Range(0.83f, 1.17f);
-            // （攻撃力/2-守備力/4）×変数(5/6~7/6)
-            damage = (int)((player.atk/2 - def/4) * randSeed *skillPower);
+            // （攻撃力/2-守備力/4）×変数(5/6~7/6) x 属性効果量
+            damage = (int)((player.atk/2 - def/4) * randSeed *skillPower * effectiveness);
         }
         Debug.Log("ダメージ" + damage);
 

@@ -113,8 +113,13 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     public void HandleUpdate()
     {
+        if(GameManager.instance.currentGameState == GameState.POSE)
+        {
+            return;
+        }
+
         // ゲームがポーズ中でないかつ穴掘り中だったら
-        if (GameManager.instance.currentGameState == GameState.PLAYING || filedGameStatus == FieldGameState.DIGGING)
+        if (filedGameStatus == FieldGameState.DIGGING)
         {
             // サーチ
             if (Input.GetKeyDown(KeyCode.Space))

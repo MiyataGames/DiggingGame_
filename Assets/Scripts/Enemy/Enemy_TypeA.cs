@@ -60,6 +60,9 @@ public class Enemy_TypeA : FieldEnemy
         // 追加 フィールドシーン以外は動かない
         if (GameManager.instance.currentGameState == GameState.POSE ||  GameManager.instance.CurrentSceneIndex != (int)GameMode.FIELD_SCENE|| IsBlinking == true)
         {
+            vx = 0;
+            vy = 0;
+            rb.velocity = new Vector2(vx, rb.velocity.y);
             return;
         }
         bool isHitWall = hitWallCheck();
