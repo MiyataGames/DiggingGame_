@@ -115,6 +115,9 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         if(GameManager.instance.currentGameState == GameState.POSE)
         {
+            vx = 0;
+            vy = 0;
+            myAnim.SetBool("isWalk", false);
             return;
         }
 
