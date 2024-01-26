@@ -64,7 +64,7 @@ public class Enemy_TypeB : FieldEnemy
     public override void FieldMove()
     {
         // 追加 フィールドシーン以外は動かない
-        if(GameManager.instance.currentGameState == GameState.POSE || GameManager.instance.CurrentSceneIndex != (int)GameMode.FIELD_SCENE || IsBlinking == true)
+        if(GameManager.instance.currentGameState != GameState.PLAYING || GameManager.instance.CurrentSceneIndex != (int)GameMode.FIELD_SCENE || IsBlinking == true)
         {
             vx = 0;
             vy = 0;

@@ -137,6 +137,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // Update is called once per frame
     public void HandleUpdate()
     {
+        // ゲームがポーズ中だったら全ての処理を受け付けない
         if (GameManager.instance.currentGameState == GameState.POSE)
         { 
             vx = 0;
@@ -144,8 +145,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             myAnim.SetBool("isWalking", false);
             return;
         }
-        // ゲームがポーズ中でないかつ穴掘り中だったら
-        if (filedGameStatus == FieldGameState.DIGGING)
+        // ゲームがメニュー中でないかつ穴掘り中だったら
+        if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
         {
             // サーチ
             if (Input.GetKeyDown(KeyCode.Space))
@@ -156,7 +157,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 // ポーズ中にする
-                GameManager.instance.currentGameState = GameState.POSE;
+                GameManager.instance.currentGameState = GameState.MENU;
                 // メニュー画面をひらく
                 filedGameStatus = FieldGameState.MENU;
                 menu.ActivateMenuPanel(true);

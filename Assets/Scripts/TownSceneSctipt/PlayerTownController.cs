@@ -121,8 +121,8 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
             return;
         }
 
-        // ゲームがポーズ中でないかつ穴掘り中だったら
-        if (filedGameStatus == FieldGameState.DIGGING)
+        // ゲームがメニュー中でないかつ穴掘り中だったら
+        if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
         {
             // サーチ
             if (Input.GetKeyDown(KeyCode.Space))
@@ -133,7 +133,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 // ポーズ中にする
-                GameManager.instance.currentGameState = GameState.POSE;
+                GameManager.instance.currentGameState = GameState.MENU;
                 // メニュー画面をひらく
                 filedGameStatus = FieldGameState.MENU;
                 menu.ActivateMenuPanel(true);

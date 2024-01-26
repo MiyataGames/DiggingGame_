@@ -31,6 +31,7 @@ public enum STATUS
 public enum GameState
 {
     PLAYING,
+    MENU,
     POSE
 }
 
