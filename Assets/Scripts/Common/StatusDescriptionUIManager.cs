@@ -8,6 +8,7 @@ public class StatusDescriptionUIManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI playerNameText;
     [SerializeField] TextMeshProUGUI playerLvText;
+    [SerializeField] TextMeshProUGUI[] typeTexts;
     [SerializeField] TextMeshProUGUI playerDiscriptionText;
     [SerializeField] TextMeshProUGUI hPText;
     [SerializeField] TextMeshProUGUI maxHpText;
@@ -27,6 +28,18 @@ public class StatusDescriptionUIManager : MonoBehaviour
     {
         playerNameText.text = player.PlayerBase.PlayerName;
         playerLvText.text = "Lv" + player.level.ToString();
+        for(int i = 0; i < typeTexts.Length; i++)
+        {
+            typeTexts[i].text = "-";
+        }
+        for(int i = 0;i < player.PlayerBase.WeakTypes.Length; i++)
+        {
+            typeTexts[(int)player.PlayerBase.WeakTypes[i] - 1].text = "弱";
+        }
+        for (int i = 0; i < player.PlayerBase.ResistanceTypes.Length; i++)
+        {
+            typeTexts[(int)player.PlayerBase.ResistanceTypes[i] - 1].text = "耐";
+        }
         playerDiscriptionText.text = player.PlayerBase.PlayerDiscription;
         hPText.text = player.currentHP.ToString();
         maxHpText.text = "/" + player.CurrentMaxHp.ToString();

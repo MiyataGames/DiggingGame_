@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: 1
   enemyName: "\u3057\u307E\u3057\u307E\u30AD\u30E3\u30C3\u30C8"
+  weakTypes: 
+  resistanceTypes: 0100000002000000
   level: 2
   description: 
   enemyPrefab: {fileID: 7976588781564346860, guid: 54a6c5ca2ff67444ca6f2cd0f37ab755, type: 3}

@@ -65,13 +65,6 @@ public class Character
         }
         return false;
     }
-    /// <summary>
-	/// レベルに応じた初期値を設定する関数
-	/// </summary>
-    public virtual void InitStatusValue(int level)
-    {
-
-    }
 
     /// <summary>
     /// // ステータス変化技の関数

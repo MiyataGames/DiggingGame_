@@ -9,6 +9,10 @@ public class EnemyBase : ScriptableObject
     [SerializeField] private int enemyID;
 
     [SerializeField] private string enemyName;
+    [SerializeField]
+    private MagicType[] weakTypes;
+    [SerializeField]
+    private MagicType[] resistanceTypes;
     [SerializeField] private int level;
 
     [TextArea]
@@ -49,6 +53,8 @@ public class EnemyBase : ScriptableObject
     public int MaxDropGold { get => maxDropGold; set => maxDropGold = value; }
     public int MinDropGold { get => minDropGold; set => minDropGold = value; }
     public List<ItemBase> DropItemBase { get => dropItemBase; set => dropItemBase = value; }
+    public MagicType[] WeakTypes { get => weakTypes; }
+    public MagicType[] ResistanceTypes { get => resistanceTypes; }
 }
 
 // 覚える技：どのレベルで何を覚えるのか

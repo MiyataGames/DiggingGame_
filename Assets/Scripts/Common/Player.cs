@@ -121,14 +121,33 @@ public class Player : Character
         }
     }
 
-    /// <summary>
-    /// レベルに応じた初期値を設定する関数
-    /// </summary>
-    public override void InitStatusValue(int level)
+    // 相性をみる関数
+    public bool isResist(EnemySkill enemySkill)
     {
-
+        for (int i = 0; i < this.PlayerBase.ResistanceTypes.Length; i++)
+        {
+            // 使われたスキルが耐性だったら
+            if (enemySkill.skillBase.MagicType == this.PlayerBase.ResistanceTypes[i])
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
+    public bool isEffective(EnemySkill enemySkill)
+    {
+        for (int i = 0; i < this.PlayerBase.WeakTypes.Length; i++)
+        {
+            if (enemySkill.skillBase.MagicType == this.PlayerBase.WeakTypes[i])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 体力を変更する関数たち
     public bool TakeHealWithItem(Item healItem)
     {
         if (currentHP == CurrentMaxHp)
@@ -153,6 +172,16 @@ public class Player : Character
     {
         float skillPower = enemySkill.skillBase.Power;// スキル倍率
         int damage = 0;
+        // 相性
+        float effectiveness = 1;
+        if (isEffective(enemySkill))
+        {
+            effectiveness = 1.2f;
+        }
+        else if (isResist(enemySkill))
+        {
+            effectiveness = 0.7f;
+        }
         // デバッグモードは敵の技が弱くて敵がめっちゃ弱い
         if (GameManager.instance.playMode == PlayMode.DEBUG)
         {
@@ -161,8 +190,9 @@ public class Player : Character
         else if (GameManager.instance.playMode == PlayMode.RELEASE)
         {
             float randSeed = UnityEngine.Random.Range(0.83f, 1.17f);
-            // （攻撃力/2-守備力/4）×変数(5/6~7/6)
-            damage = (int)((character.atk / 2 - def / 4) * randSeed * skillPower);
+            // （攻撃力/2-守備力/4）×変数(5/6~7/6)x属性効果量
+            damage = (int)((character.atk / 2 - def / 4) * randSeed * skillPower * effectiveness);
+            Debug.Log("属性効果量" + effectiveness);
             Debug.Log("ダメージ" + damage);
             Debug.Log("現在の体力" + currentHP);
         }
