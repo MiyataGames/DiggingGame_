@@ -17,7 +17,7 @@ public class FadeController : MonoBehaviour
     {
         // 初期状態は完全に透明に設定
         fadePanel.color = new Color(0, 0, 0, 0);
-        Debug.Log(OnFadeInComplete);
+        //Debug.Log(OnFadeInComplete);
 
     }
 

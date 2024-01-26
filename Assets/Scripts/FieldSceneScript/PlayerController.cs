@@ -884,8 +884,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
         }else if(collision.gameObject.tag == "Town")
         {
+            Debug.Log("タウンに切り替え");
             // 街へ入る
             GameManager.instance.CurrentSceneIndex = (int)GameMode.TOWN_SCENE;
+            //GameManager.instance.ActivateCurrentScene((int)GameMode.TOWN_SCENE);
         }
     }
 
