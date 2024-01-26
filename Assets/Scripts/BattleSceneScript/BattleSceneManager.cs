@@ -1644,8 +1644,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // UIを元の位置に戻す
             for (int j = 0; j < movedEnemies.Count; j++)
             {
-                Debug.Log("元の高さ" + enemyUIgroundPosition.y);
-                movedEnemies[j].enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
+                if (movedEnemies[j].enemy.EnemyPrefab != null)
+                {
+                    Debug.Log("元の高さ" + enemyUIgroundPosition.y);
+                    movedEnemies[j].enemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
+                }
             }
             ResolvePositionOverlap();
 
@@ -1762,6 +1765,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (item != null)
         {
             TrapItemBase itemBase = item.ItemBase as TrapItemBase;
+            Debug.Log("アイテム" + itemBase.ItemName + "の効果発動");
             // アイテムの効果を発動する
             // 全アイテム共通：ダメージ処理
             // もしその位置に敵がいたら
@@ -1770,7 +1774,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 if (activeEnemies[i].positionIndex == position)
                 {
                     // ダメージ処理
-                    isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.BasicDamage, turnCharacter, activeEnemies[i]);
+                    isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.DamageRatio, turnCharacter);
+                    if (itemBase.ReceivedEffect != null)
+                    {
+                        Instantiate(itemBase.ReceivedEffect, activeEnemies[i].EnemyPrefab.transform.position, Quaternion.identity);
+                    }
                 }
             }
             // HPSPの反映

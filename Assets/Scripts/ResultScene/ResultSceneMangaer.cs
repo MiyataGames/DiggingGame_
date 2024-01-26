@@ -5,6 +5,7 @@ using UnityEngine;
 public enum ResultState
 {
     RESULT_LEVELUP,
+    RESULT_DROP,
     END
 }
 

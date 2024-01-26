@@ -171,10 +171,13 @@ public class Enemy : Character
     }
 
     // damage
-    public override bool TakeItemDamage(int basicDamage, Character turnCharacter, Character damagedCharacter)
+    public override bool TakeItemDamage(int damageRatio, Character turnCharacter)
     {
         // 合計ダメージ = (基本ダメージ + 攻撃力修正 + レベル修正) × クリティカルヒット倍率 - 敵の防御力
-        int damage = basicDamage; // + turnCharacter.atk + turnCharacter.level;
+        int damage = 0; // + turnCharacter.atk + turnCharacter.level;
+        float randSeed = Random.Range(0.83f, 1.17f);
+        // （攻撃力/2-守備力/4）×変数(5/6~7/6)
+        damage = (int)((turnCharacter.atk / 2 - def / 4) * randSeed * damageRatio * 2);
         currentHP -= damage;
         Debug.Log("ダメージ" + damage + "げんざいのHP は" + currentHP);
         if (currentHP <= 0)

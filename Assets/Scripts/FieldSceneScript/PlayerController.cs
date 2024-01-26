@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     // プレイヤーのアニメーション
     private Animator myAnim;
+    // プレイヤーのスプライトレンダラー
     public bool isLeft = false;
     public bool isUp = false;
     private bool isDigging = false;
@@ -128,6 +129,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     void OnEnable()
     {
         isDigging = false;
+        // this.GetComponent<SpriteRenderer>().flipX = false;
+        // Debug.Log(this.GetComponent<SpriteRenderer>().flipX);
     }
 
     // Update is called once per frame
@@ -182,9 +185,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     myAnim.SetFloat("isLeft", 1);
                 }
             }
-            else
             // D：右
-            if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D))
             {
                 vx = speed;
                 isLeft = false;
@@ -195,12 +197,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     // isLeftを-1にすると右のアニメーション
                     myAnim.SetFloat("isUp", 0);
                     myAnim.SetFloat("isLeft", -1);
+
                 }
             }
 
-            
             // 移動キーを離したら
-            if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
             {
                 //
                 myAnim.SetBool("isWalking", false);

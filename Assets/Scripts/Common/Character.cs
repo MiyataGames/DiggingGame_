@@ -46,7 +46,7 @@ public class Character
     {
         return false;
     }
-    public virtual bool TakeItemDamage(int damage, Character turnCharacter, Character damagedCharacter)
+    public virtual bool TakeItemDamage(int damage, Character turnCharacter)
     {
         return false;
     }
