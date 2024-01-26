@@ -138,7 +138,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public void HandleUpdate()
     {
         if (GameManager.instance.currentGameState == GameState.POSE)
-        {
+        { 
+            vx = 0;
+            vy = 0;
+            myAnim.SetBool("isWalking", false);
             return;
         }
         // ゲームがポーズ中でないかつ穴掘り中だったら
