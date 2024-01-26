@@ -7,6 +7,7 @@ using UnityEngine.VFX;
 using UnityEngine.EventSystems;
 using System.Linq;
 using System;
+using TMPro;
 
 public enum FieldGameState
 {
@@ -152,6 +153,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // メニュー画面をひらく
                 filedGameStatus = FieldGameState.MENU;
                 menu.ActivateMenuPanel(true);
+                // ゴールドを表示
+                menu.ActivateGoldText(true);
                 menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
             }
             // マップ
@@ -364,6 +367,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // メニュー画面を閉じる
             menu.ActivateMenuPanel(false);
+            // ゴールドを非表示
+            menu.ActivateGoldText(false);
             // ポーズ終了
             GameManager.instance.currentGameState = GameState.PLAYING;
             filedGameStatus = FieldGameState.DIGGING;
