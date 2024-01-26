@@ -22,6 +22,8 @@ public class Enemy : Character
 
     public string EnemyBattleName { get => enemyBattleName; set => enemyBattleName = value; }
     public bool Counted { get => counted; set => counted = value; }
+    public List<Item> DropItems { get => dropItems;  }
+    public int DropGold { get => dropGold; }
 
 
     // コンストラクタ:生成時の初期設定
@@ -38,13 +40,15 @@ public class Enemy : Character
             Item item = new Item(enemyBase.DropItemBase[i]);
             items.Add(item);
         }
-        // ドロップするアイテムの数
-        int dropItemNum = Random.Range(0, enemyBase.DropItemBase.Count);
+        // ドロップするアイテムの数 0か1こ
+        int dropItemNum = Random.Range(0, 2);
+        Debug.Log("落とすアイテムの数は"+dropItemNum);
         for(int i = 0;i<dropItemNum; i++)
         {
             int itemNumber = Random.Range(0, items.Count);
             Item item = items[itemNumber];
-            dropItems.Add(item);
+            Debug.Log("落とすアイテムの名前は" + item.ItemBase.ItemName);
+            DropItems.Add(item);
         }
         characterName = enemyBase.EnemyName;
         level = enemyBase.Level;

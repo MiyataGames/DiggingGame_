@@ -672,6 +672,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (other.tag == "Item")
         {
             Item newItem = other.GetComponent<FieldItem>().Item;
+            GameManager.instance.Party.Players[0].AddItem(newItem);
+            Destroy(other.gameObject);
+            LoadItemData();
+            /*
+            Item newItem = other.GetComponent<FieldItem>().Item;
             // 同じアイテムがあるか検索
             if (party.Players[0].Items.Count > 0)
             {
@@ -694,8 +699,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // idが早い順に並べる
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
             LoadItemData();
+            */
         }
-        if(other.tag == "Coin")
+        if (other.tag == "Coin")
         {
             int coinValue = other.GetComponent<FieldCoin>().Price;
             party.Players[0].Gold = party.Players[0].Gold + coinValue;
