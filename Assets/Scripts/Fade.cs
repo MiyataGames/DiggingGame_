@@ -12,6 +12,8 @@ public class Fade : MonoBehaviour
     [SerializeField]
     private float _fadeTime = 1f;
 
+    // public delegate void FadeInCompleteHandler();
+    // public event FadeInCompleteHandler OnFadeInComplete;
     private Action[] _onCompleteFadeIn = new Action[0];
     private Action[] _onCompleteFadeOut = new Action[0];
 

@@ -293,9 +293,21 @@ public class Player : Character
         // idが早い順に並べる
         items.Sort((x, y) => y.Id - x.Id);
     }
+
+    public void UseItem(Item useItem)
+    {
+        if (items.Find(item => item == useItem).ItemCount > 0)
+        {
+            // プレイヤーの持っているアイテムを探す
+            items.Find(item => item == useItem).ItemCount--;
+            if (items.Find(item => item == useItem).ItemCount == 0)
+            {
+                // アイテムを除去
+                items.Remove(useItem);
+            }
+        }
+    }
 }
-
-
 
 public struct ExpPair
 {

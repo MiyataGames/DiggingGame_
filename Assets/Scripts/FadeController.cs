@@ -71,4 +71,5 @@ public class FadeController : MonoBehaviour
         yield return new WaitForSeconds(seconds);
         OnFadeWaitComplete?.Invoke();
     }
+
 }

@@ -53,10 +53,8 @@ public class DiggingGridManager : MonoBehaviour
         //int col = index % 3;
 
         // 埋まっていなかったらアイテムを埋める
-        
         if (gridItems[index] == null)
         {
-            
             if (selectItemDelegate(selectedItem) == true)
             {
                 selectedItemNum++;

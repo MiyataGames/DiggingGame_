@@ -98,13 +98,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテムのターゲットのインデックス番号
     private int selectedItemTargetIndex;
 
-
     // ステータス関係 ==========================
     StatusState statusState = StatusState.STATUS_All;
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
     [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
+
+    [SerializeField] FadeController fadeController;
 
     // Start is called before the first frame update
     private void Awake()
@@ -898,7 +899,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // バトルシーンに移動する
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
-            Debug.Log("Faade");
+            //Fade.Instance.RegisterFadeOutEvent(GameManager.instance.StartBattle(collision.gameObject));
+            //fadeController.OnFadeOutComplete += GameManager.instance.StartBattle(collision.gameObject);
+
+            //fadeController.FadeOut();
             GameManager.instance.StartBattle(collision.gameObject);
 
         }else if(collision.gameObject.tag == "Town")

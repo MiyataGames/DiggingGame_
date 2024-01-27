@@ -589,27 +589,21 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテムが選択された時に呼ばれる関数
     private bool SelectedItem(Item selectedItem)
     {
-        if (mainPlayer.items.Find(item => item == selectedItem).ItemCount > 0)
+        if (selectedItem != null)
         {
-            // プレイヤーの持っているアイテムを探す
-            mainPlayer.items.Find(item => item == selectedItem).ItemCount--;
-            if(mainPlayer.items.Find(item => item == selectedItem).ItemCount == 0)
-            {
-                // アイテムを除去
-                mainPlayer.items.Remove(selectedItem);
-
-            }
+            mainPlayer.UseItem(selectedItem);
             // パネルの更新
-            LoadDiggingItemData(mainPlayer.items);
+            int itemNum = LoadDiggingItemData(mainPlayer.items);
             playerSkillPanel.RefreshActiveCellViews();
             // 選択している位置まで飛ぶ
+            if (selectedItemIndex > itemNum-1)
+            {
+                selectedItemIndex--;
+            }
             playerSkillPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     private void FinishDigging()
@@ -1251,6 +1245,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 for (int i = 0; i < activeEnemies.Count; i++)
                 {
                     isDying[i] = activeEnemies[i].TakeSkillDamage(playerSkill, (Player)TurnCharacter);
+                    // エフェクトの生成
+                    if (skillBase.SkillRecieveEffect != null)
+                    {
+                        Instantiate(skillBase.SkillRecieveEffect, activeEnemies[i].EnemyPrefab.transform.position, Quaternion.identity);
+                    }
                 }
 
                 // 敵のアニメーションの再生
@@ -1313,6 +1312,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 isDying[selectedTargetIndex] = activeEnemies[selectedTargetIndex].TakeSkillDamage(playerSkill, activePlayers[0]);
                 // ダメージモーション
                 activeEnemies[selectedTargetIndex].EnemyAnimator.Play(hashDamage);
+                // エフェクトの生成
+                if (skillBase.SkillRecieveEffect != null)
+                {
+                    Instantiate(skillBase.SkillRecieveEffect, activeEnemies[selectedTargetIndex].EnemyPrefab.transform.position, Quaternion.identity);
+                }
                 yield return null;
                 // ダメージアニメーションが終わるまで待つ
                 yield return new WaitForAnimation(activeEnemies[selectedTargetIndex].EnemyAnimator, 0);
@@ -1777,6 +1781,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.DamageRatio, turnCharacter);
                     if (itemBase.ReceivedEffect != null)
                     {
+                        // アイテムのエフェクト
                         Instantiate(itemBase.ReceivedEffect, activeEnemies[i].EnemyPrefab.transform.position, Quaternion.identity);
                     }
                 }
@@ -2761,11 +2766,19 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         playerSkillPanel.ReloadData();
     }
 
-    private void LoadDiggingItemData(List<Item> playerItemDatas)
+    private int LoadDiggingItemData(List<Item> playerItemDatas)
     {
         // 適当なデータを設定する
         itemCellDatas = new List<ItemCellData>();
         int j = 0;
+        for(int i =0;i< playerItemDatas.Count; i++)
+        {
+            if (playerItemDatas[i].ItemBase.ItemType == ItemType.WEAPON)
+            {
+                Debug.Log("アイテム：" + playerItemDatas[i].ItemBase.ItemName);
+            }
+        }
+        Debug.Log("アイテムのこすう"+playerItemDatas.Count);
         for (int i = 0; i < playerItemDatas.Count; i++)
         {
             if (playerItemDatas[i].ItemBase.ItemType == ItemType.WEAPON)
@@ -2776,6 +2789,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     isSelected = j == selectedItemIndex,
                     itemCountText = playerItemDatas[i].ItemCount.ToString(),
                 });
+
+                Debug.Log("i"+i+",j" + j + "アイテム：" + playerItemDatas[i].ItemBase.ItemName);
                 j++;
             }
         }
@@ -2786,6 +2801,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
         // データが揃ったのでスクローラーをリロードする
         playerSkillPanel.ReloadData();
+        return j;
     }
 }
 
