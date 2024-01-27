@@ -10,7 +10,7 @@ public class CF_Event5 : CharactorFunction
     [SerializeField] private GameObject player_Story;
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
-    [SerializeField] private GameObject sontyo_StoryPrefab;
+    [SerializeField] private GameObject mao_StoryPrefab;
     [SerializeField] private GameObject boss_StoryPrefab;
 
     [SerializeField] private Transform FieldParent;
@@ -18,9 +18,11 @@ public class CF_Event5 : CharactorFunction
 
     private GameObject syo;
 
-    private GameObject sontyo;
+    private GameObject mao;
 
     private GameObject boss;
+
+    private GameObject sontyo;
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -34,8 +36,8 @@ public class CF_Event5 : CharactorFunction
                 case "SpawnSyo_Story":
                     SpawnSyo_Story();
                     break;
-                case "SpawnSontyo_Story":
-                    SpawnSontyo_Story();
+                case "SpawnMao_Story":
+                    SpawnMao_Story();
                     break;
                 case "SpawnBoss_Story":
                     SpawnBoss_Story();
@@ -44,12 +46,30 @@ public class CF_Event5 : CharactorFunction
                 case "Move2Village":
                     Move2Village();
                     break;
-                case "SontyoMove":
-                    SontyoMove();
-                    break;
+       
                 case "BossMove":
                     StartCoroutine(BossMove());
                     break;
+                case "SyoMove":
+                    SyoMove();
+                    break;
+                case "SyoStop":
+                    SyoStop();
+                    break;
+                case "SyoSecondMove":
+                    SyoSecondMove();
+                    break;
+                case "MaoMove":
+                    MaoMove();
+                    break;
+
+                case "MaoStop":
+                    MaoStop();
+                    break;
+                case "MaoSecondMove":
+                    MaoSecondMove();
+                    break;
+
             }
         }
 
@@ -69,7 +89,7 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawanSyo_Filed()
     {
-        syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
+        syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(-3f, 5f), FieldParent);
     }
 
     /// <summary>
@@ -77,20 +97,20 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(3, 0), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
     }
 
     /// <summary>
     /// 村長をストーリーシーン上に生成する関数
     /// </summary>
-    private void SpawnSontyo_Story()
+    private void SpawnMao_Story()
     {
-        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 6), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, 5f), StoryParent);
     }
 
     private void SpawnBoss_Story()
     {
-        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 6), StoryParent);
+        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
     }
 
     /// <summary>
@@ -102,47 +122,116 @@ public class CF_Event5 : CharactorFunction
     }
 
     /// <summary>
-    /// 村長が移動する関数
+    /// maoが移動する関数
     /// </summary>
-    private void SontyoMove()
+    private void MaoMove()
     {
         storyEventScript.moveFlag = true;
+        Animator maoAnim = mao.GetComponent<Animator>();
+        maoAnim.SetBool("isWalk", true);
 
-        Animator anim = sontyo.GetComponent<Animator>();
-        anim.SetBool("isWalk", true);
+        var maoPosition = mao.transform.position;
+        mao.transform.DOMove(maoPosition - new Vector3(0, 4f, 0), 4f)
+            .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
+        SyoMove();
+        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
+        
+    }
 
-        var t = sontyo.transform.position;
-        sontyo.transform.DOMove(t - new Vector3(0, 8, 0), 2f)
-                        .SetEase(Ease.Linear)
-                        .OnComplete(moveCompleteFunc);
+    private void MaoStop()
+    {
+        storyEventScript.moveFlag = true;
+        Animator maoAnim = mao.GetComponent<Animator>();
+        maoAnim.SetBool("isWalk", false);
     }
 
 
+    private void MaoSecondMove()
+    {
+        storyEventScript.moveFlag = true;
+        Animator maoAnim = mao.GetComponent<Animator>();
+        maoAnim.SetBool("isWalk", true);
+
+        var MaosecondPosition = mao.transform.position;
+        var MaoStep = new Vector3(0, 1, 0);
+
+        mao.transform.DOMove(MaosecondPosition - MaoStep * 4, 4f)
+            .OnComplete(MaoStop);
+        storyEventScript.moveFlag = false;
+        storyEventScript.ReadNextMessage();
+
+    }
+
+
+
+    private void SyoMove()
+    {
+        //storyEventScript.moveFlag = true;
+        Animator syoAnim = syo.GetComponent<Animator>();
+        syoAnim.SetBool("isWalk", true);
+
+        var syoPosition = syo.transform.position;
+        syo.transform.DOMove(syoPosition - new Vector3(0, 4f, 0), 4f)
+            .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
+        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
+
+    }
+
+    private void SyoStop()
+    {
+        storyEventScript.moveFlag = true;
+        Animator syoAnim = syo.GetComponent<Animator>();
+        syoAnim.SetBool("isWalk", false);
+    }
+
+
+    private void SyoSecondMove()
+    {
+        storyEventScript.moveFlag = true;
+        Animator syoAnim = syo.GetComponent<Animator>();
+        syoAnim.SetBool("isWalk", true);
+
+        var SyosecondPosition = syo.transform.position;
+        var SyoStep = new Vector3(0, 1, 0);
+
+        syo.transform.DOMove(SyosecondPosition - SyoStep * 4, 4f)
+            .OnComplete(SyoStop);
+        storyEventScript.moveFlag = false;
+        storyEventScript.ReadNextMessage();
+
+    }
     private IEnumerator BossMove()
     {
         storyEventScript.moveFlag = true;
         Animator bossAnim = boss.GetComponent<Animator>();
         bossAnim.SetBool("isWalk", true);
 
-        var bossPostion = boss.transform.position;
-        var OneStep = new Vector3(0, 1, 0);
+        var bossPosition = boss.transform.position;
+        var OneStep = new Vector3(0, 2f, 0);
 
-        boss.transform.DOMove(bossPostion - OneStep,1f);
-        yield return new WaitForSeconds(1);
+        // カメラの初期位置を新しい位置にリセット
+        var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
+        Camera.main.transform.position = cameraInitialPosition;
+
+        // カメラのオフセットを設定
+        var cameraOffset = Camera.main.transform.position - bossPosition;
+
+        for (int i = 1; i <= 3; i++)
+        {
+            boss.transform.DOMove(bossPosition - OneStep * i, 2f);
+            // カメラを動かす
+            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 2f);
+
+            yield return new WaitForSeconds(1);
+            bossAnim.SetBool("isWalk", false);
+            yield return new WaitForSeconds(1);
+            bossAnim.SetBool("isWalk", true);
+        }
+
         bossAnim.SetBool("isWalk", false);
-        yield return new WaitForSeconds(1);
-        bossAnim.SetBool("isWalk", true);
-        boss.transform.DOMove(bossPostion - OneStep*2, 1f);
-        yield return new WaitForSeconds(1);
-        bossAnim.SetBool("isWalk", false);
-        yield return new WaitForSeconds(1);
-        bossAnim.SetBool("isWalk", true);
-        boss.transform.DOMove(bossPostion - OneStep * 3, 1f);
-        yield return new WaitForSeconds(1);
-        bossAnim.SetBool("isWalk", false);
+        yield return new WaitForSeconds(2);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
-
     }
 
 
