@@ -189,8 +189,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = -speed;
                 isLeft = true;
-                // 穴掘り中なら速度0
-                if(isDigging == true)
+                // 上下穴掘り中なら速度0
+                if (isDigging == true && myAnim.GetFloat("isUp") != 0)
                 {
                     vx = 0;
                 }// 穴掘り中じゃないなら
@@ -210,8 +210,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = speed;
                 isLeft = false;
-                // 穴掘り中なら速度0
-                if (isDigging == true)
+                // 上下穴掘り中なら速度0
+                if (isDigging == true && myAnim.GetFloat("isUp") != 0 )
                 {
                     vx = 0;
                 }// 穴掘り中じゃないなら
