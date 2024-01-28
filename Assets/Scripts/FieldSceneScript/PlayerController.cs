@@ -189,11 +189,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = -speed;
                 isLeft = true;
-                // 穴掘り中、ジャンプ中じゃなければ
-                if (isDigging == false && isJumping == false)
+                // 穴掘り中なら速度0
+                if(isDigging == true)
                 {
-                    myAnim.SetBool("isWalking", true);
-                    myAnim.SetFloat("isUp", 0);
+                    vx = 0;
+                }// 穴掘り中じゃないなら
+                else
+                {
+                    // ジャンプ中じゃなければ
+                    if (isJumping == false)
+                    {
+                        myAnim.SetBool("isWalking", true);
+                        myAnim.SetFloat("isUp", 0);
+                    }
                     myAnim.SetFloat("isLeft", 1);
                 }
             }
@@ -202,14 +210,20 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = speed;
                 isLeft = false;
-                // 穴掘り中じゃなければ
-                if (isDigging == false && isJumping == false)
+                // 穴掘り中なら速度0
+                if (isDigging == true)
                 {
-                    myAnim.SetBool("isWalking", true);
-                    // isLeftを-1にすると右のアニメーション
-                    myAnim.SetFloat("isUp", 0);
+                    vx = 0;
+                }// 穴掘り中じゃないなら
+                else
+                {
+                    // ジャンプ中じゃなければ
+                    if (isJumping == false)
+                    {
+                        myAnim.SetBool("isWalking", true);
+                        myAnim.SetFloat("isUp", 0);
+                    }
                     myAnim.SetFloat("isLeft", -1);
-
                 }
             }
 
