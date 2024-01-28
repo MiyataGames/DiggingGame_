@@ -1779,6 +1779,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     // ダメージ処理
                     isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.DamageRatio, turnCharacter);
+                    Debug.Log("エフェクトを発生");
                     if (itemBase.ReceivedEffect != null)
                     {
                         // アイテムのエフェクト
