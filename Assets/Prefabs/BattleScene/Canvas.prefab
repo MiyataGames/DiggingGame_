@@ -1803,6 +1803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a8cddb3029c2542bf1a88e9ff81204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goldText: {fileID: 0}
   menuPanel: {fileID: 2724927454068902765}
   itemPanel: {fileID: 386426774560471264}
   statusPanel: {fileID: 2724927454955756445}
@@ -6301,17 +6302,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8844854f43a4bc42a96237e18e51d4f, type: 3}
---- !u!114 &6867379034349868884 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1424371174187833727, guid: f8844854f43a4bc42a96237e18e51d4f, type: 3}
-  m_PrefabInstance: {fileID: 5515140229631446571}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6867379034349868906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6867379034349868906 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1424371174187833665, guid: f8844854f43a4bc42a96237e18e51d4f, type: 3}
@@ -6386,7 +6376,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 6867379034349868884}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
