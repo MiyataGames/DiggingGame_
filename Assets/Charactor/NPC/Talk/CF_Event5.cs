@@ -134,7 +134,7 @@ public class CF_Event5 : CharactorFunction
         mao.transform.DOMove(maoPosition - new Vector3(0, 4f, 0), 4f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         SyoMove();
-        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
+        var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
         
     }
 
@@ -159,6 +159,7 @@ public class CF_Event5 : CharactorFunction
             .OnComplete(MaoStop);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
+        
 
     }
 
@@ -200,8 +201,11 @@ public class CF_Event5 : CharactorFunction
         storyEventScript.ReadNextMessage();
 
     }
+
     private IEnumerator BossMove()
     {
+
+
         storyEventScript.moveFlag = true;
         Animator bossAnim = boss.GetComponent<Animator>();
         bossAnim.SetBool("isWalk", true);
@@ -211,6 +215,7 @@ public class CF_Event5 : CharactorFunction
 
         // カメラの初期位置を新しい位置にリセット
         var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
+
         Camera.main.transform.position = cameraInitialPosition;
 
         // カメラのオフセットを設定
@@ -218,13 +223,20 @@ public class CF_Event5 : CharactorFunction
 
         for (int i = 1; i <= 3; i++)
         {
+
             boss.transform.DOMove(bossPosition - OneStep * i, 2f);
             // カメラを動かす
-            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 2f);
+            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 2f)
+                .OnComplete(() =>
+                {
+                // カメラを揺らす
+                Camera.main.DOShakePosition(0.7f, 2f); // 0.5秒間、強度2で揺らす
+            });
 
-            yield return new WaitForSeconds(1);
+
+            yield return new WaitForSeconds(2);
             bossAnim.SetBool("isWalk", false);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
             bossAnim.SetBool("isWalk", true);
         }
 
