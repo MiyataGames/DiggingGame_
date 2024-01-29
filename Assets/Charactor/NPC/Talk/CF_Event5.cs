@@ -213,10 +213,16 @@ public class CF_Event5 : CharactorFunction
         var bossPosition = boss.transform.position;
         var OneStep = new Vector3(0, 2f, 0);
 
-        // カメラの初期位置を新しい位置にリセット
-        var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
+        //// カメラの初期位置を新しい位置にリセット
+        //var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
 
-        Camera.main.transform.position = cameraInitialPosition;
+        //Camera.main.transform.position = cameraInitialPosition;
+
+        bossAnim.SetBool("isWalk", false);
+        Vector3 bossCameraPosition = boss.transform.position + new Vector3(0, -1f, Camera.main.transform.position.z);
+        yield return Camera.main.transform.DOMove(bossCameraPosition, 3f).WaitForCompletion();
+        bossAnim.SetBool("isWalk", true);
+
 
         // カメラのオフセットを設定
         var cameraOffset = Camera.main.transform.position - bossPosition;
