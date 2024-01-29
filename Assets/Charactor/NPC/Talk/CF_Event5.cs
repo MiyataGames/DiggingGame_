@@ -57,7 +57,7 @@ public class CF_Event5 : CharactorFunction
                     SyoStop();
                     break;
                 case "SyoSecondMove":
-                    SyoSecondMove();
+                   SyoSecondMove();
                     break;
                 case "MaoMove":
                     MaoMove();
@@ -134,7 +134,7 @@ public class CF_Event5 : CharactorFunction
         mao.transform.DOMove(maoPosition - new Vector3(0, 4f, 0), 4f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         SyoMove();
-        var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
+        var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
         
     }
 
@@ -148,18 +148,18 @@ public class CF_Event5 : CharactorFunction
 
     private void MaoSecondMove()
     {
+
         storyEventScript.moveFlag = true;
         Animator maoAnim = mao.GetComponent<Animator>();
         maoAnim.SetBool("isWalk", true);
 
-        var MaosecondPosition = mao.transform.position;
-        var MaoStep = new Vector3(0, 1, 0);
+        Debug.Log("実行できた");
+        var maoPosition = mao.transform.position;
+        mao.transform.DOMove(maoPosition - new Vector3(0, 1.8f, 0), 2f)
+            .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
+        SyoSecondMove();
+        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 1f, 0), 2f);
 
-        mao.transform.DOMove(MaosecondPosition - MaoStep * 4, 4f)
-            .OnComplete(MaoStop);
-        storyEventScript.moveFlag = false;
-        storyEventScript.ReadNextMessage();
-        
 
     }
 
@@ -178,6 +178,9 @@ public class CF_Event5 : CharactorFunction
 
     }
 
+
+    
+
     private void SyoStop()
     {
         storyEventScript.moveFlag = true;
@@ -189,18 +192,15 @@ public class CF_Event5 : CharactorFunction
     private void SyoSecondMove()
     {
         storyEventScript.moveFlag = true;
-        Animator syoAnim = syo.GetComponent<Animator>();
-        syoAnim.SetBool("isWalk", true);
+        Animator maoAnim = syo.GetComponent<Animator>();
+        maoAnim.SetBool("isWalk", true);
 
-        var SyosecondPosition = syo.transform.position;
-        var SyoStep = new Vector3(0, 1, 0);
-
-        syo.transform.DOMove(SyosecondPosition - SyoStep * 4, 4f)
-            .OnComplete(SyoStop);
-        storyEventScript.moveFlag = false;
-        storyEventScript.ReadNextMessage();
+        var syoPosition = syo.transform.position;
+        syo.transform.DOMove(syoPosition - new Vector3(0, 1.8f, 0), 2f)
+            .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
 
     }
+   
 
     private IEnumerator BossMove()
     {
@@ -211,7 +211,7 @@ public class CF_Event5 : CharactorFunction
         bossAnim.SetBool("isWalk", true);
 
         var bossPosition = boss.transform.position;
-        var OneStep = new Vector3(0, 2f, 0);
+        var OneStep = new Vector3(0, 3f, 0);
 
         //// カメラの初期位置を新しい位置にリセット
         //var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
@@ -220,7 +220,7 @@ public class CF_Event5 : CharactorFunction
 
         bossAnim.SetBool("isWalk", false);
         Vector3 bossCameraPosition = boss.transform.position + new Vector3(0, -1f, Camera.main.transform.position.z);
-        yield return Camera.main.transform.DOMove(bossCameraPosition, 3f).WaitForCompletion();
+        yield return Camera.main.transform.DOMove(bossCameraPosition, 3f).WaitForCompletion();//3秒間かけてカメラが移動
         bossAnim.SetBool("isWalk", true);
 
 
@@ -230,13 +230,13 @@ public class CF_Event5 : CharactorFunction
         for (int i = 1; i <= 3; i++)
         {
 
-            boss.transform.DOMove(bossPosition - OneStep * i, 2f);
+            boss.transform.DOMove(bossPosition - OneStep * i, 5f);
             // カメラを動かす
-            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 2f)
+            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 4f)
                 .OnComplete(() =>
                 {
                 // カメラを揺らす
-                Camera.main.DOShakePosition(0.7f, 2f); // 0.5秒間、強度2で揺らす
+                Camera.main.DOShakePosition(1f, 2f); // 0.5秒間、強度2で揺らす
             });
 
 
