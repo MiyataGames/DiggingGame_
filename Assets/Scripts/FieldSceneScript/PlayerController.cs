@@ -917,8 +917,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             //fadeController.OnFadeOutComplete += GameManager.instance.StartBattle(collision.gameObject);
 
             //fadeController.FadeOut();
-            Fade.Instance.StartFadeInBattle(collision.gameObject);
-            //GameManager.instance.StartBattle(collision.gameObject);
+            //Fade.Instance.StartFadeInBattle(collision.gameObject);
+            GameManager.instance.StartBattle(collision.gameObject);
 
         }else if(collision.gameObject.tag == "Town")
         {

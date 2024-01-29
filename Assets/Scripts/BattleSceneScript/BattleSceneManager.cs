@@ -378,24 +378,28 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // ボタンに関数を追加する
         for(int i = 0;i < activePlayers.Count; i++)
         {
-            EventTrigger trigger = activePlayers[i].PlayerBattleSprite.AddComponent<EventTrigger>();
+            activePlayers[i].PlayerBattleSprite.AddComponent<EventTrigger>();
+            EventTrigger trigger = activePlayers[i].PlayerBattleSprite.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerEnter;
             entry.callback.AddListener((eventDate) => { MouseHoverPlayerTargetSelect(i); });
             trigger.triggers.Add(entry);
-            Button button = activePlayers[i].PlayerBattleSprite.AddComponent<ClickOnlyButton>();
+            activePlayers[i].PlayerBattleSprite.AddComponent<ClickOnlyButton>();
+            Button button = activePlayers[i].PlayerBattleSprite.GetComponent<ClickOnlyButton>();
             button.onClick.AddListener(() => MouseClickPlayerTargetSelect(i));
         }
         activeEnemies = new List<Enemy>(enemies);
         // ボタンに関数を追加する
         for (int i = 0; i < activeEnemies.Count; i++)
         {
-            EventTrigger trigger = activeEnemies[i].EnemyPrefab.AddComponent<EventTrigger>();
+            activeEnemies[i].EnemyPrefab.AddComponent<EventTrigger>();
+            EventTrigger trigger = activeEnemies[i].EnemyPrefab.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerEnter;
             entry.callback.AddListener((eventDate) => { MouseHoverPlayerTargetSelect(i); });
             trigger.triggers.Add(entry);
-            Button button = activeEnemies[i].EnemyPrefab.AddComponent<ClickOnlyButton>();
+            activeEnemies[i].EnemyPrefab.AddComponent<ClickOnlyButton>();
+            Button button = activeEnemies[i].EnemyPrefab.GetComponent<Button>();
             button.onClick.AddListener(() => MouseClickPlayerTargetSelect(i));
         }
         /*
