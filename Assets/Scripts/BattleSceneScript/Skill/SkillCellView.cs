@@ -5,10 +5,12 @@ using UnityEngine.UI;
 using TMPro;
 using EnhancedUI.EnhancedScroller;
 
+public delegate void SkillCellButtonClickedDelegate();
+
 public class SkillCellView : EnhancedScrollerCellView
 {
     private SkillCellData skillData;
-
+    public SkillCellButtonClickedDelegate cellButtonClicked;
     // 選択した時のアイコン
     public GameObject selectedIconImage;
 
@@ -43,5 +45,11 @@ public class SkillCellView : EnhancedScrollerCellView
             selectedIconImage.SetActive(false);
             //iconImage.GetComponent<Image>().color = unselectedColor;
         }
+    }
+
+    public void CellButton_OnClick()
+    {
+        // fire event if anyone has subscribed to it
+        if (cellButtonClicked != null) cellButtonClicked();
     }
 }
