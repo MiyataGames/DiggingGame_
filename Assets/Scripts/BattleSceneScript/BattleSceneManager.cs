@@ -1092,7 +1092,15 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             bool[] isDying = new bool[activeEnemies.FindAll(value => value.isDying == false).Count];
 
             // ターンのプレイヤーのスキル発動モーション
-            player.PlayerBattleAnimator.Play(hashSkill);
+            if (playerSkill.skillBase.MagicType == MagicType.NOTHING)
+            {
+                player.PlayerBattleAnimator.Play(hashAttack);
+            }
+            else
+            {
+                player.PlayerBattleAnimator.Play(hashSkill);
+            }
+
             yield return null;// ステートの反映
             yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
 
