@@ -69,6 +69,9 @@ public class CF_Event5 : CharactorFunction
                 case "MaoSecondMove":
                     MaoSecondMove();
                     break;
+                case "SceneShake":
+                    StartCoroutine(SceneShake());
+                    break;
 
             }
         }
@@ -111,6 +114,7 @@ public class CF_Event5 : CharactorFunction
     private void SpawnBoss_Story()
     {
         boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        boss.GetComponent<BossShake>().SetStoryScene(StoryParent);
     }
 
     /// <summary>
@@ -179,7 +183,18 @@ public class CF_Event5 : CharactorFunction
     }
 
 
-    
+
+    private IEnumerator SceneShake()
+    {
+        Debug.Log("シーンシェイク");
+        Camera.main.DOShakePosition(2f, 1.2f); // 0.2秒間、強度2で揺らす
+        yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
+
+
+    }
+
+
+
 
     private void SyoStop()
     {
@@ -200,57 +215,65 @@ public class CF_Event5 : CharactorFunction
             .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
 
     }
-   
 
     private IEnumerator BossMove()
     {
 
 
         storyEventScript.moveFlag = true;
-        Animator bossAnim = boss.GetComponent<Animator>();
-        bossAnim.SetBool("isWalk", true);
 
-        var bossPosition = boss.transform.position;
-        var OneStep = new Vector3(0, 3f, 0);
 
         //// カメラの初期位置を新しい位置にリセット
-        //var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
+        var cameraInitialPosition = new Vector3(1f, 5f, Camera.main.transform.position.z);
 
         //Camera.main.transform.position = cameraInitialPosition;
 
-        bossAnim.SetBool("isWalk", false);
-        Vector3 bossCameraPosition = boss.transform.position + new Vector3(0, -1f, Camera.main.transform.position.z);
-        yield return Camera.main.transform.DOMove(bossCameraPosition, 3f).WaitForCompletion();//3秒間かけてカメラが移動
+        //bossAnim.SetBool("isWalk", false);
+        Vector3 bossCameraPosition = boss.transform.position + new Vector3(0, -1f, Camera.main.transform.position.z);//ボスのカメラ位置
+        Debug.Log("カメラ移動開始");
+        yield return Camera.main.transform.DOMove(bossCameraPosition, 3f).WaitForCompletion();//現在地(まおが移動した地点)から３秒かけてボスがいる場所に移動
+        Debug.Log("カメラ移動終了");
+        //yield return new WaitForSeconds(1);//１秒待機
+        //bossAnim.SetBool("isWalk", true);//歩くアニメーション実行
+        Animator bossAnim = boss.GetComponent<Animator>();
         bossAnim.SetBool("isWalk", true);
 
+        var bossPosition = boss.transform.position;//ボスの最初の位置
+        var OneStep = new Vector3(0, 2f, 0);//ボスの1歩の大きさ
 
         // カメラのオフセットを設定
         var cameraOffset = Camera.main.transform.position - bossPosition;
 
-        for (int i = 1; i <= 3; i++)
+
+        for (int i = 1; i <= 1; i++)
         {
+            boss.transform.DOMove(bossPosition - OneStep * i, 5f);//
+            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 3f);
+            //// カメラを揺らす
+            //Camera.main.DOShakePosition(0.3f, 1.3f); // 0.2秒間、強度2で揺らす
+            //yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
 
-            boss.transform.DOMove(bossPosition - OneStep * i, 5f);
-            // カメラを動かす
-            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 4f)
-                .OnComplete(() =>
-                {
-                // カメラを揺らす
-                Camera.main.DOShakePosition(1f, 2f); // 0.5秒間、強度2で揺らす
-            });
+            //// カメラを再度揺らす
+            //Camera.main.DOShakePosition(0.3f, 1.3f); // 再度0.2秒間、強度2で揺らす
+            //yield return new WaitForSeconds(1f); // 再度の揺れの後1秒待機（揺れの0.2秒を含む）
 
 
-            yield return new WaitForSeconds(2);
-            bossAnim.SetBool("isWalk", false);
-            yield return new WaitForSeconds(2);
-            bossAnim.SetBool("isWalk", true);
+
+            yield return new WaitForSeconds(3);
+               // bossAnim.SetBool("isWalk", false);
+                //yield return new WaitForSeconds(2);
+                //bossAnim.SetBool("isWalk", true);
         }
 
-        bossAnim.SetBool("isWalk", false);
-        yield return new WaitForSeconds(2);
-        storyEventScript.moveFlag = false;
-        storyEventScript.ReadNextMessage();
+        bossAnim.SetBool("isWalk", false);　//アニメーションストップ
+        yield return new WaitForSeconds(2);//２秒待機
+        storyEventScript.moveFlag = false;//
+        storyEventScript.ReadNextMessage();//次の文に移動
     }
+
+
+
+
 
 
 
