@@ -375,42 +375,16 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         //activeEnemies = enemies;
         // リストは参照渡しになる
         activePlayers = new List<Player>(players);
-        // ボタンに関数を追加する
-        for(int i = 0;i < activePlayers.Count; i++)
-        {
-            activePlayers[i].PlayerBattleSprite.AddComponent<EventTrigger>();
-            EventTrigger trigger = activePlayers[i].PlayerBattleSprite.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerEnter;
-            entry.callback.AddListener((eventDate) => { MouseHoverPlayerTargetSelect(i); });
-            trigger.triggers.Add(entry);
-            activePlayers[i].PlayerBattleSprite.AddComponent<ClickOnlyButton>();
-            Button button = activePlayers[i].PlayerBattleSprite.GetComponent<ClickOnlyButton>();
-            button.onClick.AddListener(() => MouseClickPlayerTargetSelect(i));
-        }
         activeEnemies = new List<Enemy>(enemies);
-        // ボタンに関数を追加する
+        
+        for (int i = 0; i < activePlayers.Count; i++)
+        {
+            activePlayers[i].PlayerBattleSprite.AddComponent<SpriteButton>();
+        }
         for (int i = 0; i < activeEnemies.Count; i++)
         {
-            activeEnemies[i].EnemyPrefab.AddComponent<EventTrigger>();
-            EventTrigger trigger = activeEnemies[i].EnemyPrefab.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerEnter;
-            entry.callback.AddListener((eventDate) => { MouseHoverPlayerTargetSelect(i); });
-            trigger.triggers.Add(entry);
-            activeEnemies[i].EnemyPrefab.AddComponent<ClickOnlyButton>();
-            Button button = activeEnemies[i].EnemyPrefab.GetComponent<Button>();
-            button.onClick.AddListener(() => MouseClickPlayerTargetSelect(i));
+            activeEnemies[i].EnemyPrefab.AddComponent<SpriteButton>();
         }
-        /*
-        for (int i = 0; i < players.Count; i++)
-        {
-            activePlayers.Add(players[i]);
-        }
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            activeEnemies.Add(enemies[i]);
-        }*/
 
         Dictionary<Character, int> agiCharaDictionary = new Dictionary<Character, int>();
 
@@ -1137,7 +1111,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // 敵のボタンを有効にする
             for (int i = 0; i < activeEnemies.Count; i++)
             {
-                activeEnemies[i].EnemyPrefab.GetComponent<ClickOnlyButton>().interactable = true;
+                SpriteButton buttonTest = activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>();
+                Debug.Log("ボタンテスト" + buttonTest);
+                buttonTest.selectedId = i;
+                buttonTest.spriteHoveredDelegate += MouseHoverPlayerTargetSelect;
+                buttonTest.spriteClickedDelegate += MouseClickPlayerTargetSelect;
             }
             // 全体攻撃だったら
             if (skill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
@@ -1161,7 +1139,12 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // 味方のボタンを有効にする
             for (int i = 0; i < activePlayers.Count; i++)
             {
-                activePlayers[i].PlayerBattleSprite.GetComponent<ClickOnlyButton>().interactable = true;
+                activePlayers[i].PlayerBattleSprite.AddComponent<SpriteButton>();
+                SpriteButton buttonTest = activePlayers[i].PlayerBattleSprite.GetComponent<SpriteButton>();
+                Debug.Log("ボタンテスト" + buttonTest);
+                buttonTest.selectedId = i;
+                buttonTest.spriteHoveredDelegate += MouseHoverPlayerTargetSelect;
+                buttonTest.spriteClickedDelegate += MouseClickPlayerTargetSelect;
             }
             // 対象が全体だったら
             if (skill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
@@ -1229,22 +1212,28 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
     // マウス操作でターゲットを決定
-    public void MouseClickPlayerTargetSelect(int index)
+    public void MouseClickPlayerTargetSelect()
     {
         inputSkillStatement = InputSkillStatement.SKILL_SELECT;// スキル選択状態に戻す
                                                                // ターゲット選択矢印を非表示にする
         for (int i = 0; i < activePlayers.Count; i++)
         {
             activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
+            SpriteButton buttonTest = activePlayers[i].PlayerBattleSprite.GetComponent<SpriteButton>();
+            buttonTest.spriteHoveredDelegate = null;
+            buttonTest.spriteClickedDelegate = null;
         }
 
         // 選択矢印を消す
         for (int i = 0; i < activeEnemies.Count; i++)
         {
             activeEnemies[i].EnemyUI.SelectedArrow.SetActive(false);
+            SpriteButton buttonTest = activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>();
+            buttonTest.spriteHoveredDelegate = null;
+            buttonTest.spriteClickedDelegate = null;
         }
-        // スキルパネルを表示する
-        battleCommand.ActivateSkillCommandPanel(true);
+
+        inputSkillStatement = InputSkillStatement.END_INPUT;
     }
 
     private void PlayerEndSkillInput()
@@ -1363,6 +1352,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             for (int i = 0; i < deadEnemies.Count; i++)
             {
                 activeEnemies.Remove(deadEnemies[i]);
+            }
+            // selectedIdを更新
+            for(int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>().selectedId = i;
             }
 
             // 全員瀕死になったら戦闘不能
@@ -1576,6 +1570,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 activeEnemies.Remove(deadEnemies[i]);
             }
+            // selectedIdを更新
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>().selectedId = i;
+            }
 
             Debug.Log("EnemySkillまで1秒まつ");
             // 全員瀕死になったら戦闘不能
@@ -1740,6 +1739,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         for (int index = 0; index < deadEnemies.Count; index++)
         {
             activeEnemies.Remove(deadEnemies[index]);
+        }
+        // selectedIdを更新
+        for (int i = 0; i < activeEnemies.Count; i++)
+        {
+            activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>().selectedId = i;
         }
 
         // 全員瀕死になったら戦闘不能
@@ -2067,6 +2071,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("死んだ敵を除去");
                 activeEnemies.Remove(deadEnemies[i]);
             }
+            // selectedIdを更新
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>().selectedId = i;
+            }
             for (int i = 0; i < activeEnemies.Count; i++)
             {
                 Debug.Log("残っている敵" + activeEnemies[i].EnemyBase.EnemyName);
@@ -2353,11 +2362,19 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     Player faintedPlayer = (Player)characters.Find(value => value == activePlayers[i]);
                     Debug.Log(faintedPlayer.PlayerBase.PlayerName + "は戦闘不能" + faintedPlayer.isDying);
                     activePlayers.Remove(faintedPlayer);
+
                     for (int j = 0; j < activePlayers.Count; j++)
                     {
                         Debug.Log("残りの敵" + activePlayers[j].PlayerBase.PlayerName); ;
                     }
                 }
+            }
+
+
+            // selectedIdを更新
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].PlayerBattleSprite.GetComponent<SpriteButton>().selectedId = i;
             }
 
             if (isDying.All(value => value == true))
