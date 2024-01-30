@@ -77,7 +77,7 @@ public class CharactorFunction : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(GameManager.instance.currentGameState);
+        // Debug.Log(GameManager.instance.currentGameState);
     }
     
 }
