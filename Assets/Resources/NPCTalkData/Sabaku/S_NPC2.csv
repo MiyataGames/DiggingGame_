@@ -1,0 +1,5 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC2,1,君、よそから来たんだって？,,,,,,,
+1,set_text,村人,NPC2,1,このあたりはどこもかしこも砂だらけさ。対してみるものもないから退屈だろうね,,,,,,,
+2,set_text,村人,NPC2,1,最近厄介なモンスターも出るし、先行きが不安だよ・・・,,,,,,,
+3,end_talk,,,,,,,,,,,

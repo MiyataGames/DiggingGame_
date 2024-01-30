@@ -1,0 +1,4 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC1,1,最近野菜の育ちが悪くてねえ,FALSE,,,,,,
+1,set_text,村人,NPC1,1,厄介なモンスターがいて水を満足に得られないって話さ,FALSE,,,,,,
+2,end_talk,,,,,,,,,,,

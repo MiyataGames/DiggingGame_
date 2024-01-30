@@ -1,0 +1,4 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC1,1,ただでさえ鉱石が取れないのに、モンスターまで増えてきてる,FALSE,,,,,,
+1,set_text,村人,NPC1,1,やってらんないね,FALSE,,,,,,
+2,end_talk,,,,,,,,,,,
