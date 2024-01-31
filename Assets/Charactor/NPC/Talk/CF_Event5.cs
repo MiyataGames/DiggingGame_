@@ -16,6 +16,9 @@ public class CF_Event5 : CharactorFunction
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
 
+
+    private AudioSource audioSource;
+    private AudioClip zihibikiSoundClip;
     private GameObject syo;
 
     private GameObject mao;
@@ -85,7 +88,17 @@ public class CF_Event5 : CharactorFunction
                     break;
             }
         }
+
+
+        // AudioSource コンポーネントを追加し、設定
+        audioSource = gameObject.AddComponent<AudioSource>();
+
+        // footSound 音楽ファイルをロード
+        zihibikiSoundClip = Resources.Load<AudioClip>("SE/Monster/zihibiki");
+        audioSource.clip = zihibikiSoundClip;
     }
+
+
 
     /// <summary>
     /// ショウをフィールドシーン上に生成する
@@ -187,7 +200,9 @@ public class CF_Event5 : CharactorFunction
     private IEnumerator SceneShake()
     {
         Debug.Log("シーンシェイク");
-        Camera.main.DOShakePosition(2f, 1.2f); // 0.2秒間、強度2で揺らす
+        
+        Camera.main.DOShakePosition(6f, 1.5f); // 0.2秒間、強度2で揺らす
+        audioSource.Play();
         yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
 
 
@@ -220,7 +235,10 @@ public class CF_Event5 : CharactorFunction
     {
 
 
-        storyEventScript.moveFlag = true;
+        SpawnBoss_Story();
+   
+
+            storyEventScript.moveFlag = true;
 
 
         //// カメラの初期位置を新しい位置にリセット
