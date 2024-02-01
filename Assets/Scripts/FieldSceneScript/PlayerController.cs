@@ -642,7 +642,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         ItemCellView cell = playerItemPanel.GetCellView(cellViewPrefab) as ItemCellView;
         cell.cellButtonClicked = CellButtonClicked;
-        Debug.Log("実行");
         cell.name = "Cell" + dataIndex.ToString();
         cell.SetData(itemCellData[dataIndex]);
         GameObject cellViewObj = cell.gameObject;

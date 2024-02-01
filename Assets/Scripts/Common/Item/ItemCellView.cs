@@ -45,9 +45,10 @@ public class ItemCellView : EnhancedScrollerCellView
         }
     }
 
-    public void CellButton_OnClick(int selectedItemIndex)
+    public void CellButton_OnClick()
     {
+        Debug.Log("itemCellData.selectedId" + itemCellData.selectedId);
         // fire event if anyone has subscribed to it
-        if (cellButtonClicked != null) cellButtonClicked(selectedItemIndex);
+        if (cellButtonClicked != null) cellButtonClicked(itemCellData.selectedId);
     }
 }

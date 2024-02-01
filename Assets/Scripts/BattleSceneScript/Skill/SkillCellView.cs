@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using EnhancedUI.EnhancedScroller;
 
-public delegate void SkillCellButtonClickedDelegate();
+public delegate void SkillCellButtonClickedDelegate(int index);
 
 public class SkillCellView : EnhancedScrollerCellView
 {
@@ -50,6 +50,6 @@ public class SkillCellView : EnhancedScrollerCellView
     public void CellButton_OnClick()
     {
         // fire event if anyone has subscribed to it
-        if (cellButtonClicked != null) cellButtonClicked();
+        if (cellButtonClicked != null) cellButtonClicked(skillData.selectedIndex);
     }
 }

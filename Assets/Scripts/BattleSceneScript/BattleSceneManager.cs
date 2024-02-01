@@ -589,19 +589,21 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
         // アクティブセルに対してUIの更新をする
         playerSkillPanel.RefreshActiveCellViews();
-
-        // アイテム決定
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            // アイテムをセットする
-            Item item = mainPlayer.items.Find(value => value.ItemBase.ItemName == itemCellDatas[selectedItemIndex].itemText);
-            diggingGridManager.SetSelectedItem(item);
-        }
     }
 
     // マウスクリックで穴掘りで埋めるアイテムを選択する
     private void MouseClickDiggingItemSelection(int index)
     {
+        selectedItemIndex = index;
+        // 選択されたインデックスが更新されたから基礎データを更新する
+        for (int i = 0; i < itemCellDatas.Count; i++)
+        {
+            // 選択中のisSelectedをtrueにする
+            itemCellDatas[i].isSelected = (i == selectedItemIndex);
+        }
+        // アクティブセルに対してUIの更新をする
+        playerSkillPanel.RefreshActiveCellViews();
+
         Debug.Log("MouseClickDiggingItemSelection実行");
         // アイテムをセットする
         Item item = mainPlayer.items.Find(value => value.ItemBase.ItemName == itemCellDatas[selectedItemIndex].itemText);
@@ -2590,9 +2592,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // スキルパネルのマウス操作
-    public void MouseHoverSkillSelection(int index)
+    private void MouseHoverSkillSelection(int index)
     {
         selectedSkillIndex = index;
+
         // 選択されたインデックスが更新されたから基礎データを更新する
         for (int i = 0; i < skillDatas.Count; i++)
         {
@@ -2602,21 +2605,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
         // アクティブセルに対してUIの更新をする
         playerSkillPanel.RefreshActiveCellViews();
-        // 選択されたインデックスが最下部またはその先にある時
-        if (selectedSkillIndex >= playerSkillPanel.EndCellViewIndex)
-        {
-            playerSkillPanel.JumpToDataIndex(selectedSkillIndex, 1.0f, 1.0f);
-        }
-        else if (selectedSkillIndex <= playerSkillPanel.StartCellViewIndex)
-        {
-            // 選択されたインデックスが最上部またはそれ以上にある時
-            playerSkillPanel.JumpToDataIndex(selectedSkillIndex, 0.0f, 0.0f);
-        }
+
     }
 
-    public void MouseClickSkillSelection()
+    public void MouseClickSkillSelection(int index)
     {
         Player turnPlayer = (Player)TurnCharacter;
+        selectedSkillIndex = index;
+        Debug.Log("選択されたインデックス" + selectedSkillIndex + "スキル" + turnPlayer.Skills[selectedSkillIndex].skillBase.SkillName);
         // 技決定の処理
         // SPが足りない
         if (turnPlayer.currentSP < turnPlayer.Skills[selectedSkillIndex].skillBase.Sp)
@@ -2741,43 +2737,57 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // マウス操作 ホバー時にアイテムを選択する
-    public void MouseHoverItemSelection(int index)
+    private void MouseHoverItemSelection(int index)
+    {
+        Debug.Log(selectedItemIndex + "アイテム"+ mainPlayer.items[selectedItemIndex].ItemBase.ItemName);
+        HealItemBase healItemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
+
+            // 対象が単体だったら
+            if (healItemBase.TargetNum == TARGET_NUM.SINGLE)
+            {
+                selectedTargetIndex = index;
+                for (int i = 0; i < activePlayers.Count; i++)
+                {
+                    bool isActiveSelectedArrow = (i == selectedTargetIndex);
+                    activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
+                }
+
+                // activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
+
+                selectedPlayers = new Player[1];
+                selectedPlayers[0] = activePlayers[selectedTargetIndex];
+            }
+    }
+
+    // マウスがクリックされたらアイテムを使う
+    public void MouseClickItemSelection(int index)
     {
         selectedItemIndex = index;
-        // 選択されたインデックスが更新されたから基礎データを更新する
+
+        /*// 選択されたインデックスが更新されたから基礎データを更新する
         for (int i = 0; i < itemCellDatas.Count; i++)
         {
             // 選択中のisSelectedをtrueにする
             itemCellDatas[i].isSelected = (i == selectedItemIndex);
-        }
+        }*/
 
         // アクティブセルに対してUIの更新をする
-        playerSkillPanel.RefreshActiveCellViews();
-        // 選択されたインデックスが最下部またはその先にある時
-        if (selectedItemIndex >= playerSkillPanel.EndCellViewIndex)
-        {
-            playerSkillPanel.JumpToDataIndex(selectedItemIndex, 1.0f, 1.0f);
-        }
-        else if (selectedItemIndex <= playerSkillPanel.StartCellViewIndex)
-        {
-            // 選択されたインデックスが最上部またはそれ以上にある時
-            playerSkillPanel.JumpToDataIndex(selectedItemIndex, 0.0f, 0.0f);
-        }
-    }
+        //playerSkillPanel.RefreshActiveCellViews();
 
-    public void MouseClickItemSelection(int index)
-    {
-        // UIを非表示
-        battleCommand.ActivateSkillCommandPanel(false);
+        Debug.Log("選択されたインデックス" + selectedItemIndex + "アイテムタイプ" + mainPlayer.items[selectedItemIndex].ItemBase.ItemType);
         // 使えるアイテムだったら
         // 回復アイテム
         if (mainPlayer.items[selectedItemIndex].ItemBase.ItemType == ItemType.HEAL_ITEM)
         {
-            InitItemTarget();
+            // UIを非表示
+            battleCommand.ActivateSkillCommandPanel(false);
+            //InitItemTarget();
+            MouseInitItemTarget();
             inputItemStatement = ChangeInputItemStatement();
         }
     }
 
+    // キー操作
     private void InitItemTarget()
     {
         // 対象は味方のみ
@@ -2803,6 +2813,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // ターゲットの選択
     private void HandleSelectItemTarget()
     {
+        /*
         bool selectionChanged = false;
         HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
 
@@ -2858,7 +2869,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
             }
             inputItemStatement = ChangeInputItemStatement();
-        }
+        }*/
 
         // escキーを押したら戻る
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -2886,6 +2897,58 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("PlayerItemEndInput()");
         StartCoroutine(PerformPlayerItem());
         // PerformPlayerSkill();
+    }
+
+    // マウス操作
+    private void MouseInitItemTarget()
+    {
+        // 対象は味方のみ
+        HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
+        // 味方のボタンを有効にする
+        for (int i = 0; i < activePlayers.Count; i++)
+        {
+            activePlayers[i].PlayerBattleSprite.AddComponent<SpriteButton>();
+            SpriteButton buttonTest = activePlayers[i].PlayerBattleSprite.GetComponent<SpriteButton>();
+            Debug.Log("ボタンテスト" + buttonTest);
+            buttonTest.selectedId = i;
+            buttonTest.spriteHoveredDelegate += MouseHoverItemSelection;
+            buttonTest.spriteClickedDelegate += MouseClickItemSelection;
+        }
+        // 対象が全体だったら
+        if (itemBase.TargetNum == TARGET_NUM.ALL)
+        {
+            selectedPlayers = new Player[activePlayers.Count];
+            for (int i = 0; i < activePlayers.Count; i++)
+            {
+                activePlayers[i].battlePlayerUI.SetActiveSelectedArrow(true);
+                selectedPlayers[i] = activePlayers[i];
+            }
+        }
+        //　対象が単体だったら
+        else
+        {
+            activePlayers[selectedTargetIndex].battlePlayerUI.SetActiveSelectedArrow(true);
+            Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
+        }
+    }
+
+    // ターゲットの選択
+    void MouseHoverItemSelection()
+    {
+        HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
+
+
+    }
+    // ターゲットの決定＆実行
+    void MouseClickItemSelection()
+    {
+        // 選択矢印を消す
+        for (int i = 0; i < activePlayers.Count; i++)
+        {
+            Debug.Log(i + "," + activePlayers.Count);
+            activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(false);
+        }
+        inputItemStatement = ChangeInputItemStatement();
     }
 
     private IEnumerator PerformPlayerItem()
@@ -2995,11 +3058,12 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             skillDatas.Add(new SkillCellData()
             {
+                selectedIndex = i,
                 skillText = playerSkillDatas[i].skillBase.SkillName,
                 isSelected = i == selectedSkillIndex,
                 //type = playerSkillDatas[i].skillBase.MagicType,
                 sp = playerSkillDatas[i].skillBase.Sp
-            });
+            }) ;
         }
 
         // データが揃ったのでスクローラーをリロードする
@@ -3033,6 +3097,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             cellView.cellButtonClicked = MouseClickSkillSelection;
             cellView.name = "Cell" + dataIndex.ToString();
             cellView.SetSkillData(skillDatas[dataIndex]);
+            /*
             GameObject cellViewObj = cellView.gameObject;
             // イベントトリガーを追加してホバー時に実行する関数を指定する
             EventTrigger eventTrigger = cellViewObj.GetComponent<EventTrigger>();
@@ -3040,6 +3105,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             entry.eventID = EventTriggerType.PointerEnter;
             entry.callback.AddListener((eventDate) => MouseHoverSkillSelection(dataIndex));
             eventTrigger.triggers.Add(entry);
+            */
             return cellView;
         }
         else if ((Move)currentMove == Move.ITEM && battleState == BattleState.DIGGING)
@@ -3051,12 +3117,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             cellView.SetData(itemCellDatas[dataIndex]);
             GameObject cellViewObj = cellView.gameObject;
             // イベントトリガーを追加してホバー時に実行する関数を指定する
+            /*
             EventTrigger eventTrigger = cellViewObj.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerEnter;
             entry.callback.AddListener((eventDate) => MouseHoverDiggingItemSelection(dataIndex));
             eventTrigger.triggers.Add(entry);
-            
+            */
             return cellView;
         }
         else // ただのアイテム選択の時
@@ -3069,12 +3136,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // あとで直す
             GameObject cellViewObj = cellView.gameObject;
             // イベントトリガーを追加してホバー時に実行する関数を指定する
+            /*
             EventTrigger eventTrigger = cellViewObj.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerEnter;
             entry.callback.AddListener((eventDate) => MouseHoverItemSelection(dataIndex));
             eventTrigger.triggers.Add(entry);
-
+            */
             return cellView;
         }
     }
@@ -3090,6 +3158,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             Debug.Log(playerItemDatas[i].ItemBase.ItemName);
             itemCellDatas.Add(new ItemCellData()
             {
+                selectedId = i,
                 itemText = playerItemDatas[i].ItemBase.ItemName,
                 isSelected = i == selectedItemIndex,
                 itemCountText = playerItemDatas[i].ItemCount.ToString(),
@@ -3119,10 +3188,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 itemCellDatas.Add(new ItemCellData()
                 {
+                    selectedId = j,
                     itemText = playerItemDatas[i].ItemBase.ItemName,
                     isSelected = j == selectedItemIndex,
                     itemCountText = playerItemDatas[i].ItemCount.ToString(),
-                });
+                }) ;
 
                 Debug.Log("i"+i+",j" + j + "アイテム：" + playerItemDatas[i].ItemBase.ItemName);
                 j++;

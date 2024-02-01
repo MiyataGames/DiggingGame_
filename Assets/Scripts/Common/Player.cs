@@ -147,25 +147,50 @@ public class Player : Character
         return false;
     }
 
-    // 体力を変更する関数たち
+    // 体力やSPを変更する関数たち
     public bool TakeHealWithItem(Item healItem)
     {
-        if (currentHP == CurrentMaxHp)
-        {
-            return false;
-        }
         HealItemBase healItemBase = healItem.ItemBase as HealItemBase;
-        if (currentHP + healItemBase.HealPoint > CurrentMaxHp)
+
+        if (healItemBase.HealType == HEAL_TYPE.HP)
         {
-            currentHP = CurrentMaxHp;
+            if (currentHP == CurrentMaxHp)
+            {
+                return false;
+            }
+
+            if (currentHP + healItemBase.HealPoint > CurrentMaxHp)
+            {
+                currentHP = CurrentMaxHp;
+            }
+            else
+            {
+                Debug.Log(CurrentMaxHp);
+                currentHP += healItemBase.HealPoint;
+            }
+            //Debug.Log(currentHP);
+            return true;
         }
-        else
+        else if (healItemBase.HealType == HEAL_TYPE.SP)
         {
-            Debug.Log(CurrentMaxHp);
-            currentHP += healItemBase.HealPoint;
+            if (currentSP == currentMaxSp)
+            {
+                return false;
+            }
+
+            if (currentSP + healItemBase.HealPoint > CurrentMaxSp)
+            {
+                currentSP = CurrentMaxSp;
+            }
+            else
+            {
+                Debug.Log(CurrentMaxSp);
+                currentSP += healItemBase.HealPoint;
+            }
+            //Debug.Log(currentHP);
+            return true;
         }
-        //Debug.Log(currentHP);
-        return true;
+        return false;
     }
  
     public override bool TakeSkillDamage(EnemySkill enemySkill, Character character)

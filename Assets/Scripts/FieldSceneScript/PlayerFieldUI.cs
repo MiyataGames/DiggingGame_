@@ -23,25 +23,13 @@ public class PlayerFieldUI : MonoBehaviour
     {
         this.player = player;
         statusPlayerNameText.text = player.PlayerBase.PlayerName;
-        /*
-        statusPlayerHpText.text = player.currentHP.ToString();
-        statusPlayerMaxHpText.text = " / "+player.currentMaxHp.ToString();
-        statusPlayerSpText.text = player.currentSP.ToString() + " / ";
-        statusPlayerMaxSpText.text = " / "+player.currentMaxSp.ToString();
-        */
         statusIconImage.sprite = player.PlayerBase.PlayerFaceIcon;
-        Debug.Log("????????");
     }
 
     public void UpdateHpSp()
     {
         playerHpBar.SetHP((float)player.currentHP, player.CurrentMaxHp);
         playerSpBar.SetSP((float)player.currentSP, player.CurrentMaxSp);
-        /*
-        statusPlayerHpText.text = player.currentHP.ToString() + " / ";
-        statusPlayerMaxHpText.text = player.currentMaxHp.ToString();
-        statusPlayerSpText.text = player.currentSP.ToString() + " / ";
-        statusPlayerMaxSpText.text = player.currentMaxSp.ToString();*/
     }
 
     public void SetActivateSelectedFrame(bool activate)
