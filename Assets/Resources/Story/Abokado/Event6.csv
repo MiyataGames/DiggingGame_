@@ -1,0 +1,38 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,eventFlag,checkNeedEventNum,eventNum,afterEventSkipID,chractorFunction,animFuncName,SEpath
+0,set_bgm,,,,,FALSE,,,,,,,,,,,,
+1,check_EventFlag,,,,,,,,,,2,TRUE,0,1,,,,
+2,fade_blackOut,,,,,,,,,,,,,,,,,
+3,play_sound,,,,,,,,,,,,,,,,,SE/Tool/Pickel
+4,set_text,ショウ,BRDF,1,やったか！？,FALSE,,,,,,,,,,,,
+5,chara_func,,,,,,,,,,,,,,,SpawnSyo_Field,,
+6,fade_blackIn,,,,,,,,,,,,,,,,,
+7,set_text,ボス,Boss,1,ウガァァァアアア！！！！！,,,,,,,,,,,,,
+8,set_text,ショウ,BRDF,1,危ない！,,,,,,,,,,,,,
+9,set_text,村長,Sontyo1,1,おい！　大丈夫か！,,,,,,11,,,,,,,
+10,set_text,ショウ,BRDF,1,あっ！　父ちゃん！,,,,,,11,,,,,,,
+11,set_text,村長,Sontyo1,1,おお、お前たち無事か！,,,,,,,,,,,,,
+12,set_text,村長,Sontyo1,1,まさか、こいつを倒しちまったのか,,,,,,,,,,,,,
+13,play_sound,,,,,,,,,,,,,,,,,SE/Monster/Common_Roar
+14,set_text,マオ,Player,1,なんとかね,,,,,,,,,,,,,
+15,set_text,村長,Sontyo1,1,"たまげたもんだぜ。
+……地上を目指すっつのも、
+アンタになら出来るかもしれんなぁ",,,,,,,,,,,,,
+16,set_text,村人1,,1,おいおい、こりゃあすげえ,,,,,,,,,,,,,
+17,set_text,村人2,,1,そこら中燃料だらけだ,,,,,,,,,,,,,
+18,fade_blackOut,,,,,,,,,,,,,,,,,
+19,chara_func,,,,,,,,,,,,,,,Move2Village,,
+20,chara_func,,,,,,,,,,,,,,,SpawnSyo_Story,,
+21,fade_blackWait,,,,,,,,,,,,,,,,,
+22,fade_blackIn,,,,,,,,,,,,,,,,,
+23,set_text,村長,Sontyo1,1,"こいつは……確かにそうだな。
+驚いたぜ、化け物がこんなにも燃料を隠していやがった",,,,,,,,,,,,,
+24,set_text,ショウ,BRDF,1,ほら言っただろ。燃料は俺が見つけるって,,,,,,,,,,,,,
+25,set_text,村長,Sontyo1,1,馬鹿野郎！　お前はただビビってただけだろ,,,,,,,,,,,,,
+26,set_text,ショウ,BRDF,1,そんなことねえ！,,,,,,30,,,,,,,
+27,set_text,マオ,Player,1,うん、彼はよくやったよ,,,,,,,,,,,,,
+28,set_text,村長,Sontyo1,1,"まあ、そういうことにしておくか。
+それよりもアンタ、これだけ燃料があれば
+あの掘削機も十分に動かせるだろう",,,,,,,,,,,,,
+29,set_text,村長,Sontyo1,1,よしみんな、コイツを運び出すぞ！,,,,,,30,,,,,,,
+30,fade_blackOut,,,,,,,,,,,,,,,,,
+31,end_talk,,,,,,,,,,,,,,,,,
