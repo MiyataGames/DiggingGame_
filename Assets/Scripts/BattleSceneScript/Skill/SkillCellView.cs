@@ -12,7 +12,7 @@ public class SkillCellView : EnhancedScrollerCellView
     private SkillCellData skillData;
     public SkillCellButtonClickedDelegate cellButtonClicked;
     // 選択した時のアイコン
-    public GameObject selectedIconImage;
+    //public GameObject selectedIconImage;
 
     // セルデータを表示するためのUI
     public TextMeshProUGUI skillNameText;
@@ -35,6 +35,7 @@ public class SkillCellView : EnhancedScrollerCellView
     // データを再読み込みすることなくUIを更新することができます。
     public override void RefreshCellView()
     {
+        /*
         if (skillData.isSelected == true)
         {
             selectedIconImage.SetActive(true);
@@ -44,7 +45,7 @@ public class SkillCellView : EnhancedScrollerCellView
         {
             selectedIconImage.SetActive(false);
             //iconImage.GetComponent<Image>().color = unselectedColor;
-        }
+        }*/
     }
 
     public void CellButton_OnClick()
