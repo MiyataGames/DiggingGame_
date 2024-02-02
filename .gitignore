@@ -76,3 +76,7 @@ crashlytics-build.properties
 #visualstudioの設定フォルダを無視
 .vs/
 .vscode/
+
+.DS_Store
+Assets/.DS_Store
+Assets/Charactor/Anim/Player/.DS_Store
