@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
         fieldObjects[sceneIndex].SetActive(true);
     }
 
-    private bool FirstBattle = true;
+    //private bool FirstBattle = true;
 
     public void StartBattle(GameObject enemyObj)
     {
