@@ -12,6 +12,9 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject mao_StoryPrefab;
     [SerializeField] private GameObject boss_StoryPrefab;
+    [SerializeField] private GameObject sontyo_StoryPrefab;
+
+
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
@@ -41,6 +44,9 @@ public class CF_Event6  : CharactorFunction
                     break;
                 case "SpawnMao_Story":
                     SpawnMao_Story();
+                    break;
+                case "SpawnSontyo_Story":
+                    SpawnSontyo_Story();
                     break;
                 case "SpawnBoss_Story":
                     SpawnBoss_Story();
@@ -113,7 +119,7 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, -7f), StoryParent);
     }
 
     /// <summary>
@@ -121,7 +127,13 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, 5f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, -7f), StoryParent);
+    }
+
+
+    private void SpawnSontyo_Story()
+    {
+        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 10), StoryParent);
     }
 
     private void SpawnBoss_Story()
