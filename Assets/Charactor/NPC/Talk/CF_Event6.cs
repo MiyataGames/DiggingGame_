@@ -71,6 +71,9 @@ public class CF_Event6  : CharactorFunction
                 case "MaoMove":
                     MaoMove();
                     break;
+                case "SontyoMove":
+                    SontyoMove();
+                    break;
 
                 case "MaoStop":
                     MaoStop();
@@ -119,7 +122,7 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, -7f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, -2f), StoryParent);
     }
 
     /// <summary>
@@ -127,18 +130,18 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, -7f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, -2f), StoryParent);
     }
 
 
     private void SpawnSontyo_Story()
     {
-        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 10), StoryParent);
+        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(-2f, -7), StoryParent);
     }
 
     private void SpawnBoss_Story()
     {
-        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 1f), StoryParent);
         boss.GetComponent<BossShake>().SetStoryScene(StoryParent);
     }
 
@@ -189,6 +192,22 @@ public class CF_Event6  : CharactorFunction
         SyoSecondMove();
         var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 1f, 0), 2f);
 
+
+    }
+
+
+
+
+    private void SontyoMove()
+    {
+        storyEventScript.moveFlag = true;
+        Animator sontyoAnim = sontyo.GetComponent<Animator>();
+        sontyoAnim.SetBool("isWalk", true);
+
+        var sontyoPosition = sontyo.transform.position;
+        sontyo.transform.DOMove(sontyoPosition - new Vector3(0, 4f, 0), 4f)
+            .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
+        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
 
     }
 
