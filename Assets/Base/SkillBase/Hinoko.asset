@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Hinoko
   m_EditorClassIdentifier: 
   skillName: "\u3072\u306E\u3053"
+  magicType: 1
   description: 
-  power: 10
+  power: 1
   sp: 5
   accuracy: 100
   skillCategory: 0

@@ -1,0 +1,1219 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d5085e4688924177bc0d874f3d3fb4b, type: 3}
+  m_Name: playerStatus
+  m_EditorClassIdentifier: 
+  sheets:
+  - name: Sheet1
+    list:
+    - level: 1
+      hp: 20
+      sp: 3
+      atk: 8
+      def: 6
+      agi: 6
+    - level: 2
+      hp: 24
+      sp: 5
+      atk: 10
+      def: 6
+      agi: 7
+    - level: 3
+      hp: 27
+      sp: 10
+      atk: 13
+      def: 7
+      agi: 8
+    - level: 4
+      hp: 30
+      sp: 14
+      atk: 15
+      def: 7
+      agi: 9
+    - level: 5
+      hp: 34
+      sp: 18
+      atk: 18
+      def: 8
+      agi: 10
+    - level: 6
+      hp: 38
+      sp: 22
+      atk: 20
+      def: 8
+      agi: 11
+    - level: 7
+      hp: 44
+      sp: 26
+      atk: 22
+      def: 9
+      agi: 12
+    - level: 8
+      hp: 49
+      sp: 31
+      atk: 25
+      def: 10
+      agi: 13
+    - level: 9
+      hp: 54
+      sp: 35
+      atk: 27
+      def: 10
+      agi: 14
+    - level: 10
+      hp: 63
+      sp: 40
+      atk: 30
+      def: 10
+      agi: 15
+    - level: 11
+      hp: 73
+      sp: 43
+      atk: 33
+      def: 11
+      agi: 16
+    - level: 12
+      hp: 81
+      sp: 45
+      atk: 35
+      def: 13
+      agi: 18
+    - level: 13
+      hp: 90
+      sp: 49
+      atk: 38
+      def: 15
+      agi: 20
+    - level: 14
+      hp: 100
+      sp: 53
+      atk: 41
+      def: 17
+      agi: 22
+    - level: 15
+      hp: 108
+      sp: 55
+      atk: 43
+      def: 18
+      agi: 23
+    - level: 16
+      hp: 123
+      sp: 57
+      atk: 46
+      def: 19
+      agi: 25
+    - level: 17
+      hp: 137
+      sp: 61
+      atk: 49
+      def: 21
+      agi: 27
+    - level: 18
+      hp: 152
+      sp: 65
+      atk: 52
+      def: 22
+      agi: 28
+    - level: 19
+      hp: 167
+      sp: 69
+      atk: 54
+      def: 24
+      agi: 29
+    - level: 20
+      hp: 181
+      sp: 71
+      atk: 57
+      def: 25
+      agi: 31
+    - level: 21
+      hp: 195
+      sp: 75
+      atk: 60
+      def: 26
+      agi: 33
+    - level: 22
+      hp: 209
+      sp: 79
+      atk: 62
+      def: 27
+      agi: 35
+    - level: 23
+      hp: 221
+      sp: 83
+      atk: 64
+      def: 29
+      agi: 38
+    - level: 24
+      hp: 234
+      sp: 86
+      atk: 66
+      def: 30
+      agi: 41
+    - level: 25
+      hp: 249
+      sp: 90
+      atk: 69
+      def: 32
+      agi: 43
+    - level: 26
+      hp: 262
+      sp: 92
+      atk: 72
+      def: 33
+      agi: 45
+    - level: 27
+      hp: 272
+      sp: 102
+      atk: 75
+      def: 34
+      agi: 48
+    - level: 28
+      hp: 282
+      sp: 108
+      atk: 78
+      def: 35
+      agi: 50
+    - level: 29
+      hp: 292
+      sp: 116
+      atk: 80
+      def: 37
+      agi: 52
+    - level: 30
+      hp: 305
+      sp: 122
+      atk: 83
+      def: 38
+      agi: 55
+    - level: 31
+      hp: 316
+      sp: 127
+      atk: 88
+      def: 39
+      agi: 57
+    - level: 32
+      hp: 326
+      sp: 137
+      atk: 93
+      def: 40
+      agi: 60
+    - level: 33
+      hp: 336
+      sp: 147
+      atk: 98
+      def: 42
+      agi: 63
+    - level: 34
+      hp: 349
+      sp: 155
+      atk: 102
+      def: 44
+      agi: 66
+    - level: 35
+      hp: 359
+      sp: 163
+      atk: 107
+      def: 45
+      agi: 69
+    - level: 36
+      hp: 371
+      sp: 173
+      atk: 112
+      def: 47
+      agi: 72
+    - level: 37
+      hp: 383
+      sp: 182
+      atk: 117
+      def: 49
+      agi: 74
+    - level: 38
+      hp: 395
+      sp: 190
+      atk: 122
+      def: 50
+      agi: 76
+    - level: 39
+      hp: 408
+      sp: 199
+      atk: 127
+      def: 52
+      agi: 78
+    - level: 40
+      hp: 420
+      sp: 207
+      atk: 130
+      def: 54
+      agi: 80
+    - level: 41
+      hp: 424
+      sp: 213
+      atk: 134
+      def: 56
+      agi: 83
+    - level: 42
+      hp: 427
+      sp: 219
+      atk: 138
+      def: 58
+      agi: 86
+    - level: 43
+      hp: 431
+      sp: 225
+      atk: 142
+      def: 59
+      agi: 88
+    - level: 44
+      hp: 436
+      sp: 231
+      atk: 147
+      def: 61
+      agi: 90
+    - level: 45
+      hp: 441
+      sp: 237
+      atk: 150
+      def: 63
+      agi: 92
+    - level: 46
+      hp: 446
+      sp: 243
+      atk: 155
+      def: 65
+      agi: 94
+    - level: 47
+      hp: 451
+      sp: 249
+      atk: 160
+      def: 67
+      agi: 97
+    - level: 48
+      hp: 454
+      sp: 255
+      atk: 163
+      def: 69
+      agi: 99
+    - level: 49
+      hp: 458
+      sp: 261
+      atk: 167
+      def: 70
+      agi: 101
+    - level: 50
+      hp: 461
+      sp: 267
+      atk: 171
+      def: 72
+      agi: 104
+    - level: 51
+      hp: 464
+      sp: 271
+      atk: 174
+      def: 74
+      agi: 106
+    - level: 52
+      hp: 468
+      sp: 275
+      atk: 177
+      def: 76
+      agi: 108
+    - level: 53
+      hp: 473
+      sp: 279
+      atk: 180
+      def: 78
+      agi: 111
+    - level: 54
+      hp: 476
+      sp: 283
+      atk: 184
+      def: 79
+      agi: 113
+    - level: 55
+      hp: 480
+      sp: 286
+      atk: 187
+      def: 80
+      agi: 116
+    - level: 56
+      hp: 484
+      sp: 289
+      atk: 192
+      def: 82
+      agi: 118
+    - level: 57
+      hp: 487
+      sp: 292
+      atk: 195
+      def: 84
+      agi: 121
+    - level: 58
+      hp: 490
+      sp: 295
+      atk: 198
+      def: 86
+      agi: 123
+    - level: 59
+      hp: 495
+      sp: 298
+      atk: 202
+      def: 88
+      agi: 126
+    - level: 60
+      hp: 500
+      sp: 302
+      atk: 205
+      def: 90
+      agi: 128
+    - level: 61
+      hp: 510
+      sp: 306
+      atk: 210
+      def: 93
+      agi: 130
+    - level: 62
+      hp: 519
+      sp: 310
+      atk: 213
+      def: 95
+      agi: 132
+    - level: 63
+      hp: 528
+      sp: 313
+      atk: 217
+      def: 97
+      agi: 135
+    - level: 64
+      hp: 536
+      sp: 317
+      atk: 220
+      def: 100
+      agi: 138
+    - level: 65
+      hp: 546
+      sp: 320
+      atk: 225
+      def: 103
+      agi: 140
+    - level: 66
+      hp: 555
+      sp: 326
+      atk: 230
+      def: 105
+      agi: 143
+    - level: 67
+      hp: 563
+      sp: 331
+      atk: 234
+      def: 108
+      agi: 146
+    - level: 68
+      hp: 573
+      sp: 337
+      atk: 237
+      def: 110
+      agi: 149
+    - level: 69
+      hp: 583
+      sp: 343
+      atk: 241
+      def: 113
+      agi: 152
+    - level: 70
+      hp: 592
+      sp: 349
+      atk: 246
+      def: 116
+      agi: 155
+    - level: 71
+      hp: 600
+      sp: 354
+      atk: 251
+      def: 119
+      agi: 158
+    - level: 72
+      hp: 608
+      sp: 360
+      atk: 256
+      def: 122
+      agi: 160
+    - level: 73
+      hp: 617
+      sp: 365
+      atk: 261
+      def: 126
+      agi: 163
+    - level: 74
+      hp: 627
+      sp: 370
+      atk: 266
+      def: 129
+      agi: 165
+    - level: 75
+      hp: 635
+      sp: 375
+      atk: 270
+      def: 133
+      agi: 168
+    - level: 76
+      hp: 645
+      sp: 380
+      atk: 275
+      def: 137
+      agi: 170
+    - level: 77
+      hp: 655
+      sp: 385
+      atk: 280
+      def: 140
+      agi: 172
+    - level: 78
+      hp: 665
+      sp: 391
+      atk: 284
+      def: 143
+      agi: 174
+    - level: 79
+      hp: 675
+      sp: 396
+      atk: 289
+      def: 147
+      agi: 176
+    - level: 80
+      hp: 685
+      sp: 402
+      atk: 293
+      def: 151
+      agi: 179
+    - level: 81
+      hp: 692
+      sp: 407
+      atk: 298
+      def: 155
+      agi: 182
+    - level: 82
+      hp: 697
+      sp: 412
+      atk: 302
+      def: 158
+      agi: 184
+    - level: 83
+      hp: 703
+      sp: 418
+      atk: 306
+      def: 162
+      agi: 187
+    - level: 84
+      hp: 708
+      sp: 423
+      atk: 311
+      def: 165
+      agi: 189
+    - level: 85
+      hp: 715
+      sp: 428
+      atk: 315
+      def: 169
+      agi: 192
+    - level: 86
+      hp: 721
+      sp: 433
+      atk: 320
+      def: 172
+      agi: 195
+    - level: 87
+      hp: 729
+      sp: 439
+      atk: 325
+      def: 175
+      agi: 198
+    - level: 88
+      hp: 735
+      sp: 444
+      atk: 330
+      def: 179
+      agi: 201
+    - level: 89
+      hp: 741
+      sp: 449
+      atk: 335
+      def: 182
+      agi: 203
+    - level: 90
+      hp: 746
+      sp: 455
+      atk: 339
+      def: 185
+      agi: 206
+    - level: 91
+      hp: 752
+      sp: 460
+      atk: 343
+      def: 188
+      agi: 209
+    - level: 92
+      hp: 757
+      sp: 466
+      atk: 347
+      def: 191
+      agi: 212
+    - level: 93
+      hp: 765
+      sp: 472
+      atk: 351
+      def: 195
+      agi: 215
+    - level: 94
+      hp: 772
+      sp: 477
+      atk: 356
+      def: 198
+      agi: 218
+    - level: 95
+      hp: 777
+      sp: 483
+      atk: 360
+      def: 202
+      agi: 221
+    - level: 96
+      hp: 785
+      sp: 488
+      atk: 364
+      def: 206
+      agi: 224
+    - level: 97
+      hp: 793
+      sp: 493
+      atk: 369
+      def: 210
+      agi: 226
+    - level: 98
+      hp: 801
+      sp: 498
+      atk: 374
+      def: 214
+      agi: 228
+    - level: 99
+      hp: 807
+      sp: 503
+      atk: 378
+      def: 217
+      agi: 231
+    - level: 100
+      hp: 814
+      sp: 508
+      atk: 382
+      def: 220
+      agi: 234
+  - name: Sheet2
+    list:
+    - level: 1
+      hp: 30
+      sp: 3
+      atk: 10
+      def: 7
+      agi: 5
+    - level: 2
+      hp: 34
+      sp: 5
+      atk: 13
+      def: 8
+      agi: 6
+    - level: 3
+      hp: 37
+      sp: 10
+      atk: 16
+      def: 7
+      agi: 7
+    - level: 4
+      hp: 41
+      sp: 14
+      atk: 18
+      def: 7
+      agi: 8
+    - level: 5
+      hp: 45
+      sp: 19
+      atk: 21
+      def: 8
+      agi: 9
+    - level: 6
+      hp: 49
+      sp: 24
+      atk: 24
+      def: 8
+      agi: 10
+    - level: 7
+      hp: 56
+      sp: 28
+      atk: 27
+      def: 9
+      agi: 11
+    - level: 8
+      hp: 62
+      sp: 32
+      atk: 30
+      def: 9
+      agi: 12
+    - level: 9
+      hp: 67
+      sp: 37
+      atk: 33
+      def: 10
+      agi: 14
+    - level: 10
+      hp: 77
+      sp: 41
+      atk: 35
+      def: 11
+      agi: 16
+    - level: 11
+      hp: 86
+      sp: 45
+      atk: 38
+      def: 12
+      agi: 17
+    - level: 12
+      hp: 96
+      sp: 48
+      atk: 40
+      def: 13
+      agi: 19
+    - level: 13
+      hp: 104
+      sp: 50
+      atk: 43
+      def: 14
+      agi: 21
+    - level: 14
+      hp: 112
+      sp: 53
+      atk: 46
+      def: 15
+      agi: 22
+    - level: 15
+      hp: 121
+      sp: 55
+      atk: 48
+      def: 17
+      agi: 24
+    - level: 16
+      hp: 136
+      sp: 58
+      atk: 51
+      def: 19
+      agi: 26
+    - level: 17
+      hp: 148
+      sp: 60
+      atk: 54
+      def: 20
+      agi: 27
+    - level: 18
+      hp: 162
+      sp: 62
+      atk: 56
+      def: 22
+      agi: 28
+    - level: 19
+      hp: 176
+      sp: 64
+      atk: 58
+      def: 24
+      agi: 30
+    - level: 20
+      hp: 190
+      sp: 68
+      atk: 61
+      def: 25
+      agi: 32
+    - level: 21
+      hp: 204
+      sp: 71
+      atk: 63
+      def: 27
+      agi: 34
+    - level: 22
+      hp: 218
+      sp: 73
+      atk: 65
+      def: 29
+      agi: 37
+    - level: 23
+      hp: 232
+      sp: 77
+      atk: 67
+      def: 30
+      agi: 40
+    - level: 24
+      hp: 244
+      sp: 80
+      atk: 70
+      def: 31
+      agi: 43
+    - level: 25
+      hp: 256
+      sp: 84
+      atk: 72
+      def: 32
+      agi: 45
+    - level: 26
+      hp: 269
+      sp: 86
+      atk: 74
+      def: 34
+      agi: 47
+    - level: 27
+      hp: 280
+      sp: 92
+      atk: 76
+      def: 36
+      agi: 49
+    - level: 28
+      hp: 290
+      sp: 97
+      atk: 79
+      def: 38
+      agi: 51
+    - level: 29
+      hp: 301
+      sp: 103
+      atk: 81
+      def: 40
+      agi: 53
+    - level: 30
+      hp: 313
+      sp: 110
+      atk: 84
+      def: 41
+      agi: 56
+    - level: 31
+      hp: 323
+      sp: 120
+      atk: 87
+      def: 42
+      agi: 59
+    - level: 32
+      hp: 335
+      sp: 130
+      atk: 92
+      def: 43
+      agi: 61
+    - level: 33
+      hp: 347
+      sp: 139
+      atk: 96
+      def: 45
+      agi: 63
+    - level: 34
+      hp: 358
+      sp: 149
+      atk: 100
+      def: 46
+      agi: 65
+    - level: 35
+      hp: 370
+      sp: 155
+      atk: 104
+      def: 47
+      agi: 67
+    - level: 36
+      hp: 382
+      sp: 160
+      atk: 108
+      def: 49
+      agi: 69
+    - level: 37
+      hp: 392
+      sp: 169
+      atk: 112
+      def: 51
+      agi: 71
+    - level: 38
+      hp: 405
+      sp: 175
+      atk: 117
+      def: 52
+      agi: 74
+    - level: 39
+      hp: 415
+      sp: 180
+      atk: 120
+      def: 53
+      agi: 76
+    - level: 40
+      hp: 428
+      sp: 189
+      atk: 123
+      def: 54
+      agi: 79
+    - level: 41
+      hp: 431
+      sp: 195
+      atk: 126
+      def: 55
+      agi: 81
+    - level: 42
+      hp: 436
+      sp: 201
+      atk: 131
+      def: 56
+      agi: 83
+    - level: 43
+      hp: 441
+      sp: 207
+      atk: 136
+      def: 57
+      agi: 85
+    - level: 44
+      hp: 444
+      sp: 213
+      atk: 141
+      def: 59
+      agi: 87
+    - level: 45
+      hp: 448
+      sp: 219
+      atk: 146
+      def: 61
+      agi: 90
+    - level: 46
+      hp: 453
+      sp: 225
+      atk: 151
+      def: 62
+      agi: 92
+    - level: 47
+      hp: 456
+      sp: 231
+      atk: 155
+      def: 63
+      agi: 94
+    - level: 48
+      hp: 459
+      sp: 237
+      atk: 160
+      def: 65
+      agi: 97
+    - level: 49
+      hp: 464
+      sp: 243
+      atk: 164
+      def: 67
+      agi: 100
+    - level: 50
+      hp: 467
+      sp: 249
+      atk: 168
+      def: 69
+      agi: 102
+    - level: 51
+      hp: 471
+      sp: 253
+      atk: 172
+      def: 71
+      agi: 104
+    - level: 52
+      hp: 475
+      sp: 257
+      atk: 175
+      def: 73
+      agi: 106
+    - level: 53
+      hp: 478
+      sp: 260
+      atk: 180
+      def: 75
+      agi: 109
+    - level: 54
+      hp: 481
+      sp: 263
+      atk: 185
+      def: 76
+      agi: 111
+    - level: 55
+      hp: 485
+      sp: 266
+      atk: 189
+      def: 78
+      agi: 114
+    - level: 56
+      hp: 488
+      sp: 269
+      atk: 192
+      def: 80
+      agi: 116
+    - level: 57
+      hp: 491
+      sp: 273
+      atk: 197
+      def: 81
+      agi: 118
+    - level: 58
+      hp: 495
+      sp: 277
+      atk: 201
+      def: 82
+      agi: 120
+    - level: 59
+      hp: 500
+      sp: 281
+      atk: 205
+      def: 84
+      agi: 122
+    - level: 60
+      hp: 503
+      sp: 285
+      atk: 209
+      def: 85
+      agi: 124
+    - level: 61
+      hp: 513
+      sp: 288
+      atk: 212
+      def: 87
+      agi: 127
+    - level: 62
+      hp: 522
+      sp: 291
+      atk: 215
+      def: 89
+      agi: 130
+    - level: 63
+      hp: 532
+      sp: 294
+      atk: 218
+      def: 91
+      agi: 133
+    - level: 64
+      hp: 542
+      sp: 297
+      atk: 223
+      def: 93
+      agi: 136
+    - level: 65
+      hp: 551
+      sp: 300
+      atk: 228
+      def: 95
+      agi: 138
+    - level: 66
+      hp: 559
+      sp: 305
+      atk: 233
+      def: 97
+      agi: 141
+    - level: 67
+      hp: 567
+      sp: 310
+      atk: 236
+      def: 99
+      agi: 144
+    - level: 68
+      hp: 576
+      sp: 316
+      atk: 241
+      def: 101
+      agi: 146
+    - level: 69
+      hp: 586
+      sp: 321
+      atk: 245
+      def: 103
+      agi: 149
+    - level: 70
+      hp: 594
+      sp: 327
+      atk: 250
+      def: 106
+      agi: 151
+    - level: 71
+      hp: 603
+      sp: 333
+      atk: 254
+      def: 109
+      agi: 154
+    - level: 72
+      hp: 613
+      sp: 339
+      atk: 258
+      def: 113
+      agi: 157
+    - level: 73
+      hp: 622
+      sp: 345
+      atk: 263
+      def: 116
+      agi: 160
+    - level: 74
+      hp: 630
+      sp: 350
+      atk: 267
+      def: 119
+      agi: 162
+    - level: 75
+      hp: 640
+      sp: 355
+      atk: 271
+      def: 123
+      agi: 164
+    - level: 76
+      hp: 650
+      sp: 361
+      atk: 276
+      def: 127
+      agi: 167
+    - level: 77
+      hp: 660
+      sp: 366
+      atk: 281
+      def: 131
+      agi: 169
+    - level: 78
+      hp: 668
+      sp: 372
+      atk: 285
+      def: 134
+      agi: 172
+    - level: 79
+      hp: 678
+      sp: 378
+      atk: 289
+      def: 138
+      agi: 174
+    - level: 80
+      hp: 687
+      sp: 383
+      atk: 294
+      def: 141
+      agi: 177
+    - level: 81
+      hp: 695
+      sp: 389
+      atk: 298
+      def: 144
+      agi: 179
+    - level: 82
+      hp: 703
+      sp: 394
+      atk: 302
+      def: 148
+      agi: 182
+    - level: 83
+      hp: 710
+      sp: 400
+      atk: 307
+      def: 151
+      agi: 185
+    - level: 84
+      hp: 715
+      sp: 406
+      atk: 312
+      def: 154
+      agi: 187
+    - level: 85
+      hp: 723
+      sp: 412
+      atk: 317
+      def: 157
+      agi: 189
+    - level: 86
+      hp: 728
+      sp: 418
+      atk: 321
+      def: 161
+      agi: 192
+    - level: 87
+      hp: 736
+      sp: 424
+      atk: 326
+      def: 165
+      agi: 195
+    - level: 88
+      hp: 742
+      sp: 430
+      atk: 330
+      def: 169
+      agi: 197
+    - level: 89
+      hp: 747
+      sp: 436
+      atk: 335
+      def: 172
+      agi: 200
+    - level: 90
+      hp: 754
+      sp: 441
+      atk: 340
+      def: 176
+      agi: 202
+    - level: 91
+      hp: 760
+      sp: 446
+      atk: 344
+      def: 180
+      agi: 205
+    - level: 92
+      hp: 765
+      sp: 451
+      atk: 348
+      def: 184
+      agi: 207
+    - level: 93
+      hp: 773
+      sp: 457
+      atk: 352
+      def: 188
+      agi: 210
+    - level: 94
+      hp: 780
+      sp: 462
+      atk: 357
+      def: 191
+      agi: 213
+    - level: 95
+      hp: 786
+      sp: 468
+      atk: 361
+      def: 195
+      agi: 216
+    - level: 96
+      hp: 794
+      sp: 474
+      atk: 365
+      def: 198
+      agi: 219
+    - level: 97
+      hp: 800
+      sp: 480
+      atk: 370
+      def: 201
+      agi: 222
+    - level: 98
+      hp: 806
+      sp: 485
+      atk: 375
+      def: 205
+      agi: 224
+    - level: 99
+      hp: 811
+      sp: 491
+      atk: 379
+      def: 208
+      agi: 226
+    - level: 100
+      hp: 816
+      sp: 497
+      atk: 384
+      def: 211
+      agi: 228

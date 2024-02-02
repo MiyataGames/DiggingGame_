@@ -7,6 +7,10 @@ public class PlayerBase : ScriptableObject
 {
     [SerializeField] private int playerId;
     [SerializeField] private string playerName;
+    [SerializeField]
+    private MagicType[] weakTypes;
+    [SerializeField]
+    private MagicType[] resistanceTypes;
     [TextArea(1, 2)]
     [SerializeField] private string playerDiscription;
     [SerializeField] private Sprite playerFaceIcon;
@@ -38,4 +42,6 @@ public class PlayerBase : ScriptableObject
     public List<LearnableSkill> LearnablePlayerSkills { get => learnablePlayerSkills; }
     public string PlayerDiscription { get => playerDiscription;}
     public Sprite PlayerOverView { get => playerOverView; }
+    public MagicType[] WeakTypes { get => weakTypes; }
+    public MagicType[] ResistanceTypes { get => resistanceTypes;  }
 }

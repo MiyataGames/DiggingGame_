@@ -7,6 +7,7 @@ using UnityEngine.VFX;
 using UnityEngine.EventSystems;
 using System.Linq;
 using System;
+using TMPro;
 
 public enum FieldGameState
 {
@@ -64,6 +65,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     // プレイヤーのアニメーション
     private Animator myAnim;
+    // プレイヤーのスプライトレンダラー
     public bool isLeft = false;
     public bool isUp = false;
     private bool isDigging = false;
@@ -96,13 +98,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // アイテムのターゲットのインデックス番号
     private int selectedItemTargetIndex;
 
-
     // ステータス関係 ==========================
     StatusState statusState = StatusState.STATUS_All;
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
     [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
+
+    [SerializeField] FadeController fadeController;
 
     // Start is called before the first frame update
     private void Awake()
@@ -128,13 +131,23 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     void OnEnable()
     {
         isDigging = false;
+        // this.GetComponent<SpriteRenderer>().flipX = false;
+        // Debug.Log(this.GetComponent<SpriteRenderer>().flipX);
     }
 
     // Update is called once per frame
     public void HandleUpdate()
     {
-        // ゲームがポーズ中でないかつ穴掘り中だったら
-        if (GameManager.instance.currentGameState == GameState.PLAYING || filedGameStatus == FieldGameState.DIGGING)
+        // ゲームがポーズ中だったら全ての処理を受け付けない
+        if (GameManager.instance.currentGameState == GameState.POSE)
+        { 
+            vx = 0;
+            vy = 0;
+            myAnim.SetBool("isWalking", false);
+            return;
+        }
+        // ゲームがメニュー中でないかつ穴掘り中だったら
+        if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
         {
             // サーチ
             if (Input.GetKeyDown(KeyCode.Space))
@@ -145,10 +158,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 // ポーズ中にする
-                GameManager.instance.currentGameState = GameState.POSE;
+                GameManager.instance.currentGameState = GameState.MENU;
                 // メニュー画面をひらく
                 filedGameStatus = FieldGameState.MENU;
                 menu.ActivateMenuPanel(true);
+                // ゴールドを表示
+                menu.ActivateGoldText(true);
                 menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
             }
             // マップ
@@ -174,33 +189,46 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = -speed;
                 isLeft = true;
-                // 穴掘り中、ジャンプ中じゃなければ
-                if (isDigging == false && isJumping == false)
+                // 上下穴掘り中なら速度0
+                if (isDigging == true && myAnim.GetFloat("isUp") != 0)
                 {
-                    myAnim.SetBool("isWalking", true);
-                    myAnim.SetFloat("isUp", 0);
+                    vx = 0;
+                }// 穴掘り中じゃないなら
+                else
+                {
+                    // ジャンプ中じゃなければ
+                    if (isJumping == false)
+                    {
+                        myAnim.SetBool("isWalking", true);
+                        myAnim.SetFloat("isUp", 0);
+                    }
                     myAnim.SetFloat("isLeft", 1);
                 }
             }
-            else
             // D：右
-            if (Input.GetKey(KeyCode.D))
+            else if (Input.GetKey(KeyCode.D))
             {
                 vx = speed;
                 isLeft = false;
-                // 穴掘り中じゃなければ
-                if (isDigging == false && isJumping == false)
+                // 上下穴掘り中なら速度0
+                if (isDigging == true && myAnim.GetFloat("isUp") != 0 )
                 {
-                    myAnim.SetBool("isWalking", true);
-                    // isLeftを-1にすると右のアニメーション
-                    myAnim.SetFloat("isUp", 0);
+                    vx = 0;
+                }// 穴掘り中じゃないなら
+                else
+                {
+                    // ジャンプ中じゃなければ
+                    if (isJumping == false)
+                    {
+                        myAnim.SetBool("isWalking", true);
+                        myAnim.SetFloat("isUp", 0);
+                    }
                     myAnim.SetFloat("isLeft", -1);
                 }
             }
 
-            
             // 移動キーを離したら
-            if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+            if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
             {
                 //
                 myAnim.SetBool("isWalking", false);
@@ -221,7 +249,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 if (pushFlag == false)
                 {
-                    myAnim.SetBool("isJump",true);
+                    // myAnim.SetBool("isJump",true);
                     jumpFlag = true;
                     isJumping = true;
                     pushFlag = true;
@@ -362,6 +390,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             // メニュー画面を閉じる
             menu.ActivateMenuPanel(false);
+            // ゴールドを非表示
+            menu.ActivateGoldText(false);
             // ポーズ終了
             GameManager.instance.currentGameState = GameState.PLAYING;
             filedGameStatus = FieldGameState.DIGGING;
@@ -612,7 +642,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         ItemCellView cell = playerItemPanel.GetCellView(cellViewPrefab) as ItemCellView;
         cell.cellButtonClicked = CellButtonClicked;
-
         cell.name = "Cell" + dataIndex.ToString();
         cell.SetData(itemCellData[dataIndex]);
         GameObject cellViewObj = cell.gameObject;
@@ -670,6 +699,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (other.tag == "Item")
         {
             Item newItem = other.GetComponent<FieldItem>().Item;
+            GameManager.instance.Party.Players[0].AddItem(newItem);
+            Destroy(other.gameObject);
+            LoadItemData();
+            /*
+            Item newItem = other.GetComponent<FieldItem>().Item;
             // 同じアイテムがあるか検索
             if (party.Players[0].Items.Count > 0)
             {
@@ -692,8 +726,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // idが早い順に並べる
             party.Players[0].Items.Sort((x, y) => y.Id - x.Id);
             LoadItemData();
+            */
         }
-        if(other.tag == "Coin")
+        if (other.tag == "Coin")
         {
             int coinValue = other.GetComponent<FieldCoin>().Price;
             party.Players[0].Gold = party.Players[0].Gold + coinValue;
@@ -877,13 +912,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // バトルシーンに移動する
             //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
-            Debug.Log("Faade");
+            //Fade.Instance.RegisterFadeOutEvent(GameManager.instance.StartBattle(collision.gameObject));
+            //fadeController.OnFadeOutComplete += GameManager.instance.StartBattle(collision.gameObject);
+
+            //fadeController.FadeOut();
+            //Fade.Instance.StartFadeInBattle(collision.gameObject);
             GameManager.instance.StartBattle(collision.gameObject);
 
         }else if(collision.gameObject.tag == "Town")
         {
+            Debug.Log("タウンに切り替え");
             // 街へ入る
             GameManager.instance.CurrentSceneIndex = (int)GameMode.TOWN_SCENE;
+            //GameManager.instance.ActivateCurrentScene((int)GameMode.TOWN_SCENE);
         }
     }
 

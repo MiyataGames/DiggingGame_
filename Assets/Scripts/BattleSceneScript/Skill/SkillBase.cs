@@ -29,6 +29,7 @@ public class SkillBase : ScriptableObject
     // スキルのマスターデータ
 
     [SerializeField] private string skillName;
+    [SerializeField] MagicType magicType;
 
     [TextArea]
     [SerializeField] private string description;
@@ -65,5 +66,5 @@ public class SkillBase : ScriptableObject
     public SKILL_CATEGORY SkillCategory { get => skillCategory; }
     public SKILL_TARGET_KIND SkillTargetKind { get => skillTargetKind; }
     public TARGET_NUM SkillTargetNum { get => skillTargetNum; }
-
+    public MagicType MagicType { get => magicType; }
 }

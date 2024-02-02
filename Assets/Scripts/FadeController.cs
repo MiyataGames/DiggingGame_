@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +16,7 @@ public class FadeController : MonoBehaviour
     {
         // 初期状態は完全に透明に設定
         fadePanel.color = new Color(0, 0, 0, 0);
-        Debug.Log(OnFadeInComplete);
+        //Debug.Log(OnFadeInComplete);
 
     }
 
@@ -71,4 +70,5 @@ public class FadeController : MonoBehaviour
         yield return new WaitForSeconds(seconds);
         OnFadeWaitComplete?.Invoke();
     }
+
 }

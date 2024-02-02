@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public enum MenuCommand
 {
@@ -17,6 +18,7 @@ public delegate void ItemSelectButtonHoverdDelegate(int itemIndex);
 
 public class Menu : MonoBehaviour
 {
+    [SerializeField] GameObject goldText;
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject itemPanel;
     [SerializeField] private GameObject statusPanel;
@@ -28,6 +30,19 @@ public class Menu : MonoBehaviour
     public MenuSelectButtonClickedDelegate menuSelectButtonClickedDelegate;
     public ItemSelectButtonHoverdDelegate itemSelectButtonHoverdDelegate;
 
+    // goldTextをオンオフする
+    public void ActivateGoldText(bool activate)
+    {
+        if (activate == true)
+        {
+            goldText.GetComponent<TextMeshProUGUI>().text = GameManager.instance.Party.Players[0].Gold.ToString() + " GOLD";
+            goldText.SetActive(true);
+        }
+        else
+        {
+            goldText.SetActive(false);
+        }
+    }
     // メインパネルをオンオフする関数
     public void ActivateMenuPanel(bool activate)
     {
