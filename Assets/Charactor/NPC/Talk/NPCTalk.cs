@@ -22,19 +22,17 @@ public class npcTalkDatas{
     public int choseYes;
     public int choseNo;
     public int skipID;
-    public bool eventFlag;
-    public int checkNeedEventNum;
-    public int eventNum;
-    public int afterEventSkipID;
-    public string playAnimation;
+    public string SEpath;
 }
 
 [RequireComponent(typeof(CapsuleCollider2D))]
 public class NPCTalk : MonoBehaviour
 {
-    [Header("NPC1のように入力")]
-    public string eventNum;
+    [Header("会話できる場所 ex.Abokado")]
+    public string eventPlace;
+    [Header("NPCの名前 ex.NPC1")]
     public string eventNPCName;
+
     public npcTalkDatas[] npcTalkDatas;
 
     private Sprite[] charaImage;
@@ -45,8 +43,13 @@ public class NPCTalk : MonoBehaviour
 
     private List<string> afterSetEventFlagTalk = new List<string>();
 
+    [Header("イベント発火にエリア内でFキーを押すか(falseなら範囲内に入った時点でイベント開始)")]
+    [SerializeField] private bool TriggerIsFkey = true;
 
-    [SerializeField] private StoryEventManager storyEventManager;
+    [Header("se鳴らすやつ。AudioSourseがアタッチされたオブジェクトが必要")]
+    [SerializeField] private AudioSource audioSource;
+
+    [Header("ダイアログに必要なオブジェクトたち")]
     [SerializeField] private FadeController fadeController;
     [SerializeField] private GameObject talkDialog; //会話用ダイアログ
     [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
@@ -62,14 +65,13 @@ public class NPCTalk : MonoBehaviour
     private bool isPlayerInErea = false; //エリア内にプレイヤーがいるかのフラグ
     private bool isTalkingNow = false; //会話中かフラグ
     private bool isCanNextText = true;
-    private bool isSettingEventFlag = false;
 
     void Awake(){
         //テキストファイルの読み込ませるクラス
         TextAsset textAsset = new TextAsset();
 
         //用意したcsvファイルを読み込む
-        textAsset = Resources.Load("NpcTalkData/Event/" + eventNum + "/" + eventNPCName,typeof(TextAsset)) as TextAsset;
+        textAsset = Resources.Load("NpcTalkData/" + eventPlace + "/" + eventNPCName,typeof(TextAsset)) as TextAsset;
         //実際にデータを変数に格納
         npcTalkDatas = CSVSerializer.Deserialize<npcTalkDatas>(textAsset.text);
 
@@ -78,7 +80,7 @@ public class NPCTalk : MonoBehaviour
         for(int i = 0 ; i < npcTalkDatas.Length;i++){
             if(npcTalkDatas[i].imageFolderName != null ){
                 //キャライメージの読み込み
-                charaImage[i] = Resources.Load<Sprite>("CharaImage/" + npcTalkDatas[i].imageFolderName + "/" + npcTalkDatas[i].imageNum);
+                charaImage[i] = Resources.Load<Sprite>("CharaImage/"+ eventPlace + "/" + npcTalkDatas[i].imageFolderName + "/" + npcTalkDatas[i].imageNum);
                 
             }
         }
@@ -86,8 +88,7 @@ public class NPCTalk : MonoBehaviour
     }
 
     void Start(){
-        fadeController.OnFadeInComplete += OnFadeInComplete;
-        fadeController.OnFadeOutComplete += OnFadeOutComplete;
+        
     }
 
     void Update(){
@@ -106,9 +107,11 @@ public class NPCTalk : MonoBehaviour
                 }  
             }*/
 
-            if(Input.GetKeyDown(KeyCode.F)){
-                isTalkingNow = true; //会話中フラグをtrue
+            if(TriggerIsFkey == true){
+                if(Input.GetKeyDown(KeyCode.F)){
+                isTalkingNow = true; //イベント中フラグをtrue
                 textStart(); //テキストスタート
+            }
             }
         }else if(isTalkingNow == true && Input.GetKeyDown(KeyCode.F)){
             if(isCanNextText == true){
@@ -117,9 +120,15 @@ public class NPCTalk : MonoBehaviour
         }
     }
 
-    void OnTriggerStay2D(Collider2D other){
+    void OnTriggerEnter2D(Collider2D other){
         if(other.gameObject.tag == "Player"){
             isPlayerInErea = true;
+        }
+        if(TriggerIsFkey == false){
+            if(isTalkingNow == false){
+                isTalkingNow = true; //トーク中フラグをtrue
+                textStart(); //テキストスタート
+            }
         }
     }
 
@@ -134,7 +143,7 @@ public class NPCTalk : MonoBehaviour
         isEndOfTalk = false;//使ってない
 
         //会話ダイアログを表示
-        SwichTalkDialogActivate();
+        //SwichTalkDialogActivate();
         //ボタンにReadNextMessageを登録
         readNext.onClick.AddListener(ReadNextMessage);
 
@@ -150,8 +159,7 @@ public class NPCTalk : MonoBehaviour
 
         //Debug.Log(npcTalkDatas[currentTextID]);
         //skipIDがexcelで空白なら0になる
-        if(npcTalkDatas[currentTextID].skipID == 0 || isSettingEventFlag == true){
-            isSettingEventFlag = false;
+        if(npcTalkDatas[currentTextID].skipID == 0 ){
             currentTextID++;
         }else{
             currentTextID = npcTalkDatas[currentTextID].skipID;
@@ -164,7 +172,7 @@ public class NPCTalk : MonoBehaviour
             isTalkingNow = false;
             //ボタンのイベントを削除
             ClearAllListeners();
-            SwichTalkDialogActivate();
+            SwichTalkDialogActivate(false);
 
         }else{
             currentCommand = npcTalkDatas[currentTextID].command;
@@ -184,8 +192,8 @@ public class NPCTalk : MonoBehaviour
             case "set_bgm":
                 SetBGM();
                 break;
-            case "check_EventFlag":
-                CheckEventAvailable(npcTalkDatas[currentTextID].checkNeedEventNum,npcTalkDatas[currentTextID].eventNum,npcTalkDatas[currentTextID].afterEventSkipID);
+            case "play_sound":
+                PlaySE(npcTalkDatas[currentTextID].SEpath);
                 break;
             case "set_text":
                 ShowText(npcTalkDatas[currentTextID].mainText);
@@ -197,13 +205,16 @@ public class NPCTalk : MonoBehaviour
                 image.sprite = charaImage[currentTextID];
                 //Debug.Log(image);
                 break;
-            case "set_EventFlag":
-                SetEventFlag();
-                break;
             case "fade_blackOut":
+                fadeController.OnFadeOutComplete += OnFadeOutComplete;
                 fadeController.FadeOut();
                 break;
+            case "fade_blackWait":
+                fadeController.OnFadeWaitComplete += OnFadeWaitComplete;
+                fadeController.FadeWait();
+                break;
             case "fade_blackIn":
+                fadeController.OnFadeInComplete += OnFadeInComplete;
                 fadeController.FadeIn();
                 break;
             default:
@@ -211,54 +222,12 @@ public class NPCTalk : MonoBehaviour
         }
     }
 
-    private void SetEventFlag(){
-        bool alreadyRegistFlag = false;
-        foreach(int i in storyEventManager.story1Flag){
-            if(i == npcTalkDatas[currentTextID].eventNum){
-                alreadyRegistFlag = true;
-            }
-        }
-        if(alreadyRegistFlag == false){
-            storyEventManager.story1Flag.Add(npcTalkDatas[currentTextID].eventNum);
-        }
+    //SEを鳴らす
+    private void PlaySE(string SEpath){
+        AudioClip SEClip = Resources.Load<AudioClip>(SEpath);
+        Debug.Log(SEClip);
+        audioSource.PlayOneShot(SEClip);
         ReadNextMessage();
-    }
-
-    /// <summary>
-    /// イベントチェック関数
-    /// </summary>
-    /// <param name="checkNeedEventNum">現在のイベントフラグを立てるために必要なフラグ番号</param>
-    /// <param name="eventNum">現在のフラグ番号</param>
-    /// <param name="afterEventSkipID">すでに現在のフラグ番号が立っているときにスキップする番号</param>
-    private void CheckEventAvailable(int checkNeedEventNum , int eventNum, int afterEventSkipID){
-        
-        bool canEvent = false; //現在のフラグを立てられるか
-        bool alreadyEvent = false;//すでに現在のフラグが立っているか
-        
-        //イベントフラグのチェック中
-        isSettingEventFlag = true;
-        
-        foreach(int i in storyEventManager.story1Flag){
-            //このイベントを発生させるためのフラグが立っているか
-            //Debug.Log(i);
-            if(i == checkNeedEventNum){
-                canEvent = true;
-            }
-            //すでにイベントを実行済みか
-            if(i == eventNum){
-                alreadyEvent = true;
-            }
-        }
-        Debug.Log(canEvent);
-        Debug.Log(alreadyEvent);
-        if(alreadyEvent == true){
-            skip(npcTalkDatas[currentTextID].afterEventSkipID);
-        }else if(canEvent == true){
-            skip(npcTalkDatas[currentTextID].skipID);
-        }else{
-            ReadNextMessage();
-        }
-
     }
 
     private void ShowBranchText(string yText, string nText)
@@ -328,6 +297,7 @@ public class NPCTalk : MonoBehaviour
 
     private void ShowText(string message)
     {
+        SwichTalkDialogActivate(true);
         //キャラの名前を表示
         nameText.text = npcTalkDatas[currentTextID].character;
         //会話テキストを表示
@@ -344,9 +314,9 @@ public class NPCTalk : MonoBehaviour
     }
 
     //トークダイアログの切り替え
-    void SwichTalkDialogActivate()
+    void SwichTalkDialogActivate(bool b)
     {
-        if (talkDialog.activeSelf)
+        if (b == false)
         {
             talkDialog.SetActive(false);
         }
@@ -392,12 +362,22 @@ public class NPCTalk : MonoBehaviour
      private void OnFadeInComplete()
     {
         Debug.Log("Fade In Complete");
+        ReadNextMessage();
+        fadeController.OnFadeInComplete -= OnFadeInComplete;
+    }
+
+    private void OnFadeWaitComplete(){
+        Debug.Log("Fade Wait Complete");
+        ReadNextMessage();
+        fadeController.OnFadeWaitComplete -= OnFadeWaitComplete;
     }
 
     //フェードアウト後の処理
     private void OnFadeOutComplete()
     {
         Debug.Log("Fade Out Complete");
+        ReadNextMessage();
+        fadeController.OnFadeOutComplete -= OnFadeOutComplete;
     }
 
 }

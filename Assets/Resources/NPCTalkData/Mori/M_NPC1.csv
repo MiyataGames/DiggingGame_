@@ -1,0 +1,4 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC1,1,この村は豊かな自然に恵まれているわ,FALSE,,,,,,
+1,set_text,村人,NPC1,1,これもアルメニア様のご加護があるおかげね,FALSE,,,,,,
+2,end_talk,,,,,,,,,,,
