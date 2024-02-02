@@ -1,0 +1,4 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC2,1,わーい！わーい！,FALSE,,,,,,
+1,end_talk,,,,,,,,,,,
+,,,,,,,,,,,,

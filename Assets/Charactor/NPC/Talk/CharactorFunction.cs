@@ -65,5 +65,19 @@ public class CharactorFunction : MonoBehaviour
         GameManager.instance.CurrentSceneIndex = (int)GameMode.TOWN_SCENE;
     }
 
+    protected void StartEvent()
+    {
+        Debug.Log("StartEvent");
+        GameManager.instance.currentGameState = GameState.POSE;
+    }
+
+    protected void EndEvent(){
+          GameManager.instance.currentGameState = GameState.PLAYING;
+    }
+
+    void Update()
+    {
+        // Debug.Log(GameManager.instance.currentGameState);
+    }
     
 }

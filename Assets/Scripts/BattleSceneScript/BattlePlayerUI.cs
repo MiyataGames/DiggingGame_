@@ -37,19 +37,19 @@ public class BattlePlayerUI : MonoBehaviour
         this.player = player;
         playerNameText.text = player.PlayerBase.PlayerName;
         playerLevelText.text = "Lv." + player.level;
-        playerHpBar.SetHP(player.currentHP, player.currentMaxHp);
-        playerSpBar.SetSP(player.currentSP, player.currentMaxSp);
+        playerHpBar.SetHP(player.currentHP, player.CurrentMaxHp);
+        playerSpBar.SetSP(player.currentSP, player.CurrentMaxSp);
         hpText.text = player.currentHP.ToString();
         spText.text = player.currentSP.ToString();
-        currentMaxHpText.text = "/" + player.currentMaxHp.ToString();
-        currentMaxSpText.text = "/" + player.currentMaxSp.ToString();
+        currentMaxHpText.text = "/" + player.CurrentMaxHp.ToString();
+        currentMaxSpText.text = "/" + player.CurrentMaxSp.ToString();
         //SetActivenessDiscriptionPanel(false);
     }
 
     public void UpdateHpSp()
     {
-        playerHpBar.SetHP((float)player.currentHP, player.currentMaxHp);
-        playerSpBar.SetSP((float)player.currentSP, player.currentMaxSp);
+        playerHpBar.SetHP((float)player.currentHP, player.CurrentMaxHp);
+        playerSpBar.SetSP((float)player.currentSP, player.CurrentMaxSp);
     }
 
     /*

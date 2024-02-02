@@ -5,15 +5,13 @@ using UnityEngine.UI;
 
 public class Fade : MonoBehaviour
 {
-    [Tooltip("�t�F�[�h������UI")]
     [SerializeField]
     private Image _fadePanel = default;
-    [Tooltip("���s����")]
     [SerializeField]
     private float _fadeTime = 1f;
 
-    private Action[] _onCompleteFadeIn = new Action[0];
-    private Action[] _onCompleteFadeOut = new Action[0];
+    // public delegate void FadeInCompleteHandler();
+    // public event FadeInCompleteHandler OnFadeInComplete;
 
     public static Fade Instance { get; private set; }
 
@@ -42,15 +40,16 @@ public class Fade : MonoBehaviour
         
     }
 
-    public void StartFadeIn() { StartCoroutine(FadeIn()); }
+    public void StartFadeInBattle(GameObject enemySymbol) { StartCoroutine(FadeInBattle(enemySymbol)); }
 
     public void StartFadeOut() { StartCoroutine(FadeOut()); }
 
-    private IEnumerator FadeIn()
+    private IEnumerator FadeInBattle(GameObject gameObject)
     {
+
         _fadePanel.gameObject.SetActive(true);
 
-        //���l(�����x)�� 1 -> 0 �ɂ���(���������邭����)
+        GameManager.instance.StartBattle(gameObject);
         float alpha = 1f;
         Color color = _fadePanel.color;
 
@@ -66,14 +65,12 @@ public class Fade : MonoBehaviour
         }
 
         _fadePanel.gameObject.SetActive(false);
-        foreach (var action in _onCompleteFadeIn) { action?.Invoke(); }
     }
 
     private IEnumerator FadeOut()
     {
         _fadePanel.gameObject.SetActive(true);
 
-        //���l(�����x)�� 0 -> 1 �ɂ���(�������Â�����)
         float alpha = 0f;
         Color color = _fadePanel.color;
 
@@ -87,13 +84,6 @@ public class Fade : MonoBehaviour
             _fadePanel.color = color;
             yield return null;
         }
-
-        foreach (var action in _onCompleteFadeOut) { action?.Invoke(); }
     }
 
-    /// <summary> �t�F�[�h�C�����s��̏�����o�^�i�㏑���j���� </summary>
-    public void RegisterFadeInEvent(Action[] actions) { _onCompleteFadeIn = actions; }
-
-    /// <summary> �t�F�[�h�A�E�g���s��̏�����o�^�i�㏑���j���� </summary>
-    public void RegisterFadeOutEvent(Action[] actions) { _onCompleteFadeOut = actions; }
 }

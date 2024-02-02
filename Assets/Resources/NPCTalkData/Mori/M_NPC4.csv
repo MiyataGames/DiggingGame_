@@ -1,0 +1,4 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC4,1,よそものなぞ初めてのことじゃ・・・,,,,,,,
+1,set_text,村人,NPC4,1,悪いがすぐに出て行ってくれんかね。アルメニア様のご機嫌を損ねるといけない,,,,,,,
+2,end_talk,,,,,,,,,,,

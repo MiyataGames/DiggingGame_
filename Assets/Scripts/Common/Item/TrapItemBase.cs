@@ -6,8 +6,10 @@ using UnityEngine;
 public class TrapItemBase : ItemBase
 {
     public Sprite itemImageSprite;
-    [SerializeField] private int basicDamage;// ダメージ比率
+    [SerializeField] private int damageRatio;// ダメージ比率
     [SerializeField] STATUS_CONDITION_TYPE condition;
-    public int BasicDamage { get => basicDamage; }
+    [SerializeField] GameObject receivedEffect;
+    public int DamageRatio { get => damageRatio; }
     public STATUS_CONDITION_TYPE Condition { get => condition; }
+    public GameObject ReceivedEffect { get => receivedEffect; }
 }

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Poison
   m_EditorClassIdentifier: 
   skillName: "\u6BD2\u3073\u3057"
+  magicType: 0
   description: 
   power: 0
   sp: 5
@@ -20,6 +21,6 @@ MonoBehaviour:
   skillCategory: 3
   skillTargetKind: 1
   skillTargetNum: 0
-  skillRecieveEffect: {fileID: 0}
+  skillRecieveEffect: {fileID: 1758724775621739724, guid: 6865a2f361540354e95337f421aef1ad, type: 3}
   condition: 0
   conditionAttackAccuracy: 1

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f8b5c3de90623a479327c46692b7549, type: 3}
+  m_Name: Lv2Cat
+  m_EditorClassIdentifier: 
+  enemyID: 1
+  enemyName: "\u3057\u307E\u3057\u307E\u30AD\u30E3\u30C3\u30C8"
+  weakTypes: 
+  resistanceTypes: 0100000002000000
+  level: 2
+  description: 
+  enemyPrefab: {fileID: 7976588781564346860, guid: 54a6c5ca2ff67444ca6f2cd0f37ab755, type: 3}
+  maxHp: 10
+  atk: 11
+  magicPower: 10
+  def: 9
+  agi: 6
+  luck: 0
+  learnableEnemySkills:
+  - skillBase: {fileID: 11400000, guid: 8c4714c2a4ecd403aaed171b394fb878, type: 2}
+    level: 0
+  dropItemBase:
+  - {fileID: 11400000, guid: 22e5c46c5a0d149e8b7f69e9f5b7c450, type: 2}
+  - {fileID: 11400000, guid: b9fc0499d97cb446ab77789b22c6e7db, type: 2}
+  maxDropGold: 2
+  minDropGold: 5

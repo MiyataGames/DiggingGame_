@@ -1,0 +1,5 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC3,1,あれーおかしいなあ,,,,,,,
+1,set_text,村人,NPC3,1,もう少し立派に育っていてもおかしくないんだけど・・・,,,,,,,
+2,set_text,村人,NPC3,1,いつも通りにやったのになあ,,,,,,,
+3,end_talk,,,,,,,,,,,

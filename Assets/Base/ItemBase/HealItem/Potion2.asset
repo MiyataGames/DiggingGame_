@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\u56DE\u5FA9\u85AC"
   description: 
-  id: 1
+  price: 0
+  id: 11
   itemType: 2
-  isAll: 1
+  targetNum: 0
   healPoint: 10

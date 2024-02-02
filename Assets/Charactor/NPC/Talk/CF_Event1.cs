@@ -40,6 +40,12 @@ public class CF_Event1 : CharactorFunction
                 case "SontyoMove":
                     SontyoMove();
                     break;
+                case "StartEvent":
+                    StartEvent();
+                    break;
+                case "EndEvent":
+                    EndEvent();
+                    break;
             }
         }
 

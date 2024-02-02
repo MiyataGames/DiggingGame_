@@ -1,0 +1,6 @@
+﻿id,command,character,imageFolderName,imageNum,mainText,setBranch,yesText,noText,choseYes,choseNo,skipID,SEpath
+0,set_text,村人,NPC4,1,フォッッ！？,,,,,,,
+1,set_text,村人,NPC4,1,おっお嬢さん・・・外からいらしたのかね・・？,,,,,,,
+2,set_text,村人,NPC4,1,なんと・・・この村以外の人間なんぞ生まれて初めて見たわい,,,,,,,
+3,set_text,村人,NPC4,1,せっかく来てもらったとこ悪いが今この村は立て込んでいてな。どこも満足なもてなしは出来んぞい,,,,,,,
+4,end_talk,,,,,,,,,,,

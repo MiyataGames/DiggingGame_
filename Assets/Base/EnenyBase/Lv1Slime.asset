@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f8b5c3de90623a479327c46692b7549, type: 3}
+  m_Name: Lv1Slime
+  m_EditorClassIdentifier: 
+  enemyID: 0
+  enemyName: "\u30B9\u30E9\u30A4\u30E0"
+  weakTypes: 0100000002000000
+  resistanceTypes: 
+  level: 1
+  description: 
+  enemyPrefab: {fileID: 7052581729758501505, guid: 6e6be0eb08ea79c4fbe3f95e4ef0d184, type: 3}
+  maxHp: 7
+  atk: 10
+  magicPower: 0
+  def: 8
+  agi: 6
+  luck: 0
+  learnableEnemySkills:
+  - skillBase: {fileID: 11400000, guid: e8e986e80ef6d034c90e1096a245b187, type: 2}
+    level: 0
+  dropItemBase:
+  - {fileID: 11400000, guid: b9fc0499d97cb446ab77789b22c6e7db, type: 2}
+  - {fileID: 11400000, guid: da3025400afee45f38b840ca10fc6c3f, type: 2}
+  maxDropGold: 0
+  minDropGold: 3

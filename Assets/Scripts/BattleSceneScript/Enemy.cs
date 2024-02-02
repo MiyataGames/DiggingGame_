@@ -9,37 +9,57 @@ public class Enemy : Character
 
     // ベースとなるデータ
     public EnemyBase EnemyBase { get => enemyBase; }
+    private string enemyBattleName;// 敵のバトル上での名前
+    int dropGold;// ドロップするお金
+    List<Item> dropItems = new List<Item>();// ドロップするアイテム
+    bool counted;
 
     public int Level { get => level; }
     public GameObject EnemyPrefab { get; set; }
     public Animator EnemyAnimator { get; set; }
-
     public BattleEnemyUI EnemyUI { get; set; }
     public int positionIndex;
 
-    // レベルに応じたHPを返す
-    public int currentMaxHp
-    {
-        get { return Mathf.FloorToInt((EnemyBase.MaxHp * level) / 100f) + 10; }
-    }
+    public string EnemyBattleName { get => enemyBattleName; set => enemyBattleName = value; }
+    public bool Counted { get => counted; set => counted = value; }
+    public List<Item> DropItems { get => dropItems;  }
+    public int DropGold { get => dropGold; }
 
 
     // コンストラクタ:生成時の初期設定
-    public Enemy(EnemyBase eBase, int eLevel)
+    public Enemy(EnemyBase eBase)
     {
-        //しょきか
+        // ステータスの初期化
         isPlayer = false;
         enemyBase = eBase;
-        characterName = enemyBase.name;
-        level = eLevel;
-        currentHP = currentMaxHp;
+        // ドロップするものの決定
+        dropGold = Random.Range(enemyBase.MinDropGold, enemyBase.MaxDropGold);
+        List<Item> items = new List<Item>();
+        for(int i = 0;i < enemyBase.DropItemBase.Count; i++)
+        {
+            Item item = new Item(enemyBase.DropItemBase[i]);
+            items.Add(item);
+        }
+        // ドロップするアイテムの数 0か1こ
+        int dropItemNum = Random.Range(0, 2);
+        Debug.Log("落とすアイテムの数は"+dropItemNum);
+        for(int i = 0;i<dropItemNum; i++)
+        {
+            int itemNumber = Random.Range(0, items.Count);
+            Item item = items[itemNumber];
+            Debug.Log("落とすアイテムの名前は" + item.ItemBase.ItemName);
+            DropItems.Add(item);
+        }
+        characterName = enemyBase.EnemyName;
+        level = enemyBase.Level;
+        currentHP = enemyBase.MaxHp;
+        currentMaxHp = enemyBase.MaxHp;
         currentMaxAtk = EnemyBase.Atk;
         currentMaxDef = enemyBase.Def;
         currentMaxAgi = EnemyBase.Agi;
         atk = currentMaxAtk;
         def = currentMaxDef;
         agi = currentMaxAgi;
-        //		agi = eBase.Agi;
         Skills = new List<EnemySkill>();
         // 覚える技のレベル以上ならslillsに追加
         foreach (LearnableSkill learableSkill in eBase.LearableEnemySkills)
@@ -56,52 +76,32 @@ public class Enemy : Character
         }
     }
 
-    /// <summary>
-    /// レベルに応じた初期値を設定する関数
-    /// </summary>
-    public override void InitStatusValue(int level)
-    {
 
+    
+    public bool isEffective(EnemySkill playerSkill)
+    {
+        for (int i = 0; i < this.EnemyBase.WeakTypes.Length; i++)
+        {
+            if (playerSkill.skillBase.MagicType == this.EnemyBase.WeakTypes[i])
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /*
-        public bool isEffective(EnemySkill playerSkill)
+    public bool isResist(EnemySkill playerSkill)
+    {
+        for (int i = 0; i < this.EnemyBase.ResistanceTypes.Length; i++)
         {
-            for (int i = 0; i < this.EnemyBase.WeakTypes.Length; i++)
+            // 使われたスキルが耐性だったら
+            if (playerSkill.skillBase.MagicType == this.EnemyBase.ResistanceTypes[i])
             {
-                if (playerSkill.skillBase.MagicType == this.EnemyBase.WeakTypes[i])
-                {
-                    return true;
-                }
+                return true;
             }
-            return false;
         }
-
-        public bool isResist(EnemySkill playerSkill)
-        {
-            for (int i = 0; i < this.EnemyBase.ResistanceTypes.Length; i++)
-            {
-                // 使われたスキルが耐性だったら
-                if (playerSkill.skillBase.MagicType == this.EnemyBase.ResistanceTypes[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool isInvalid(EnemySkill playerSkill)
-        {
-            for (int i = 0; i < this.EnemyBase.InvalidTypes.Length; i++)
-            {
-                if (playerSkill.skillBase.MagicType == this.EnemyBase.InvalidTypes[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        */
+        return false;
+    }
 
     private float critical = 1;
 
@@ -121,25 +121,35 @@ public class Enemy : Character
         // クリティカル
         // 相性
         float effectiveness = 1;// 効果量
-        /*
+        
         if (isEffective(playerSkill))
         {
-            effectiveness = 1.5f;
+            effectiveness = 1.2f;
         }
         else if (isResist(playerSkill))
         {
-            effectiveness = 0.5f;
+            effectiveness = 0.7f;
         }
-        else if (isInvalid(playerSkill))
+
+        float skillPower = playerSkill.skillBase.Power;// スキル倍率
+
+        int damage = 0;
+        // デバッグモードはプレイヤーの技が強くて敵がめっちゃ弱い
+        if (GameManager.instance.playMode == PlayMode.DEBUG)
         {
-            effectiveness = 0;
-        }*/
-        float modifiers = Random.Range(0.85f, 1.0f) * effectiveness * critical;
-        float a = (2 * player.level + 10) / 250f;
-        float d = a * playerSkill.skillBase.Power * ((float)player.atk / def) + 2;
-        int damage = Mathf.FloorToInt(d * modifiers);
+            damage = 100;
+        }
+        else if(GameManager.instance.playMode == PlayMode.RELEASE)
+        {
+            Debug.Log("効果量" + effectiveness);
+            float randSeed = Random.Range(0.83f, 1.17f);
+            // （攻撃力/2-守備力/4）×変数(5/6~7/6) x 属性効果量
+            damage = (int)((player.atk/2 - def/4) * randSeed *skillPower * effectiveness);
+        }
+        Debug.Log("ダメージ" + damage);
 
         currentHP -= damage;
+        Debug.Log("現在の体力"+currentHP);
         if (currentHP <= 0)
         {
             currentHP = 0;
@@ -150,10 +160,13 @@ public class Enemy : Character
     }
 
     // damage
-    public override bool TakeItemDamage(int basicDamage, Character turnCharacter, Character damagedCharacter)
+    public override bool TakeItemDamage(int damageRatio, Character turnCharacter)
     {
         // 合計ダメージ = (基本ダメージ + 攻撃力修正 + レベル修正) × クリティカルヒット倍率 - 敵の防御力
-        int damage = basicDamage; // + turnCharacter.atk + turnCharacter.level;
+        int damage = 0; // + turnCharacter.atk + turnCharacter.level;
+        float randSeed = Random.Range(0.83f, 1.17f);
+        // （攻撃力/2-守備力/4）×変数(5/6~7/6)
+        damage = (int)((turnCharacter.atk / 2 - def / 4) * randSeed * damageRatio * 2);
         currentHP -= damage;
         Debug.Log("ダメージ" + damage + "げんざいのHP は" + currentHP);
         if (currentHP <= 0)

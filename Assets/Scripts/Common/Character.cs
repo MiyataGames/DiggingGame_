@@ -46,7 +46,7 @@ public class Character
     {
         return false;
     }
-    public virtual bool TakeItemDamage(int damage, Character turnCharacter, Character damagedCharacter)
+    public virtual bool TakeItemDamage(int damage, Character turnCharacter)
     {
         return false;
     }
@@ -64,13 +64,6 @@ public class Character
             return true;
         }
         return false;
-    }
-    /// <summary>
-	/// レベルに応じた初期値を設定する関数
-	/// </summary>
-    public virtual void InitStatusValue(int level)
-    {
-
     }
 
     /// <summary>

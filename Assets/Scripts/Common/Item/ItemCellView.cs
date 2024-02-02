@@ -11,7 +11,7 @@ public class ItemCellView : EnhancedScrollerCellView
 {
     private ItemCellData itemCellData;
     public CellButtonClickedDelegate cellButtonClicked;
-    public GameObject selectedIcon;
+    //public GameObject selectedIcon;
 
     // These delegates will publish events when a button is clicke
 
@@ -35,6 +35,7 @@ public class ItemCellView : EnhancedScrollerCellView
     public override void RefreshCellView()
     {
         //base.RefreshCellView();
+        /*
         if (itemCellData.isSelected == true)
         {
             selectedIcon.SetActive(true);
@@ -42,12 +43,13 @@ public class ItemCellView : EnhancedScrollerCellView
         else
         {
             selectedIcon.SetActive(false);
-        }
+        }*/
     }
 
-    public void CellButton_OnClick(int selectedItemIndex)
+    public void CellButton_OnClick()
     {
+        Debug.Log("itemCellData.selectedId" + itemCellData.selectedId);
         // fire event if anyone has subscribed to it
-        if (cellButtonClicked != null) cellButtonClicked(selectedItemIndex);
+        if (cellButtonClicked != null) cellButtonClicked(itemCellData.selectedId);
     }
 }
