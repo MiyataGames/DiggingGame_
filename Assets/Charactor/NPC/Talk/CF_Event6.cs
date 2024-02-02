@@ -163,7 +163,7 @@ public class CF_Event6  : CharactorFunction
         maoAnim.SetBool("isWalk", true);
 
         var maoPosition = mao.transform.position;
-        mao.transform.DOMove(maoPosition - new Vector3(0, 4f, 0), 4f)
+        mao.transform.DOMove(maoPosition - new Vector3(0, -3f, 0), 4f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         SyoMove();
         var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
@@ -205,10 +205,10 @@ public class CF_Event6  : CharactorFunction
         sontyoAnim.SetBool("isWalk", true);
 
         var sontyoPosition = sontyo.transform.position;
-        sontyo.transform.DOMove(sontyoPosition - new Vector3(0, 4f, 0), 4f)
+        sontyo.transform.DOMove(sontyoPosition - new Vector3(0, -3f, 0), 3f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
-
+        sontyoAnim.SetBool("isWalk", false);
     }
 
 
