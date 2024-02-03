@@ -16,7 +16,6 @@ public class CharactorFunction : MonoBehaviour
     protected void CharactorChangeVec(GameObject charactor, string vec){
 
         Animator anim = charactor.GetComponent<Animator>();
-
         switch(vec){
             case "Up":
                 anim.SetFloat("x",0);
@@ -72,7 +71,8 @@ public class CharactorFunction : MonoBehaviour
     }
 
     protected void EndEvent(){
-          GameManager.instance.currentGameState = GameState.PLAYING;
+        GameManager.instance.currentGameState = GameState.PLAYING;
+        Destroy(this.gameObject);
     }
 
     void Update()
