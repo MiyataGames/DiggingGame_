@@ -13,9 +13,11 @@ public class CF_Event3_4 : CharactorFunction
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject sontyo_StoryPrefab;
+    [SerializeField] private GameObject dropRockPrefab;
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
+    [SerializeField] private Transform TilemapParent;
 
     // カメラのz座標
     [SerializeField] float CameraBufferZ = -6.53f;
@@ -39,6 +41,7 @@ public class CF_Event3_4 : CharactorFunction
     // ３番目に移動する位置
     [SerializeField] float moveThirdY;
     [SerializeField] float moveFourthY;
+    [SerializeField] float sontyoMoveToExitY;
     [SerializeField] Transform syoSecondTransform;
     // 村長がスポーンする位置
     //[SerializeField] Transform sontyoSecondTransform;
@@ -86,6 +89,9 @@ public class CF_Event3_4 : CharactorFunction
                 case "BigEarthquake":
                     BigEarthquake();
                     break;
+                case "SontyoMoveToExit":
+                    StartCoroutine(SontyoMoveToExit());
+                    break;
                 case "EndOfEarthquake":
                     StartCoroutine(EndOfEarthquake());
                     break;
@@ -100,6 +106,9 @@ public class CF_Event3_4 : CharactorFunction
                     break;
                 case "SyoMoveToSontyo":
                     StartCoroutine(SyoMoveToSontyo());
+                    break;
+                case "PrepareNext":
+                    PrepareNext();
                     break;
                 case "EndEvent":
                     EndEvent();
@@ -205,8 +214,8 @@ public class CF_Event3_4 : CharactorFunction
         syoAnim.SetFloat("x", 0);
         syoAnim.SetFloat("y", -1);
         yield return new WaitForSeconds(0.5f);
-        // 左
-        syoAnim.SetFloat("x", -1);
+        // 右
+        syoAnim.SetFloat("x", 1);
         syoAnim.SetFloat("y", 0);
         yield return new WaitForSeconds(0.5f);
         storyEventScript.moveFlag = false;
@@ -249,8 +258,7 @@ public class CF_Event3_4 : CharactorFunction
         storyEventScript.moveFlag = true;
         sontyo = SpawnCharactor(sontyo_StoryPrefab, sontyoFirstTransform.position, StoryParent);
         Animator sontyoAnimator = sontyo.GetComponent<Animator>();
-        Vector3 CameraPos = new Vector3(player_Story.transform.position.x, sontyoFirstTransform.position.y+ CameraOffsetY, CameraBufferZ);
-        Camera.main.transform.DOMove(CameraPos, 2f);
+        Camera.main.transform.DOMoveY(sontyoFirstTransform.position.y, 2f);
         yield return new WaitForSeconds(2);
         sontyoAnimator.SetBool("isWalk", true);
         // 村長が歩いてくる
@@ -297,6 +305,20 @@ public class CF_Event3_4 : CharactorFunction
         tween = Camera.main.DOShakePosition(duration: 3, strength: 1, fadeOut: false).SetLoops(-1);
     }
 
+    IEnumerator SontyoMoveToExit()
+    {
+        storyEventScript.moveFlag = false;
+        Animator sontyoAnim = sontyo.GetComponent<Animator>();
+        sontyoAnim.SetFloat("x", 0);
+        sontyoAnim.SetFloat("y", 1);
+        sontyoAnim.SetBool("isWalk", true);
+        sontyo.transform.DOMoveY(sontyo.transform.position.y + sontyoMoveToExitY, 2);
+        yield return new WaitForSeconds(2);
+        sontyoAnim.SetBool("isWalk", false);
+        storyEventScript.moveFlag = true;
+        storyEventScript.ReadNextMessage();
+    }
+
 
     // 地響きを止めるショウとマオの位置を変える
     IEnumerator EndOfEarthquake()
@@ -304,9 +326,13 @@ public class CF_Event3_4 : CharactorFunction
         tween.Kill();
         Debug.Log(tween);
         storyEventScript.moveFlag = true;
-        Camera.main.transform.position = new Vector3(maoSecondTransform.position.x, maoSecondTransform.position.y - CameraOffsetY, CameraBufferZ);
         player_Story.transform.position = maoSecondTransform.position;
         syo.transform.position = syoSecondTransform.position;
+        Vector3 dropRockPos = new Vector3(0, syo.transform.position.y + 2 , syo.transform.position.z);
+        Instantiate(dropRockPrefab, dropRockPos, Quaternion.identity, TilemapParent);
+        Camera.main.transform.position = new Vector3(maoSecondTransform.position.x, maoSecondTransform.position.y - CameraOffsetY, CameraBufferZ);
+        // 村長を削除
+        Destroy(sontyo.gameObject);
         Vector3 CameraPos = new Vector3(player_Story.transform.position.x, player_Story.transform.position.y- CameraOffsetY, CameraBufferZ);
         Camera.main.transform.DOMove(CameraPos,2f);
         yield return new WaitForSeconds(2);
@@ -329,7 +355,7 @@ public class CF_Event3_4 : CharactorFunction
         AudioClip SEClip = Resources.Load<AudioClip>(SEPath);
         audioSource.PlayOneShot(SEClip);
         // カメラ移動
-        Camera.main.transform.DOMoveY(Camera.main.transform.position.y + 3f- CameraOffsetY, 2f);
+        Camera.main.transform.DOMoveY(Camera.main.transform.position.y +2f - CameraOffsetY, 2f);
         yield return new WaitForSeconds(2);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
@@ -338,8 +364,10 @@ public class CF_Event3_4 : CharactorFunction
     // マオが駆け寄る
     IEnumerator MaoMoveToSontyo()
     {
-        float duration = 0.25f;
         storyEventScript.moveFlag = true;
+        Camera.main.transform.DOMoveY(syo.transform.position.y - CameraOffsetY, 2f);
+        yield return new WaitForSeconds(2);
+        float duration = 0.25f;
         maoAnim.SetBool("isWalk", true);
         player_Story.transform.DOMoveY(player_Story.transform.position.y + moveFourthY, duration);
         yield return new WaitForSeconds(duration);
@@ -359,6 +387,16 @@ public class CF_Event3_4 : CharactorFunction
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
     }
+
+    // 次のイベントまでの用意（プレイヤーが動けるようになるまでの準備）
+    void PrepareNext()
+    {
+        Destroy(syo.gameObject);
+        CharactorChangeVec(player_Story, "down");
+        // プレイヤーカメラ追従を有効に
+        Camera.main.GetComponent<FollowPlayerScript>().enabled = true;
+    }
+
     /// <summary>
     /// 村へ移動する関数
     /// </summary>
