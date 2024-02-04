@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+//using UnityEngine.Tilemaps;
+
+
 public class CF_Event6  : CharactorFunction
 {
     [SerializeField] private StoryEventScript storyEventScript;
@@ -13,6 +16,9 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private GameObject mao_StoryPrefab;
     [SerializeField] private GameObject boss_StoryPrefab;
     [SerializeField] private GameObject sontyo_StoryPrefab;
+    [SerializeField] private GameObject mob1_StoryPrefab;
+    [SerializeField] private GameObject mob2_StoryPrefab;
+    [SerializeField] private GameObject kakushimap;
 
 
 
@@ -29,6 +35,12 @@ public class CF_Event6  : CharactorFunction
     private GameObject boss;
 
     private GameObject sontyo;
+
+    private GameObject mob1;
+
+    private GameObject mob2;
+
+
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -50,6 +62,13 @@ public class CF_Event6  : CharactorFunction
                     break;
                 case "SpawnBoss_Story":
                     SpawnBoss_Story();
+                    break;
+
+                case "SpawnMob1_Story":
+                    SpawnMob1_Story();
+                    break;
+                case "SpawnMob2_Story":
+                    SpawnMob2_Story();
                     break;
 
                 case "Move2Village":
@@ -84,6 +103,32 @@ public class CF_Event6  : CharactorFunction
                 case "SceneShake":
                     StartCoroutine(SceneShake());
                     break;
+                case "WaitFive":
+                    WaitFive();
+                    break;
+                case "KakushiOn":
+                    KakushiOn();
+                    break;
+                case "Mob1Move":
+                    Mob1Move();
+                    break;
+                case "Mob2Move":
+                    Mob2Move();
+                    break;
+                case "SontyoStop":
+                    SontyoStop();
+                    break;
+                case "HideBoss":
+                    HideBoss();
+                    break;
+                case "StartEvent":
+                    StartEvent();
+                    break;
+                case "EndEvent":
+                    EndEvent();
+                    break;
+
+
 
             }
         }
@@ -122,7 +167,7 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, -2f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 0f), StoryParent);
     }
 
     /// <summary>
@@ -130,18 +175,33 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, -2f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, 0f), StoryParent);
     }
 
 
     private void SpawnSontyo_Story()
     {
-        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(-2f, -7), StoryParent);
+
+        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(5f,5f), StoryParent);
     }
+
+
+    private void SpawnMob1_Story()
+    {
+
+        mob1 = SpawnCharactor(mob1_StoryPrefab, player_Story.transform.position + new Vector3(4.5f, 5f), StoryParent);
+    }
+
+    private void SpawnMob2_Story()
+    {
+
+        mob2 = SpawnCharactor(mob2_StoryPrefab, player_Story.transform.position + new Vector3(5.5f, 5f), StoryParent);
+    }
+
 
     private void SpawnBoss_Story()
     {
-        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 1f), StoryParent);
+        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 2f), StoryParent);
         boss.GetComponent<BossShake>().SetStoryScene(StoryParent);
     }
 
@@ -178,6 +238,8 @@ public class CF_Event6  : CharactorFunction
     }
 
 
+
+
     private void MaoSecondMove()
     {
 
@@ -187,15 +249,38 @@ public class CF_Event6  : CharactorFunction
 
         Debug.Log("実行できた");
         var maoPosition = mao.transform.position;
-        mao.transform.DOMove(maoPosition - new Vector3(0, 1.8f, 0), 2f)
+        mao.transform.DOMove(maoPosition - new Vector3(0, 3f, 0), 3f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         SyoSecondMove();
-        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 1f, 0), 2f);
+        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 2f, 0), 2f);
 
 
     }
 
 
+
+
+
+
+    //private void SontyoMove()
+    //{
+    //    storyEventScript.moveFlag = true;
+
+    //    Animator sontyoAnim = sontyo.GetComponent<Animator>();
+    //    sontyoAnim.SetBool("isWalk", true);
+
+    //    var t = sontyo.transform.position;
+    //    sontyo.transform.DOMove(t - new Vector3(0, 4, 0), 4f)
+    //        .OnComplete(SontyoStop);
+                        
+    //}
+
+    //private void SontyoStop()
+    //{
+    //    storyEventScript.moveFlag = true;
+    //    Animator sontyoAnim = sontyo.GetComponent<Animator>();
+    //    sontyoAnim.SetBool("isWalk", false);
+    //}
 
 
     private void SontyoMove()
@@ -206,10 +291,67 @@ public class CF_Event6  : CharactorFunction
 
         var sontyoPosition = sontyo.transform.position;
         sontyo.transform.DOMove(sontyoPosition - new Vector3(0, 4f, 0), 4f)
-            .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
-        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
+            .OnComplete(SontyoStop); // アニメーションの完了時に SyoStop を呼び出す
+        Mob1Move();
+        Mob2Move();
+        
+        var SontyoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
 
     }
+
+    private void SontyoStop()
+    {
+        storyEventScript.moveFlag = true;
+        Animator sontyoAnim = sontyo.GetComponent<Animator>();
+        sontyoAnim.SetBool("isWalk", false);
+    }
+
+
+
+
+    private void Mob1Move()
+    {
+        storyEventScript.moveFlag = true;
+
+        Animator Mob1anim = mob1.GetComponent<Animator>();
+        Mob1anim.SetBool("isWalk", true);
+
+        var t = mob1.transform.position;
+        mob1.transform.DOMove(t - new Vector3(0, 3, 0), 4f)
+                        .SetEase(Ease.Linear)
+                        .OnComplete(Mob1Stop);
+        
+    }
+
+    private void Mob1Stop()
+    {
+        storyEventScript.moveFlag = true;
+        Animator Mob1Anim = mob1.GetComponent<Animator>();
+        Mob1Anim.SetBool("isWalk", false);
+    }
+
+    private void Mob2Move()
+    {
+        storyEventScript.moveFlag = true;
+
+        Animator Mob2anim = mob2.GetComponent<Animator>();
+        Mob2anim.SetBool("isWalk", true);
+
+        var t = mob2.transform.position;
+        mob2.transform.DOMove(t - new Vector3(0, 3, 0), 4f)
+                        .SetEase(Ease.Linear)
+                        .OnComplete(Mob2Stop);
+        Mob1Move();
+    }
+
+    private void Mob2Stop()
+    {
+        storyEventScript.moveFlag = true;
+        Animator Mob2Anim = mob2.GetComponent<Animator>();
+        Mob2Anim.SetBool("isWalk", false);
+    }
+
+
 
 
 
@@ -248,6 +390,15 @@ public class CF_Event6  : CharactorFunction
         Animator syoAnim = syo.GetComponent<Animator>();
         syoAnim.SetBool("isWalk", false);
     }
+
+
+    private IEnumerator WaitFive()
+    {
+        yield return new WaitForSeconds(5);
+        // 5秒後に実行したい処理をここに記述
+    }
+
+
 
 
     private void SyoSecondMove()
@@ -320,20 +471,46 @@ public class CF_Event6  : CharactorFunction
         storyEventScript.ReadNextMessage();//次の文に移動
     }
 
+    public void KakushiOn()
+    {
+        Debug.Log("aaaaabbbbcccccccc");
+        kakushimap.SetActive(true);
+
+    }
+
+    public void HideBoss()
+    {
+        if (boss != null) // Check if the boss GameObject is not null
+        {
+            // Get the SpriteRenderer component from the boss GameObject
+            SpriteRenderer spriteRenderer = boss.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                // Fade the sprite to 0 alpha over 2 seconds
+                spriteRenderer.DOFade(0f, 3f).OnComplete(() => boss.SetActive(false));
+            }
+            else
+            {
+                Debug.LogWarning("HideBoss called but SpriteRenderer is missing on the boss GameObject.");
+            }
+        }
+
+
+    }
 
 
 
 
 
-
-    /// <summary>
-    /// 移動が完了したら実行する関数
-    /// </summary>
-    private void moveCompleteFunc()
+        /// <summary>
+        /// 移動が完了したら実行する関数
+        /// </summary>
+        private void moveCompleteFunc()
     {
         Animator anim = sontyo.GetComponent<Animator>();
         anim.SetBool("isWalk", false);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
     }
+
 }

@@ -32,7 +32,7 @@ public class BossShake : MonoBehaviour
         // 1秒間、強度0.5でカメラを揺らす
         audioSource.Play();
         storySceneTransform.DOShakePosition(1f, 2.5f);
-        
+
     }
 }
 
