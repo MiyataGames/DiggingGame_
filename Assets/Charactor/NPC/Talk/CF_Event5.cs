@@ -266,7 +266,7 @@ public class CF_Event5 : CharactorFunction
         for (int i = 1; i <= 1; i++)
         {
             boss.transform.DOMove(bossPosition - OneStep * i, 5f);//
-            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 3f);
+            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 5.2f);
             //// カメラを揺らす
             //Camera.main.DOShakePosition(0.3f, 1.3f); // 0.2秒間、強度2で揺らす
             //yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）

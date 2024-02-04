@@ -15,7 +15,7 @@ public class BossShake : MonoBehaviour
 
     public void SetStoryScene(Transform transform)
     {
-        storySceneTransform = transform;
+       
         storySceneTransform = transform; // または適切な Transform を設定
 
         // AudioSource コンポーネントを追加し、設定
@@ -30,8 +30,10 @@ public class BossShake : MonoBehaviour
     public void ShakeCamera()
     {
         // 1秒間、強度0.5でカメラを揺らす
+        Debug.Log(audioSource);
         audioSource.Play();
-        storySceneTransform.DOShakePosition(1f, 2.5f);
+        Debug.Log("dddddda");
+        storySceneTransform.DOShakePosition(1f, 0.8f);
 
     }
 }
