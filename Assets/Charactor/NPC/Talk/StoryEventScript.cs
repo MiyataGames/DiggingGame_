@@ -404,7 +404,7 @@ public class StoryEventScript : MonoBehaviour
     {
         ClearAllListeners();
         SwichTalkDialogActivate(false);
-
+        ReadNextMessage();
     }
 
 

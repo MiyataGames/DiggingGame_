@@ -12,6 +12,12 @@ public class CF_Event5 : CharactorFunction
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject mao_StoryPrefab;
     [SerializeField] private GameObject boss_StoryPrefab;
+    [SerializeField] private GameObject maoposition5;
+    [SerializeField] private GameObject bossposition5;
+    [SerializeField] private GameObject syoposition5;
+
+
+
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
@@ -113,7 +119,7 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-4f, 5f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, syoposition5.transform.position, StoryParent);
     }
 
     /// <summary>
@@ -121,12 +127,12 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, maoposition5.transform.position, StoryParent);
     }
 
     private void SpawnBoss_Story()
     {
-        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        boss = SpawnCharactor(boss_StoryPrefab, bossposition5.transform.position, StoryParent);
         boss.GetComponent<BossShake>().SetStoryScene(StoryParent);
     }
 
