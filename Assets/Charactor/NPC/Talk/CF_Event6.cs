@@ -19,6 +19,12 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private GameObject mob1_StoryPrefab;
     [SerializeField] private GameObject mob2_StoryPrefab;
     [SerializeField] private GameObject kakushimap;
+    [SerializeField] private GameObject sontyoposition6;
+    [SerializeField] private GameObject maoposition6;
+    [SerializeField] private GameObject syoposition6;
+    [SerializeField] private GameObject bossposition6;
+    [SerializeField] private GameObject mob1position6;
+    [SerializeField] private GameObject mob2position6;
 
 
 
@@ -127,6 +133,10 @@ public class CF_Event6  : CharactorFunction
                 case "EndEvent":
                     EndEvent();
                     break;
+                case "ShakeBo":
+                    ShakeBo();
+                    break;
+
 
 
 
@@ -167,7 +177,7 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 0f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, syoposition6.transform.position, StoryParent);
     }
 
     /// <summary>
@@ -175,33 +185,33 @@ public class CF_Event6  : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, 0f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab,maoposition6.transform.position, StoryParent);
     }
 
 
     private void SpawnSontyo_Story()
     {
 
-        sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(5f,5f), StoryParent);
+        sontyo = SpawnCharactor(sontyo_StoryPrefab, sontyoposition6.transform.position, StoryParent);
     }
 
 
     private void SpawnMob1_Story()
     {
 
-        mob1 = SpawnCharactor(mob1_StoryPrefab, player_Story.transform.position + new Vector3(4.5f, 5f), StoryParent);
+        mob1 = SpawnCharactor(mob1_StoryPrefab, mob1position6.transform.position, StoryParent);
     }
 
     private void SpawnMob2_Story()
     {
 
-        mob2 = SpawnCharactor(mob2_StoryPrefab, player_Story.transform.position + new Vector3(5.5f, 5f), StoryParent);
+        mob2 = SpawnCharactor(mob2_StoryPrefab, mob2position6.transform.position, StoryParent);
     }
 
 
     private void SpawnBoss_Story()
     {
-        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 2f), StoryParent);
+        boss = SpawnCharactor(boss_StoryPrefab,bossposition6.transform.position, StoryParent);
         boss.GetComponent<BossShake>().SetStoryScene(StoryParent);
     }
 
@@ -223,10 +233,11 @@ public class CF_Event6  : CharactorFunction
         maoAnim.SetBool("isWalk", true);
 
         var maoPosition = mao.transform.position;
-        mao.transform.DOMove(maoPosition - new Vector3(0, 4f, 0), 4f)
+        mao.transform.DOMove(maoPosition - new Vector3(0, -0.6f, 0), 1f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         SyoMove();
-        var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
+        
+        var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -0.6f, 0), 1f);
         
     }
 
@@ -239,24 +250,44 @@ public class CF_Event6  : CharactorFunction
 
 
 
-
     private void MaoSecondMove()
     {
-
         storyEventScript.moveFlag = true;
         Animator maoAnim = mao.GetComponent<Animator>();
         maoAnim.SetBool("isWalk", true);
 
-        Debug.Log("実行できた");
-        var maoPosition = mao.transform.position;
-        mao.transform.DOMove(maoPosition - new Vector3(0, 3f, 0), 3f)
-            .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
-        SyoSecondMove();
-        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 2f, 0), 2f);
+        // 移動前の元の位置を保存
+        Vector3 originalPosition = mao.transform.position;
+        // 移動する新しい位置を計算
+        Vector3 movePosition = originalPosition - new Vector3(0, -0.2f, 0);
 
+        // 移動と戻る動作を連続して実行するSequenceを作成
+        Sequence sequence = DOTween.Sequence();
 
+        // 1秒かけて指定した位置に移動し、移動完了時にShakeBoを実行
+        sequence.Append(mao.transform.DOMove(movePosition, 0.3f).OnComplete(ShakeBo));
+
+        // 移動完了後、すぐに元の位置に戻る
+        sequence.Append(mao.transform.DOMove(originalPosition, 0.3f).OnComplete(() => {
+            // 元の位置に戻った後の処理
+            MaoStop(); // 移動が完了したらMaoのアニメーションを停止
+        }));
+
+        // アニメーション開始
+        sequence.Play();
     }
 
+
+
+
+    private void ShakeBo()
+    {
+        if (boss != null) // ボスの GameObject が存在することを確認
+        {
+            // ボスを揺らす。ここでは、持続時間を 1 秒、強度を 0.5、振動数を 10 に設定しています。
+            boss.transform.DOShakePosition(1f, 0.8f, 15);
+        }
+    }
 
 
 
@@ -272,7 +303,7 @@ public class CF_Event6  : CharactorFunction
     //    var t = sontyo.transform.position;
     //    sontyo.transform.DOMove(t - new Vector3(0, 4, 0), 4f)
     //        .OnComplete(SontyoStop);
-                        
+
     //}
 
     //private void SontyoStop()
@@ -290,7 +321,7 @@ public class CF_Event6  : CharactorFunction
         sontyoAnim.SetBool("isWalk", true);
 
         var sontyoPosition = sontyo.transform.position;
-        sontyo.transform.DOMove(sontyoPosition - new Vector3(0, 4f, 0), 4f)
+        sontyo.transform.DOMove(sontyoPosition - new Vector3(0, 3.5f, 0), 4f)
             .OnComplete(SontyoStop); // アニメーションの完了時に SyoStop を呼び出す
         Mob1Move();
         Mob2Move();
@@ -357,16 +388,25 @@ public class CF_Event6  : CharactorFunction
 
     private void SyoMove()
     {
-        //storyEventScript.moveFlag = true;
+        // storyEventScript.moveFlag = true;
         Animator syoAnim = syo.GetComponent<Animator>();
-        syoAnim.SetBool("isWalk", true);
+        if (syoAnim != null) // Animator コンポーネントが存在するかチェック
+        {
+            syoAnim.SetBool("isWalk", true);
 
-        var syoPosition = syo.transform.position;
-        syo.transform.DOMove(syoPosition - new Vector3(0, 4f, 0), 4f)
-            .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
-        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
+            Debug.Log("動いた");
+            var syoPosition = syo.transform.position;
+            syo.transform.DOMove(syoPosition - new Vector3(0, -1f, 0), -1f)
+                .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
+        }
+        else
+        {
+            Debug.LogError("Animator component not found on " + syo.name);
+        }
 
+        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -1, 0), 1f);
     }
+
 
 
 
@@ -498,14 +538,21 @@ public class CF_Event6  : CharactorFunction
 
     }
 
+    private void BossFinishedMoving()
+    {
+        // 移動が完了した後の処理をここに記述
+        Debug.Log("Boss has finished moving.");
+        // 例えば、ボスを非アクティブにするなど
+    }
 
 
 
 
-        /// <summary>
-        /// 移動が完了したら実行する関数
-        /// </summary>
-        private void moveCompleteFunc()
+
+    /// <summary>
+    /// 移動が完了したら実行する関数
+    /// </summary>
+    private void moveCompleteFunc()
     {
         Animator anim = sontyo.GetComponent<Animator>();
         anim.SetBool("isWalk", false);

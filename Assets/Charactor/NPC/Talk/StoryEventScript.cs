@@ -251,6 +251,11 @@ public class StoryEventScript : MonoBehaviour
                 fadeController.OnFadeInComplete += OnFadeInComplete;
                 fadeController.FadeIn();
                 break;
+            case "DeleteText":
+                 DeleteText();
+                break;
+
+
             default:
                 break;
         }
@@ -392,6 +397,16 @@ public class StoryEventScript : MonoBehaviour
         //会話テキストを表示
         massage.text = EventDatas[currentTextID].mainText;
     }
+
+
+
+    private void DeleteText()
+    {
+        ClearAllListeners();
+        SwichTalkDialogActivate(false);
+
+    }
+
 
     private void SetBGM()
     {

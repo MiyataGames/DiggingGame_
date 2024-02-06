@@ -113,7 +113,7 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-4f, 5f), StoryParent);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, 5f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
     }
 
     private void SpawnBoss_Story()
@@ -201,7 +201,7 @@ public class CF_Event5 : CharactorFunction
     {
         Debug.Log("シーンシェイク");
         
-        Camera.main.DOShakePosition(6f, 1.5f); // 0.2秒間、強度2で揺らす
+        Camera.main.DOShakePosition(5f, 0.7f); // 0.2秒間、強度2で揺らす
         audioSource.Play();
         yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
 
