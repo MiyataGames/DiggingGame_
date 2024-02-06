@@ -27,6 +27,7 @@ public class CF_Event2 : CharactorFunction
     [SerializeField] private Transform ShouPos1;
     [SerializeField] private Transform ShouPos2;
     [SerializeField] private Transform MaoPos1;
+    [SerializeField] private Transform MaoPos2;
     [SerializeField] private Transform MotherPos1;
     [SerializeField] private Transform MotherPos2;
     private GameObject shou;
@@ -75,6 +76,12 @@ public class CF_Event2 : CharactorFunction
                 case "AfterFood":
                 AfterFood();
                 break;
+                case "SetMorning":
+                SetMorning();
+                break;
+                case "Living2kichinen":
+                Living2kichinen();
+                break;
             }
         }
 
@@ -111,6 +118,8 @@ public class CF_Event2 : CharactorFunction
     private void SpawnSontyo_Story(){
         Vector3 spawnPosition = new Vector3(SontyoPos1.position.x, SontyoPos1.position.y, 1);
         sontyo = SpawnCharactor(sontyo_StoryPrefab, spawnPosition, StoryParent);
+        Vector3 MaoPos = new Vector3(MaoPos2.position.x, MaoPos2.position.y, 1);
+        shou.transform.position = MaoPos;
     }
     /// <summary>
     /// Shou
@@ -207,6 +216,20 @@ public void MoveCameraToTarget1(){
         storyCamera.transform.position = newPosition;
     }
 
+private void SetMorning(){
+    Vector3 Shou = new Vector3(ShouPos1.position.x, ShouPos1.position.y, 1);
+           shou.transform.position = Shou;
+    Vector3 MotherPos = new Vector3(MotherPos2.position.x, MotherPos2.position.y, 1);
+           mother.transform.position = MotherPos;
+
+}
+
+private void Living2kichinen(){
+    Animator anim = player_Story.GetComponent<Animator>();
+    anim.SetBool("isWalk", true);
+    StartCoroutine(MoveMao3());
+}
+
 #region 
     // まおがリビングから寝室に移動する
     IEnumerator MoveMao1(){
@@ -234,7 +257,17 @@ public void MoveCameraToTarget1(){
         // すべてのアニメーションが終わるのを待つ
         yield return seq.WaitForCompletion();
     }
-    
+
+    IEnumerator MoveMao3(){
+        var seq = DOTween.Sequence();
+        seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, -2, 0), 1f).SetEase(Ease.Linear).SetRelative());
+        seq.Append(player_Story.transform.DOLocalMove(new Vector3(5, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
+        // seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 2, 0), 2f).SetEase(Ease.Linear).SetRelative());
+       
+        // すべてのアニメーションが終わるのを待つ
+        yield return seq.WaitForCompletion();
+    }
+
     IEnumerator MoveShou1(){
         var seq = DOTween.Sequence();
         seq.Append(shou.transform.DOLocalMove(new Vector3(3, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
