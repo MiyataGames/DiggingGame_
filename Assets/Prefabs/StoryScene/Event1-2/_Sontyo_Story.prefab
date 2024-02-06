@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 225906842655797194}
   - component: {fileID: 8720156025816707595}
   m_Layer: 0
-  m_Name: Sontyo_Story
+  m_Name: _Sontyo_Story
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

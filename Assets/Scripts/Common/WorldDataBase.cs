@@ -44,7 +44,7 @@ public enum GameMode
     BOSS_SCENE,
 }
 
-public enum EventScene
+public enum Event1Scene
 {
     NONE,
     EVENT1_1,
