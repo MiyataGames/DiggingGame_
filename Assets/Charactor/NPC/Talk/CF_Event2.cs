@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class CF_Event2 : CharactorFunction
 {
@@ -110,6 +111,11 @@ public class CF_Event2 : CharactorFunction
     private void SpawnMother_Story(){
         Vector3 spawnPosition = new Vector3(MotherPos1.position.x, MotherPos1.position.y, 1);
         mother = SpawnCharactor(sontyo_StoryPrefab, spawnPosition, StoryParent);
+
+            
+        Vector3 MaoPos = new Vector3(MaoPos2.position.x, MaoPos2.position.y, 1);
+        Debug.Log("MaoPos: " + MaoPos);  
+        player_Story.transform.position = MaoPos;
     }
 
     /// <summary>
@@ -118,8 +124,7 @@ public class CF_Event2 : CharactorFunction
     private void SpawnSontyo_Story(){
         Vector3 spawnPosition = new Vector3(SontyoPos1.position.x, SontyoPos1.position.y, 1);
         sontyo = SpawnCharactor(sontyo_StoryPrefab, spawnPosition, StoryParent);
-        Vector3 MaoPos = new Vector3(MaoPos2.position.x, MaoPos2.position.y, 1);
-        shou.transform.position = MaoPos;
+
     }
     /// <summary>
     /// Shou
@@ -138,7 +143,7 @@ public class CF_Event2 : CharactorFunction
         // スプライトをフェードアウト
         spriteRenderer.DOFade(0f, 1f).SetEase(Ease.Linear);
         // ここで歩行アニメーションの継続
-        Animator anim = shou.GetComponent<Animator>();
+        Animator anim = player_Story.GetComponent<Animator>();
         anim.SetBool("isWalk", true);
                 StartCoroutine(MoveMao1());
     }
@@ -170,15 +175,17 @@ public class CF_Event2 : CharactorFunction
         
         Vector3 Shou = new Vector3(ShouPos2.position.x, ShouPos2.position.y, 1);
         shou.transform.position = Shou;
+        Animator shou_anim = shou.GetComponent<Animator>();
+        shou_anim.SetBool("isWalk", false);
+        Animator mao_anim = player_Story.GetComponent<Animator>();
+        mao_anim.SetBool("isWalk", false);
         DarkenCamera();
     }
     private void BedRoom2living(){
         MoveMao2();
+        Debug.Log("xxxxxx");
           // プレイヤーとshouを瞬時に指定された位置に移動
-        SontyoHouse1F.SetActive(true);
-        SontyoHouse2F.SetActive(false);
-        SpriteRenderer spriteRenderer = shou.GetComponent<SpriteRenderer>();
-        spriteRenderer.DOFade(1f, 0f).SetEase(Ease.Linear);
+       
     }
 
     private void DarkenCamera(){
@@ -189,17 +196,6 @@ public class CF_Event2 : CharactorFunction
             light.intensity *= darkenAmount; // 明るさを減少
         }
     }
-
-    /// <summary>
-    /// 移動が完了したら実行する関数
-    /// </summary>
-    private void moveCompleteFunc(){
-        Animator anim = sontyo.GetComponent<Animator>();
-        anim.SetBool("isWalk", false);
-        storyEventScript.moveFlag = false;
-        storyEventScript.ReadNextMessage();
-    }
-
 private void Move2SontyoHouse(){
     // Groundを非アクティブにする
     Ground.SetActive(false);
@@ -221,12 +217,18 @@ private void SetMorning(){
            shou.transform.position = Shou;
     Vector3 MotherPos = new Vector3(MotherPos2.position.x, MotherPos2.position.y, 1);
            mother.transform.position = MotherPos;
+           Debug.Log("morning");
 
 }
 
 private void Living2kichinen(){
+    SontyoHouse1F.SetActive(true);
+    SontyoHouse2F.SetActive(false);
+    SpriteRenderer spriteRenderer = shou.GetComponent<SpriteRenderer>();
+    spriteRenderer.DOFade(1f, 0f).SetEase(Ease.Linear);
     Animator anim = player_Story.GetComponent<Animator>();
     anim.SetBool("isWalk", true);
+    Debug.Log("a");
     StartCoroutine(MoveMao3());
 }
 
@@ -248,9 +250,9 @@ private void Living2kichinen(){
     //　寝室からリビングに移動する
     IEnumerator MoveMao2(){
         var seq = DOTween.Sequence();
-        seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 1, 0), 1f).SetEase(Ease.Linear).SetRelative());
-        seq.Append(player_Story.transform.DOLocalMove(new Vector3(3, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
-        seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 2, 0), 2f).SetEase(Ease.Linear).SetRelative());
+        seq.Append(player_Story.transform.DOLocalMove(new Vector3(2, 5, 0), 1f).SetEase(Ease.Linear).SetRelative());
+        seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 5, 0), 1f).SetEase(Ease.Linear).SetRelative());
+        seq.Append(player_Story.transform.DOLocalMove(new Vector3(2, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
        
         // 歩きながらフェードアウトする
         seq.AppendCallback(() => StartWalkingFadeOutMao());
@@ -261,7 +263,7 @@ private void Living2kichinen(){
     IEnumerator MoveMao3(){
         var seq = DOTween.Sequence();
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, -2, 0), 1f).SetEase(Ease.Linear).SetRelative());
-        seq.Append(player_Story.transform.DOLocalMove(new Vector3(5, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
+        seq.Append(player_Story.transform.DOLocalMove(new Vector3(-2, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
         // seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 2, 0), 2f).SetEase(Ease.Linear).SetRelative());
        
         // すべてのアニメーションが終わるのを待つ
@@ -280,6 +282,12 @@ private void Living2kichinen(){
         // すべてのアニメーションが終わるのを待つ
         yield return seq.WaitForCompletion();
         
+    }
+
+    IEnumerator BedRoom2Living(){
+        MoveMao2();
+        yield return null;
+        Living2kichinen();
     }
 
 
