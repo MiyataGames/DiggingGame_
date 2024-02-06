@@ -44,6 +44,18 @@ public enum GameMode
     BOSS_SCENE,
 }
 
+public enum Event1Scene
+{
+    NONE,
+    EVENT1_1,
+    EVENT1_2,
+    EVENT1_3_4,
+    EVENT1_5,
+    EVENT1_6,
+    EVENT1_7,
+    END
+}
+
 //属性
 public enum MagicType
 {
