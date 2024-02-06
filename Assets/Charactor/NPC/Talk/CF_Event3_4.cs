@@ -136,10 +136,10 @@ public class CF_Event3_4 : CharactorFunction
         GameManager.instance.currentGameState = GameState.POSE;
         // イベント1_3_4
         GameManager.instance.currentEvent1Scene = Event1Scene.EVENT1_3_4;
-        Camera.main.transform.position = new Vector3(0, -10, -10);
         // 当たり判定をオフ
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         Move2Village();
+        Camera.main.transform.position = new Vector3(0, -10, -10);
     }
 
     /// <summary>
@@ -151,6 +151,7 @@ public class CF_Event3_4 : CharactorFunction
         syo = SpawnCharactor(syo_StoryPrefab, syoFirstTransform.position, StoryParent);
         player_Story.transform.position = maoFirstTransform.position;
         CharactorChangeVec(player_Story, "down");
+        CharactorChangeVec(syo, "down");
         // しょうとマオが歩く カメラはマオを追従する
         syoAnim = syo.GetComponent<Animator>();
         maoAnim = player_Story.GetComponent<Animator>();
