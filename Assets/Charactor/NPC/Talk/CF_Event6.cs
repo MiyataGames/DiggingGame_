@@ -19,6 +19,8 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private GameObject mob1_StoryPrefab;
     [SerializeField] private GameObject mob2_StoryPrefab;
     [SerializeField] private GameObject kakushimap;
+    [SerializeField] private GameObject kakushimap2;
+    [SerializeField] private GameObject kakushimap3;
     [SerializeField] private GameObject sontyoposition6;
     [SerializeField] private GameObject maoposition6;
     [SerializeField] private GameObject syoposition6;
@@ -31,7 +33,7 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
 
-
+    //private Coroutine sceneShakeCoroutine = null;
     private AudioSource audioSource;
     private AudioClip zihibikiSoundClip;
     private GameObject syo;
@@ -114,6 +116,12 @@ public class CF_Event6  : CharactorFunction
                     break;
                 case "KakushiOn":
                     KakushiOn();
+                    break;
+                case "KakushiOn2":
+                    KakushiOn2();
+                    break;
+                case "KakushiOn3":
+                    KakushiOn3();
                     break;
                 case "Mob1Move":
                     Mob1Move();
@@ -222,6 +230,16 @@ public class CF_Event6  : CharactorFunction
     {
         SideView2TopDown();
     }
+
+
+    //public void StartOrRestartSceneShake()
+    //{
+    //    if (sceneShakeCoroutine != null)
+    //    {
+    //        StopCoroutine(sceneShakeCoroutine);
+    //    }
+    //    sceneShakeCoroutine = StartCoroutine(SceneShake());
+    //}
 
     /// <summary>
     /// maoが移動する関数
@@ -410,19 +428,54 @@ public class CF_Event6  : CharactorFunction
 
 
 
+    //private IEnumerator SceneShake()
+    //{
+    //    Debug.Log("シーンシェイク");
+
+    //    // カメラを即座に揺らし始める
+    //    Camera.main.DOShakePosition(6f, 1.5f); // 6秒間、強度1.5で揺らす
+    //    audioSource.Play();
+
+    //    // 最初の2秒待機後に KakushiOn を実行
+    //    yield return new WaitForSeconds(2f);
+    //    KakushiOn();
+
+    //    // さらに2秒待機後に KakushiOn2 を実行
+    //    yield return new WaitForSeconds(2f);
+    //    KakushiOn2();
+
+    //    // 最後に2秒待機後に KakushiOn3 を実行
+    //    yield return new WaitForSeconds(2f);
+    //    KakushiOn3();
+    //}
     private IEnumerator SceneShake()
     {
         Debug.Log("シーンシェイク");
-        
-        Camera.main.DOShakePosition(6f, 1.5f); // 0.2秒間、強度2で揺らす
+
+        Camera.main.DOShakePosition(6f, 1.5f);
         audioSource.Play();
-        yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
 
+        
+        KakushiOn(); // 最初の状態を設定
+        yield return new WaitForSeconds(2f);
 
+        kakushimap.SetActive(false);
+        KakushiOn2(); // 次の状態を設定
+        yield return new WaitForSeconds(2f);
+
+        kakushimap2.SetActive(false);
+        KakushiOn3(); // 最終的な状態を設定
+        yield return new WaitForSeconds(2f);
+
+        //sceneShakeCoroutine = null;
     }
 
-
-
+    //private void ResetSceneState()
+    //{
+    //    kakushimap.SetActive(false);
+    //    kakushimap2.SetActive(false);
+    //    kakushimap3.SetActive(false);
+    //}
 
     private void SyoStop()
     {
@@ -513,8 +566,22 @@ public class CF_Event6  : CharactorFunction
 
     public void KakushiOn()
     {
-        Debug.Log("aaaaabbbbcccccccc");
+        Debug.Log("kakushi1");
         kakushimap.SetActive(true);
+
+    }
+
+    public void KakushiOn2()
+    {
+        Debug.Log("kakushi2");
+        kakushimap2.SetActive(true);
+
+    }
+
+    public void KakushiOn3()
+    {
+        Debug.Log("kakushi3");
+        kakushimap3.SetActive(true);
 
     }
 
