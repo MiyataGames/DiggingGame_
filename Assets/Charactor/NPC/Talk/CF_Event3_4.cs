@@ -121,6 +121,9 @@ public class CF_Event3_4 : CharactorFunction
     {
         // 操作を受け付けなくする
         GameManager.instance.currentGameState = GameState.POSE;
+        // イベント1_3_4
+        GameManager.instance.currentEventScene = EventScene.EVENT1_3_4;
+
         // 当たり判定をオフ
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         Move2Village();
