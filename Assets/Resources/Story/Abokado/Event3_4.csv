@@ -26,9 +26,9 @@
 23,set_text,マオ,Player,1,壊れてるの？,,,,,,,,,,,,,
 24,set_text,ショウ,BRDF,1,"たしか父ちゃんは、燃料が足りてないって言ってたな。
 今は村の発電に使うので手一杯だって",,,,,,,,,,,,,
-25,chara_func,,,,,,,,,,,,,,,MaoTurnTowardsSyo,,
+25,chara_func,,,,,,,,,,,,,,,MaoTurnTowardsBack,,
 26,set_text,マオ,Player,1,でももし燃料が見つかれば,,,,,,,,,,,,,
-27,chara_func,,,,,,,,,,,,,,,SyoTurnTowardsMao,,
+27,chara_func,,,,,,,,,,,,,,,SyoTurnTowardsFront,,
 28,set_text,ショウ,BRDF,1,そう！　俺たちで動かせるかもしれない！,,,,,,,,,,,,,
 29,chara_func,,,,,,,,,,,,,,,SontyoSpawn,,
 30,set_text,村長,Sontyo1,1,"へんなところからお前の声が聞こえると思えば、

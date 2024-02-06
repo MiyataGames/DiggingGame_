@@ -39,8 +39,9 @@ public class CF_Event3_4 : CharactorFunction
     // ２番目に移動する位置
     [SerializeField] float moveSecondY;
     // ３番目に移動する位置
-    [SerializeField] float moveThirdY;
+    [SerializeField] float moveMachineFirstY;
     [SerializeField] float moveFourthY;
+    [SerializeField] float moveMachineSecondX;
     [SerializeField] float sontyoMoveToExitY;
     [SerializeField] Transform syoSecondTransform;
     // 村長がスポーンする位置
@@ -67,6 +68,18 @@ public class CF_Event3_4 : CharactorFunction
                     break;
                 case "MaoTurnTowardsSyo":
                     MaoTurnTowardsSyo();
+                    break;
+                case "MaoTurnTowardsFront":
+                    MaoTurnTowardsFront();
+                    break;
+                case "SyoTurnTowardsFront":
+                    SyoTurnTowardsFront();
+                    break;
+                case "MaoTurnTowardsBack":
+                    MaoTurnTowardsBack();
+                    break;
+                case "SyoTurnTowardsBack":
+                    SyoTurnTowardsBack();
                     break;
                 case "SyoLookAround":
                     StartCoroutine(SyoLookAround());
@@ -232,13 +245,20 @@ public class CF_Event3_4 : CharactorFunction
         CharactorChangeVec(syo, "down");
         // ショウが下へ歩く
         syoAnim.SetBool("isWalk", true);
-        syo.transform.DOMoveY(syo.transform.position.y - moveThirdY, 1f);
+        syo.transform.DOMoveY(syo.transform.position.y - moveMachineFirstY, 1f);
         // カメラの移動
-        Camera.main.transform.DOMoveY(syo.transform.position.y - moveThirdY - CameraOffsetY, 1f);
+        Camera.main.transform.DOMoveY(syo.transform.position.y - moveMachineFirstY - CameraOffsetY, 1f);
         // マオが下を向く
         CharactorChangeVec(player_Story, "down");
         yield return new WaitForSeconds(1);
+        // ショウが横へ行く
+        CharactorChangeVec(syo, "Right");
+        syoAnim.SetBool("isWalk", true);
+        syo.transform.DOMoveX(syo.transform.position.x + moveMachineSecondX, 1f);
+        Camera.main.transform.DOMoveX(syo.transform.position.x + moveMachineSecondX, 1f);
+        yield return new WaitForSeconds(1);
         syoAnim.SetBool("isWalk", false);
+
 
         storyEventScript.ReadNextMessage();
     }
@@ -248,9 +268,15 @@ public class CF_Event3_4 : CharactorFunction
     {
         storyEventScript.moveFlag = true;
         maoAnim.SetBool("isWalk", true);
-        player_Story.transform.DOMoveY(player_Story.transform.position.y - moveThirdY, 1f);
+        player_Story.transform.DOMoveY(player_Story.transform.position.y - moveMachineFirstY - 1, 1f);
         yield return new WaitForSeconds(1);
-        syoAnim.SetBool("isWalk", false);
+        maoAnim.SetBool("isWalk", false);
+        CharactorChangeVec(player_Story, "Right");
+        maoAnim.SetBool("isWalk", true);
+        player_Story.transform.DOMoveX(player_Story.transform.position.x + moveMachineSecondX +1.2f, 1f);
+        yield return new WaitForSeconds(1);
+        maoAnim.SetBool("isWalk", false);
+
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
     }
@@ -265,9 +291,12 @@ public class CF_Event3_4 : CharactorFunction
         yield return new WaitForSeconds(2);
         sontyoAnimator.SetBool("isWalk", true);
         // 村長が歩いてくる
-        sontyo.transform.DOMoveY(syo.transform.position.y + 1f, 2f);
+        sontyo.transform.DOMoveY(syo.transform.position.y, 2f);
         Camera.main.transform.DOMoveY(syo.transform.position.y - CameraOffsetY, 2f);
         yield return new WaitForSeconds(2);
+        CharactorChangeVec(sontyo, "Right");
+        sontyo.transform.DOMoveX(sontyo.transform.position.x + moveMachineSecondX, 1f);
+        yield return new WaitForSeconds(1);
         sontyoAnimator.SetBool("isWalk", false);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
@@ -276,18 +305,19 @@ public class CF_Event3_4 : CharactorFunction
     // 村長がショウを殴る
     IEnumerator SontyoHitSyo()
     {
-        CharactorChangeVec(syo, "Up");
-        CharactorChangeVec(player_Story, "Up");
+        // ショウとマオが村長の方を向く
+        CharactorChangeVec(syo, "Left");
+        CharactorChangeVec(player_Story, "Left");
         float duration = 0.25f;
         storyEventScript.moveFlag = true;
-        float sontyoInitialPosY = sontyo.transform.position.y;
+        float sontyoInitialPosX = sontyo.transform.position.x;
         // しょうを殴る
-        sontyo.transform.DOMoveY(syo.transform.position.y + 0.5f, duration);
+        sontyo.transform.DOMoveX(syo.transform.position.x - 0.5f, duration);
         yield return new WaitForSeconds(duration);
         // ショウが震える
         syo.transform.DOShakePosition(0.5f, duration);
         // 村長が戻る
-        sontyo.transform.DOMoveY(sontyoInitialPosY, duration);
+        sontyo.transform.DOMoveX(sontyoInitialPosX, duration);
         yield return new WaitForSeconds(duration);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
