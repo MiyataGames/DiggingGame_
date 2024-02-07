@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8242413873698145333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -72,6 +72,7 @@ MonoBehaviour:
   eventPlace: Abokado
   eventNum: Event1
   EventDatas: []
+  moveFlag: 0
   currentTextID: 0
   TriggerIsFkey: 0
   storyEventManager: {fileID: 0}
@@ -100,10 +101,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa02d745436e3a54489f481b07af4ff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  syo_Prefab: {fileID: 225906842655797195, guid: 8d15fd5835205094e9afb9453fb5c4b9, type: 3}
-  warpPoint1: {x: -2, y: 0}
-  warpPoint2: {x: 1, y: 0}
+  storyEventScript: {fileID: 0}
+  player_Field: {fileID: 0}
+  player_Story: {fileID: 0}
+  syo_FieldPrefab: {fileID: 0}
+  syo_StoryPrefab: {fileID: 0}
+  sontyo_StoryPrefab: {fileID: 0}
+  FieldParent: {fileID: 0}
+  StoryParent: {fileID: 0}
 --- !u!212 &8242413873698145332
 SpriteRenderer:
   m_ObjectHideFlags: 0

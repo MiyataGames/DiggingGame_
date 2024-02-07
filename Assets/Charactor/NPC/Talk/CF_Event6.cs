@@ -27,7 +27,7 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private GameObject bossposition6;
     [SerializeField] private GameObject mob1position6;
     [SerializeField] private GameObject mob2position6;
-
+    [SerializeField] private GameObject sontyouidou;
 
 
     [SerializeField] private Transform FieldParent;
@@ -144,7 +144,27 @@ public class CF_Event6  : CharactorFunction
                 case "ShakeBo":
                     ShakeBo();
                     break;
-
+                case "Mob1Move2":
+                    Mob1Move2();
+                    break;
+                case "Mob2Move2":
+                    Mob2Move2();
+                    break;
+                case "SontyoMove2":
+                    SontyoMove2();
+                    break;
+                case "MaoUp":
+                    MaoUp();
+                    break;
+                case "SyoUp":
+                    SyoUp();
+                    break;
+                case "SontyoLeft":
+                    SontyoLeft();
+                    break;
+                case "SontyoDown":
+                    SontyoDown();
+                    break;
 
 
 
@@ -186,6 +206,7 @@ public class CF_Event6  : CharactorFunction
     private void SpawnSyo_Story()
     {
         syo = SpawnCharactor(syo_StoryPrefab, syoposition6.transform.position, StoryParent);
+        SyoUp();
     }
 
     /// <summary>
@@ -194,6 +215,7 @@ public class CF_Event6  : CharactorFunction
     private void SpawnMao_Story()
     {
         mao = SpawnCharactor(mao_StoryPrefab,maoposition6.transform.position, StoryParent);
+        MaoUp();
     }
 
 
@@ -344,9 +366,55 @@ public class CF_Event6  : CharactorFunction
         Mob1Move();
         Mob2Move();
         
-        var SontyoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 4f);
+        var SontyoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 3f, 0), 6f);
 
     }
+
+
+    //private void SontyoMove2()
+    //{
+    //    storyEventScript.moveFlag = true;
+    //    Animator sontyoAnim = sontyo.GetComponent<Animator>();
+    //    sontyoAnim.SetBool("isWalk", true);
+
+
+    //    var sontyoPosition = sontyo.transform.position;
+    //    //SontyoLeft();
+    //    SontyoLeft();
+    //    Mob1Move2();
+    //    Mob2Move2();
+    //    sontyo.transform.DOMove(sontyoPosition - new Vector3(8, 0, 0), 5f)
+    //        .OnComplete(SontyoStop); // アニメーションの完了時に SyoStop を呼び出す
+
+    //    //Mob1Move2();
+    //    //Mob2Move2();
+    //    SontyoDown();
+
+    // //   var SontyoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(4, 0f, 0), 4f);
+
+    //}
+
+    private void SontyoMove2()
+    {
+        storyEventScript.moveFlag = true;
+        Animator sontyoAnim = sontyo.GetComponent<Animator>();
+        sontyoAnim.SetBool("isWalk", true);
+
+        // 最初に左を向かせる
+        SontyoLeft();
+
+        var sontyoPosition = sontyo.transform.position;
+        sontyo.transform.DOMove(sontyoPosition - new Vector3(8, 0, 0), 5f).OnComplete(() => {
+            // 移動が完了したら、村長を下に向かせる
+            SontyoDown();
+            SontyoStop(); // 移動が完了したことを示す処理
+        });
+
+        // Mob1Move2とMob2Move2は、Sontyoの移動と同時に開始されるべきです
+        Mob1Move2();
+        Mob2Move2();
+    }
+
 
     private void SontyoStop()
     {
@@ -367,10 +435,27 @@ public class CF_Event6  : CharactorFunction
 
         var t = mob1.transform.position;
         mob1.transform.DOMove(t - new Vector3(0, 3, 0), 4f)
-                        .SetEase(Ease.Linear)
+                        //.SetEase(Ease.Linear)
                         .OnComplete(Mob1Stop);
         
     }
+
+
+
+    private void Mob1Move2()
+    {
+        storyEventScript.moveFlag = true;
+
+        Animator Mob1anim = mob1.GetComponent<Animator>();
+        Mob1anim.SetBool("isWalk", true);
+
+        var t = mob1.transform.position;
+        mob1.transform.DOMove(t - new Vector3(8, 0, 0), 5f)
+                        //.SetEase(Ease.Linear)
+                        .OnComplete(Mob1Stop);
+
+    }
+
 
     private void Mob1Stop()
     {
@@ -388,10 +473,27 @@ public class CF_Event6  : CharactorFunction
 
         var t = mob2.transform.position;
         mob2.transform.DOMove(t - new Vector3(0, 3, 0), 4f)
-                        .SetEase(Ease.Linear)
+                        //.SetEase(Ease.Linear)
                         .OnComplete(Mob2Stop);
         Mob1Move();
     }
+
+    private void Mob2Move2()
+    {
+        storyEventScript.moveFlag = true;
+
+        Animator Mob2anim = mob2.GetComponent<Animator>();
+        Mob2anim.SetBool("isWalk", true);
+
+        var t = mob2.transform.position;
+        mob2.transform.DOMove(t - new Vector3(8, 0, 0), 5f)
+                        //.SetEase(Ease.Linear)
+                        .OnComplete(Mob2Stop);
+        //Mob1Move();
+    }
+
+
+
 
     private void Mob2Stop()
     {
@@ -404,27 +506,69 @@ public class CF_Event6  : CharactorFunction
 
 
 
+    //private void SyoMove()
+    //{
+    //    // storyEventScript.moveFlag = true;
+    //    Animator syoAnim = syo.GetComponent<Animator>();
+    //    if (syoAnim != null) // Animator コンポーネントが存在するかチェック
+    //    {
+    //        syoAnim.SetBool("isWalk", true);
+
+    //        Debug.Log("動いた");
+    //        var syoPosition = syo.transform.position;
+    //        syo.transform.DOMove(syoPosition - new Vector3(0, -1f, 0), -1f)
+    //            .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("Animator component not found on " + syo.name);
+    //    }
+
+    //    Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -1, 0), 1f);
+    //}
+
     private void SyoMove()
     {
-        // storyEventScript.moveFlag = true;
-        Animator syoAnim = syo.GetComponent<Animator>();
-        if (syoAnim != null) // Animator コンポーネントが存在するかチェック
+        if (syo == null)
         {
-            syoAnim.SetBool("isWalk", true);
-
-            Debug.Log("動いた");
-            var syoPosition = syo.transform.position;
-            syo.transform.DOMove(syoPosition - new Vector3(0, -1f, 0), -1f)
-                .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
+            Debug.LogError("Syoオブジェクトが設定されていません。");
+            return;
         }
         else
         {
-            Debug.LogError("Animator component not found on " + syo.name);
+            Debug.Log("SYoあり");
         }
 
-        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -1, 0), 1f);
-    }
+        Animator syoAnim = syo.GetComponent<Animator>();
+        if (syoAnim == null)
+        {
+            Debug.LogError("SyoオブジェクトにAnimatorコンポーネントが見つかりません。");
+            return;
+        }
 
+        else
+        {
+            Debug.Log("コンポーネントあり");
+        }
+
+        storyEventScript.moveFlag = true;
+       
+        syoAnim.SetBool("isWalk", true);
+
+        Debug.Log("Syo実行");
+        syoAnim.SetBool("isWalk", true);
+
+        var syoPosition = syo.transform.position;
+        // Syoを下に移動させる（Y座標を減少させる）
+        syo.transform.DOMove(syoPosition + new Vector3(0, -0.6f, 0), 1f)
+            .OnComplete(SyoStop); // アニメーションの完了時にSyoStopを呼び出す
+
+        // カメラを下に移動させる
+        //if (Camera.main != null)
+        //{
+        //    Camera.main.transform.DOMove(Camera.main.transform.position + new Vector3(0, -1f, 0), 1f);
+        //}
+    }
 
 
 
@@ -610,6 +754,49 @@ public class CF_Event6  : CharactorFunction
         // 移動が完了した後の処理をここに記述
         Debug.Log("Boss has finished moving.");
         // 例えば、ボスを非アクティブにするなど
+    }
+
+
+    // Maoを上に向ける
+    public void MaoUp()
+    {
+        // MaoのGameObjectに対してCharactorChangeVecメソッドを呼び出し、"Up"方向を指定
+        CharactorChangeVec(mao, "Up");
+        SyoUp();
+    }
+
+    // Syoを下に向ける
+    public void SyoUp()
+    {
+        // SyoのGameObjectに対してCharactorChangeVecメソッドを呼び出し、"down"方向を指定
+        // 注意: "down"は小文字で始めることが重要です。CharactorChangeVecメソッド内での文字列比較に一致させるため
+        CharactorChangeVec(syo, "Up");
+    }
+
+    public void SontyoLeft()
+    {
+        CharactorChangeVec(sontyo, "Left");
+        Mob1Left();
+        //CharactorChangeVec(mob1, "Left");
+        //CharactorChangeVec(mob2, "Left");
+    }
+
+    public void Mob1Left()
+    {
+        CharactorChangeVec(mob1, "Left");
+        Mob2Left();
+    }
+
+    public void Mob2Left()
+    {
+        CharactorChangeVec(mob2, "Left");
+    }
+
+    public void SontyoDown()
+    {
+        CharactorChangeVec(sontyo, "down");
+        CharactorChangeVec(mob1, "down");
+        CharactorChangeVec(mob2, "down");
     }
 
 
