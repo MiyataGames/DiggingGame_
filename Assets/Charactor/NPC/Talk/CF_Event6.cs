@@ -36,6 +36,7 @@ public class CF_Event6  : CharactorFunction
     //private Coroutine sceneShakeCoroutine = null;
     private AudioSource audioSource;
     private AudioClip zihibikiSoundClip;
+    private AudioClip nakigoeSoundClip;
     private GameObject syo;
 
     private GameObject mao;
@@ -184,10 +185,15 @@ public class CF_Event6  : CharactorFunction
 
         // AudioSource コンポーネントを追加し、設定
         audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = gameObject.AddComponent<AudioSource>();
 
         // footSound 音楽ファイルをロード
         zihibikiSoundClip = Resources.Load<AudioClip>("SE/Monster/zihibiki");
         audioSource.clip = zihibikiSoundClip;
+        nakigoeSoundClip = Resources.Load<AudioClip>("SE/Monster/Nakigoe");
+        audioSource.clip = nakigoeSoundClip;
+        
+        
     }
 
 
@@ -275,7 +281,8 @@ public class CF_Event6  : CharactorFunction
         var maoPosition = mao.transform.position;
         mao.transform.DOMove(maoPosition - new Vector3(0, -0.6f, 0), 1f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
-        SyoMove();
+        //
+        //SyoMove();
         
         var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -0.6f, 0), 1f);
         
@@ -526,48 +533,17 @@ public class CF_Event6  : CharactorFunction
 
     //    Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -1, 0), 1f);
     //}
-
     private void SyoMove()
     {
-        if (syo == null)
-        {
-            Debug.LogError("Syoオブジェクトが設定されていません。");
-            return;
-        }
-        else
-        {
-            Debug.Log("SYoあり");
-        }
-
+        //storyEventScript.moveFlag = true;
         Animator syoAnim = syo.GetComponent<Animator>();
-        if (syoAnim == null)
-        {
-            Debug.LogError("SyoオブジェクトにAnimatorコンポーネントが見つかりません。");
-            return;
-        }
-
-        else
-        {
-            Debug.Log("コンポーネントあり");
-        }
-
-        storyEventScript.moveFlag = true;
-       
-        syoAnim.SetBool("isWalk", true);
-
-        Debug.Log("Syo実行");
         syoAnim.SetBool("isWalk", true);
 
         var syoPosition = syo.transform.position;
-        // Syoを下に移動させる（Y座標を減少させる）
-        syo.transform.DOMove(syoPosition + new Vector3(0, -0.6f, 0), 1f)
-            .OnComplete(SyoStop); // アニメーションの完了時にSyoStopを呼び出す
+        syo.transform.DOMove(syoPosition - new Vector3(0, 4f, 0), 4f)
+            .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
+        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
 
-        // カメラを下に移動させる
-        //if (Camera.main != null)
-        //{
-        //    Camera.main.transform.DOMove(Camera.main.transform.position + new Vector3(0, -1f, 0), 1f);
-        //}
     }
 
 
@@ -597,9 +573,12 @@ public class CF_Event6  : CharactorFunction
         Debug.Log("シーンシェイク");
 
         Camera.main.DOShakePosition(6f, 1.5f);
+        // audioSourceのclipをzihibikiSoundClipに設定
+        audioSource.clip = zihibikiSoundClip;
+        // 地響きのサウンドを再生
         audioSource.Play();
 
-        
+
         KakushiOn(); // 最初の状態を設定
         yield return new WaitForSeconds(2f);
 
@@ -734,10 +713,12 @@ public class CF_Event6  : CharactorFunction
         if (boss != null) // Check if the boss GameObject is not null
         {
             // Get the SpriteRenderer component from the boss GameObject
-            SpriteRenderer spriteRenderer = boss.GetComponent<SpriteRenderer>();
+
+           SpriteRenderer spriteRenderer = boss.GetComponent<SpriteRenderer>();
             if (spriteRenderer != null)
             {
                 // Fade the sprite to 0 alpha over 2 seconds
+                PlayNakigoeSound();
                 spriteRenderer.DOFade(0f, 3f).OnComplete(() => boss.SetActive(false));
             }
             else
@@ -748,6 +729,24 @@ public class CF_Event6  : CharactorFunction
 
 
     }
+
+
+
+
+    // 鳴き声のサウンドを再生する新しいメソッドを定義
+    private void PlayNakigoeSound()
+    {
+        if (audioSource != null && nakigoeSoundClip != null)
+        {
+            audioSource.clip = nakigoeSoundClip; // audioSourceに鳴き声のサウンドクリップをセット
+            audioSource.Play(); // 鳴き声のサウンドを再生
+        }
+        else
+        {
+            Debug.LogWarning("オーディオソースまたは鳴き声のサウンドクリップがありません。");
+        }
+    }
+
 
     private void BossFinishedMoving()
     {
