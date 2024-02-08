@@ -87,8 +87,8 @@ public class CF_Event6  : CharactorFunction
                 case "BossMove":
                     StartCoroutine(BossMove());
                     break;
-                case "SyoMove":
-                    SyoMove();
+                case "SyoMove6":
+                    SyoMove6();
                     break;
                 case "SyoStop":
                     SyoStop();
@@ -282,8 +282,10 @@ public class CF_Event6  : CharactorFunction
         mao.transform.DOMove(maoPosition - new Vector3(0, -0.6f, 0), 1f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         //
-        //SyoMove();
-        
+        Debug.Log("SyoMove実行前");
+        SyoMove6();
+        Debug.Log("SyoMove実行後");
+
         var maoCameraPosition=Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -0.6f, 0), 1f);
         
     }
@@ -400,7 +402,6 @@ public class CF_Event6  : CharactorFunction
     // //   var SontyoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(4, 0f, 0), 4f);
 
     //}
-
     private void SontyoMove2()
     {
         storyEventScript.moveFlag = true;
@@ -410,11 +411,11 @@ public class CF_Event6  : CharactorFunction
         // 最初に左を向かせる
         SontyoLeft();
 
-        var sontyoPosition = sontyo.transform.position;
-        sontyo.transform.DOMove(sontyoPosition - new Vector3(8, 0, 0), 5f).OnComplete(() => {
-            // 移動が完了したら、村長を下に向かせる
-            SontyoDown();
+        var sontyoPosition = sontyo.transform.position;//村長の初期位置
+        sontyo.transform.DOMove(sontyoPosition - new Vector3(8, 0, 0), 6f).OnComplete(() => {
+            // 移動が完了したら、村長を下に向かせ、すぐにSontyoStopを実行する
             SontyoStop(); // 移動が完了したことを示す処理
+            SontyoDown();//村長をしたに向かせる
         });
 
         // Mob1Move2とMob2Move2は、Sontyoの移動と同時に開始されるべきです
@@ -457,7 +458,7 @@ public class CF_Event6  : CharactorFunction
         Mob1anim.SetBool("isWalk", true);
 
         var t = mob1.transform.position;
-        mob1.transform.DOMove(t - new Vector3(8, 0, 0), 5f)
+        mob1.transform.DOMove(t - new Vector3(8, 0, 0), 6f)
                         //.SetEase(Ease.Linear)
                         .OnComplete(Mob1Stop);
 
@@ -493,7 +494,7 @@ public class CF_Event6  : CharactorFunction
         Mob2anim.SetBool("isWalk", true);
 
         var t = mob2.transform.position;
-        mob2.transform.DOMove(t - new Vector3(8, 0, 0), 5f)
+        mob2.transform.DOMove(t - new Vector3(8, 0, 0), 6f)
                         //.SetEase(Ease.Linear)
                         .OnComplete(Mob2Stop);
         //Mob1Move();
@@ -533,16 +534,25 @@ public class CF_Event6  : CharactorFunction
 
     //    Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -1, 0), 1f);
     //}
-    private void SyoMove()
+    private void SyoMove6()
     {
+
+        Debug.Log("Syo動いた");
         //storyEventScript.moveFlag = true;
         Animator syoAnim = syo.GetComponent<Animator>();
         syoAnim.SetBool("isWalk", true);
 
         var syoPosition = syo.transform.position;
-        syo.transform.DOMove(syoPosition - new Vector3(0, 4f, 0), 4f)
+
+        Debug.Log("Syo2動いた");
+        syo.transform.DOMove(syoPosition - new Vector3(0, -0.6f, 0), 1f)
             .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
-        Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 4f, 0), 4f);
+                                  //
+                                  //SyoMove();
+
+
+        Debug.Log("SyoMove完了");
+        // var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, -0.6f, 0), 1f);
 
     }
 
@@ -574,11 +584,11 @@ public class CF_Event6  : CharactorFunction
 
         Camera.main.DOShakePosition(6f, 1.5f);
         // audioSourceのclipをzihibikiSoundClipに設定
-        audioSource.clip = zihibikiSoundClip;
-        // 地響きのサウンドを再生
-        audioSource.Play();
+    audioSource.clip = zihibikiSoundClip;
+    // 地響きのサウンドを再生
+    audioSource.Play();
 
-
+        
         KakushiOn(); // 最初の状態を設定
         yield return new WaitForSeconds(2f);
 
@@ -687,39 +697,44 @@ public class CF_Event6  : CharactorFunction
         storyEventScript.ReadNextMessage();//次の文に移動
     }
 
+    //画面が揺れて壁が崩れるシーン1
     public void KakushiOn()
     {
+
         Debug.Log("kakushi1");
-        kakushimap.SetActive(true);
+        kakushimap.SetActive(true);//kakushimap1を表示
 
     }
 
+    //画面が揺れて壁が崩れるシーン2
     public void KakushiOn2()
     {
         Debug.Log("kakushi2");
-        kakushimap2.SetActive(true);
+        kakushimap2.SetActive(true);//kakushimap2を表示
 
     }
 
+    //画面が揺れて壁が崩れるシーン3
     public void KakushiOn3()
     {
         Debug.Log("kakushi3");
-        kakushimap3.SetActive(true);
+        kakushimap3.SetActive(true);//kakushimap3を表示
 
     }
 
+    //ボスが攻撃されて徐々に薄れて消えていく
     public void HideBoss()
     {
-        if (boss != null) // Check if the boss GameObject is not null
+        if (boss != null)//
         {
-            // Get the SpriteRenderer component from the boss GameObject
+            
 
            SpriteRenderer spriteRenderer = boss.GetComponent<SpriteRenderer>();
             if (spriteRenderer != null)
             {
-                // Fade the sprite to 0 alpha over 2 seconds
-                PlayNakigoeSound();
-                spriteRenderer.DOFade(0f, 3f).OnComplete(() => boss.SetActive(false));
+                // ボスを徐々に消していく
+                PlayNakigoeSound();//鳴き声のサウンドを発生
+                spriteRenderer.DOFade(0f, 3f).OnComplete(() => boss.SetActive(false));//3秒かけてボスを消滅させる、DOFade(0f, 3f)の左は透明度(0なら完全に透明)、左は時間(３なら3秒かけて消滅)
             }
             else
             {
@@ -772,6 +787,7 @@ public class CF_Event6  : CharactorFunction
         CharactorChangeVec(syo, "Up");
     }
 
+    //村長を左に向かせる
     public void SontyoLeft()
     {
         CharactorChangeVec(sontyo, "Left");
@@ -780,17 +796,20 @@ public class CF_Event6  : CharactorFunction
         //CharactorChangeVec(mob2, "Left");
     }
 
+    //Mob1を左に向かせる
     public void Mob1Left()
     {
         CharactorChangeVec(mob1, "Left");
         Mob2Left();
     }
 
+    //Mob2を左に向かせる
     public void Mob2Left()
     {
         CharactorChangeVec(mob2, "Left");
     }
 
+    //村長を下向きに向かせる
     public void SontyoDown()
     {
         CharactorChangeVec(sontyo, "down");

@@ -25,8 +25,8 @@
 23,chara_func,,,,,,,,,,,,,,,SontyoMove,,
 24,set_text,村長,Sontyo1,1,おお、お前たち無事か！,,,,,,,,,,,,,
 25,set_text,村長,Sontyo1,1,うわぁぁぁぁ！ こいつは？！,,,,,,,,,,,,,
-26,set_text,ボス,BOSS,1,ウガァァァアアア！！！！！,,,,,,,,,,,,,
-27,play_sound,,,,,,,,,,,,,,,,,SE/Monster/Nakigoe
+26,play_sound,,,,,,,,,,,,,,,,,SE/Monster/Nakigoe
+27,set_text,ボス,BOSS,1,ウガァァァアアア！！！！！,,,,,,,,,,,,,
 28,set_text,ショウ,Player,1,危ない!!,,,,,,,,,,,,,
 29,chara_func,,,,,,,,,,,,,,,MaoMove,,
 30,set_text,マオ,Player,1,これで終わりだ!,,,,,,,,,,,,,
