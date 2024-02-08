@@ -12,6 +12,13 @@ public class CF_Event5 : CharactorFunction
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject mao_StoryPrefab;
     [SerializeField] private GameObject boss_StoryPrefab;
+    [SerializeField] private GameObject maoposition5;
+    [SerializeField] private GameObject bossposition5;
+    [SerializeField] private GameObject syoposition5;
+
+
+
+
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
@@ -26,6 +33,8 @@ public class CF_Event5 : CharactorFunction
     private GameObject boss;
 
     private GameObject sontyo;
+
+
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -68,6 +77,9 @@ public class CF_Event5 : CharactorFunction
 
                 case "MaoStop":
                     MaoStop();
+                    break;
+                case "MaoUp":
+                    MaoUp();
                     break;
                 case "MaoSecondMove":
                     MaoSecondMove();
@@ -113,7 +125,7 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnSyo_Story()
     {
-        syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        syo = SpawnCharactor(syo_StoryPrefab, syoposition5.transform.position, StoryParent);
     }
 
     /// <summary>
@@ -121,12 +133,12 @@ public class CF_Event5 : CharactorFunction
     /// </summary>
     private void SpawnMao_Story()
     {
-        mao = SpawnCharactor(mao_StoryPrefab, player_Story.transform.position + new Vector3(-2f, 5f), StoryParent);
+        mao = SpawnCharactor(mao_StoryPrefab, maoposition5.transform.position, StoryParent);
     }
 
     private void SpawnBoss_Story()
     {
-        boss = SpawnCharactor(boss_StoryPrefab, player_Story.transform.position + new Vector3(-3f, 5f), StoryParent);
+        boss = SpawnCharactor(boss_StoryPrefab, bossposition5.transform.position, StoryParent);
         boss.GetComponent<BossShake>().SetStoryScene(StoryParent);
     }
 
@@ -172,10 +184,10 @@ public class CF_Event5 : CharactorFunction
 
         Debug.Log("実行できた");
         var maoPosition = mao.transform.position;
-        mao.transform.DOMove(maoPosition - new Vector3(0, 1.8f, 0), 2f)
+        mao.transform.DOMove(maoPosition - new Vector3(0, 3f, 0), 3f)
             .OnComplete(MaoStop); // アニメーションの完了時に SyoStop を呼び出す
         SyoSecondMove();
-        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 1f, 0), 2f);
+        var maoCameraPosition = Camera.main.transform.DOMove(Camera.main.transform.position - new Vector3(0, 2f, 0), 2f);
 
 
     }
@@ -201,7 +213,7 @@ public class CF_Event5 : CharactorFunction
     {
         Debug.Log("シーンシェイク");
         
-        Camera.main.DOShakePosition(6f, 1.5f); // 0.2秒間、強度2で揺らす
+        Camera.main.DOShakePosition(5f, 0.7f); // 0.2秒間、強度2で揺らす
         audioSource.Play();
         yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
 
@@ -226,7 +238,7 @@ public class CF_Event5 : CharactorFunction
         maoAnim.SetBool("isWalk", true);
 
         var syoPosition = syo.transform.position;
-        syo.transform.DOMove(syoPosition - new Vector3(0, 1.8f, 0), 2f)
+        syo.transform.DOMove(syoPosition - new Vector3(0, 3f, 0), 3f)
             .OnComplete(SyoStop); // アニメーションの完了時に SyoStop を呼び出す
 
     }
@@ -249,7 +261,7 @@ public class CF_Event5 : CharactorFunction
         //bossAnim.SetBool("isWalk", false);
         Vector3 bossCameraPosition = boss.transform.position + new Vector3(0, -1f, Camera.main.transform.position.z);//ボスのカメラ位置
         Debug.Log("カメラ移動開始");
-        yield return Camera.main.transform.DOMove(bossCameraPosition, 3f).WaitForCompletion();//現在地(まおが移動した地点)から３秒かけてボスがいる場所に移動
+        yield return Camera.main.transform.DOMove(bossCameraPosition, 5f).WaitForCompletion();//現在地(まおが移動した地点)から３秒かけてボスがいる場所に移動
         Debug.Log("カメラ移動終了");
         //yield return new WaitForSeconds(1);//１秒待機
         //bossAnim.SetBool("isWalk", true);//歩くアニメーション実行
@@ -266,7 +278,7 @@ public class CF_Event5 : CharactorFunction
         for (int i = 1; i <= 1; i++)
         {
             boss.transform.DOMove(bossPosition - OneStep * i, 5f);//
-            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 3f);
+            Camera.main.transform.DOMove(bossPosition - OneStep * i + cameraOffset, 5.2f);
             //// カメラを揺らす
             //Camera.main.DOShakePosition(0.3f, 1.3f); // 0.2秒間、強度2で揺らす
             //yield return new WaitForSeconds(1f); // 揺れの後1秒待機（揺れの0.2秒を含む）
@@ -290,6 +302,12 @@ public class CF_Event5 : CharactorFunction
     }
 
 
+    public void MaoUp()
+    {
+        
+        CharactorChangeVec(mao, "Up");
+        CharactorChangeVec(syo, "Up");
+    }
 
 
 
