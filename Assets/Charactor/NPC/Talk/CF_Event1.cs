@@ -20,12 +20,18 @@ public class CF_Event1 : CharactorFunction
 
     private GameObject sontyo;
 
+    [SerializeField] float cameraOffsetY;
+    [SerializeField] float cameraOffsetZ;
+
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
         if (functionName != null)
         {
             switch (functionName)
             {
+                case "AdjustCamera":
+                    AdjustCamera();
+                    break;
                 case "SpawnSyo_Field":
                     SpawanSyo_Filed();
                     break;
@@ -59,6 +65,14 @@ public class CF_Event1 : CharactorFunction
                     break;
             }
         }
+    }
+
+    // カメラの位置を調整する
+    void AdjustCamera()
+    {
+        // カメラを調整するスクリプトをオフ
+        Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
+        Camera.main.transform.position = new Vector3(player_Field.transform.position.x, player_Field.transform.position.y + cameraOffsetY, cameraOffsetZ);
     }
 
     /// <summary>
