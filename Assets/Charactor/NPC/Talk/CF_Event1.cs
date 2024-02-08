@@ -11,6 +11,7 @@ public class CF_Event1 : CharactorFunction
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject sontyo_StoryPrefab;
+    [SerializeField] private GameObject ShouTile;
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
@@ -66,6 +67,8 @@ public class CF_Event1 : CharactorFunction
     private void SpawanSyo_Filed()
     {
         syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
+        ShouTile.SetActive(true);
+
     }
 
     /// <summary>
