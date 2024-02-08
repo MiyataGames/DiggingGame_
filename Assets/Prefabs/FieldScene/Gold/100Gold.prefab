@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2398354819050158045}
   - component: {fileID: 2398354819050158044}
+  - component: {fileID: 2398354819050158047}
   - component: {fileID: 2398354819050158043}
   - component: {fileID: 2398354819050158040}
-  - component: {fileID: 8840306387742223021}
   m_Layer: 0
   m_Name: 100Gold
   m_TagString: Coin
@@ -88,6 +88,32 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &2398354819050158047
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2398354819050157985}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.0666667, y: 1.0666667}
+    newSize: {x: 6.33, y: 6.33}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.0666667, y: 1.0666667}
+  m_EdgeRadius: 0
 --- !u!50 &2398354819050158043
 Rigidbody2D:
   serializedVersion: 4
@@ -122,22 +148,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CoinBase: {fileID: 11400000, guid: 6187fa2872487c5489e0a1143616e831, type: 2}
---- !u!58 &8840306387742223021
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2398354819050157985}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.53333336
 --- !u!1001 &6911951900164571596
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -154,24 +164,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4993851249543553681, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.3516024
-      objectReference: {fileID: 0}
-    - target: {fileID: 4993851249543553681, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.1503
-      objectReference: {fileID: 0}
-    - target: {fileID: 4993851249543553681, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.1503
-      objectReference: {fileID: 0}
-    - target: {fileID: 4993851249543553681, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.052
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 4993851249543553681, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 4993851249543553681, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -211,11 +209,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4993851249543553695, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
       propertyPath: m_Radius
-      value: 0.41
+      value: 0.5086904
       objectReference: {fileID: 0}
     - target: {fileID: 4993851249543553695, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
       propertyPath: m_Offset.x
-      value: 0.046148896
+      value: -0.0916006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d2eb3ad8d270141bd881b8fc24410a8a, type: 3}
