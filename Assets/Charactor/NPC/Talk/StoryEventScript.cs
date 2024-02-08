@@ -53,6 +53,9 @@ public class StoryEventScript : MonoBehaviour
 
     private List<string> afterSetEventFlagTalk = new List<string>();
 
+    [Header("スキップボタン")]
+    [SerializeField] Button skipButton;
+
     [Header("イベント発火にエリア内でFキーを押すか(falseなら範囲内に入った時点でイベント開始)")]
     [SerializeField] private bool TriggerIsFkey = true;
 
@@ -188,15 +191,18 @@ public class StoryEventScript : MonoBehaviour
         }
 
         if(EventDatas[currentTextID].command == "end_talk"){ //会話終了時にすべてを初期化
-            
+            Debug.Log("会話の終了処理");
             currentTextID = 0;
             isEndOfTalk = true;
             isInEventNow = false;
             //ボタンのイベントを削除
             ClearAllListeners();
             SwichTalkDialogActivate(false);
+            // このゲームオブジェクトを消去
+            Destroy(this.gameObject);
 
-        }else{
+        }
+        else{
             currentCommand = EventDatas[currentTextID].command;
             ExecuteCommand(currentCommand);
             //Debug.Log(currentCommand);

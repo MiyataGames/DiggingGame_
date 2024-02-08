@@ -72,7 +72,7 @@ public class CharactorFunction : MonoBehaviour
 
     protected void EndEvent(){
         GameManager.instance.currentGameState = GameState.PLAYING;
-        Destroy(this.gameObject);
+        Camera.main.GetComponent<FollowPlayerScript>().enabled = true;
     }
 
     void Update()

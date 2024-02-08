@@ -234,11 +234,15 @@ public class GameManager : MonoBehaviour
         set
         {
             currentEvent1Scene = value;
+            Debug.Log(currentEvent1Scene);
             // イベントでなければ何もしない
             if (currentEvent1Scene != Event1Scene.NONE)
             {
                 for (int i = 0; i < (int)Event1Scene.END -1; i++) {
-                    eventSceneObjects[i].SetActive(false);
+                    if (eventSceneObjects[i] != null)
+                    {
+                        eventSceneObjects[i].SetActive(false);
+                    }
                 }
                 eventSceneObjects[(int)currentEvent1Scene].SetActive(true);
             }

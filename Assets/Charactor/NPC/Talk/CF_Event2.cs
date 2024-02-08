@@ -8,7 +8,6 @@ public class CF_Event2 : CharactorFunction
 {
 
     [SerializeField] private StoryEventScript storyEventScript;
-    [SerializeField] private GameObject player_Field;
     [SerializeField] private GameObject player_Story;
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
@@ -20,7 +19,6 @@ public class CF_Event2 : CharactorFunction
     [SerializeField] private GameObject SontyoHouse1F; 
     [SerializeField] private GameObject SontyoHouse2F; 
     [SerializeField] private GameObject Food; 
-    [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
     [SerializeField] private Transform SontyoPos1; // インスタンスを生成する場所を指定するためのTransform
     [SerializeField] private Transform CameraPos1; // カメラの目標位置となる空のゲームオブジェクトのTransform
@@ -32,6 +30,10 @@ public class CF_Event2 : CharactorFunction
     [SerializeField] private Transform MaoPos3;
     [SerializeField] private Transform MotherPos1;
     [SerializeField] private Transform MotherPos2;
+
+    // イベント3への案内
+    [SerializeField] Transform syoNaviPos;
+    [SerializeField] BoxCollider2D holeCollider;
 
     private GameObject shou;
     private GameObject sontyo;
@@ -85,6 +87,10 @@ public class CF_Event2 : CharactorFunction
                 case "Living2kichinen":
                 Living2kichinen();
                 break;
+                case "SpawnNaviSyo":
+                    SpawnNaviSyo();
+                break;
+                    
             }
         }
 
@@ -137,7 +143,7 @@ public class CF_Event2 : CharactorFunction
         Animator anim = shou.GetComponent<Animator>();
         anim.SetBool("isWalk", true);
         var sho_pos = sontyo.transform.position;
-              Animator maoAnim = player_Story.GetComponent<Animator>();
+        Animator maoAnim = player_Story.GetComponent<Animator>();
         maoAnim.SetBool("isWalk", true);
         StartCoroutine(MoveShou1());
     }
@@ -240,6 +246,7 @@ private void Living2kichinen(){
 #region 
     // まおがリビングから寝室に移動する
     IEnumerator MoveMao1(){
+        storyEventScript.moveFlag = true;
         var seq = DOTween.Sequence();
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(4, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 1, 0), 1f).SetEase(Ease.Linear).SetRelative());
@@ -250,16 +257,22 @@ private void Living2kichinen(){
         seq.AppendCallback(() => StartWalkingFadeOutMao());
         // すべてのアニメーションが終わるのを待つ
         yield return seq.WaitForCompletion();
+        storyEventScript.moveFlag = false;
+        storyEventScript.ReadNextMessage();
+
     }
 
     //　寝室からリビングに移動する
     IEnumerator MoveMao2(){
+        storyEventScript.moveFlag = true;
         var seq = DOTween.Sequence();
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, -4, 0), 3f).SetEase(Ease.Linear).SetRelative());
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(-6, 0, 0), 5f).SetEase(Ease.Linear).SetRelative());
        
         // すべてのアニメーションが終わるのを待つ
         yield return seq.WaitForCompletion();
+        storyEventScript.moveFlag = false;
+        storyEventScript.ReadNextMessage();
     }
 
     IEnumerator MoveShou1(){
@@ -273,7 +286,14 @@ private void Living2kichinen(){
         seq.AppendCallback(() => StartWalkingFadeOut());
         // すべてのアニメーションが終わるのを待つ
         yield return seq.WaitForCompletion();
-        
+        storyEventScript.moveFlag = false;
+    }
+
+    void SpawnNaviSyo()
+    {
+        shou = SpawnCharactor(syo_StoryPrefab, syoNaviPos.position, StoryParent);
+        CharactorChangeVec(shou, "down");
+        holeCollider.enabled = true;
     }
 #endregion
 }

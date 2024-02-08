@@ -19,6 +19,8 @@ public class CF_Event3_4 : CharactorFunction
     [SerializeField] private Transform StoryParent;
     [SerializeField] private Transform TilemapParent;
 
+    [SerializeField] GameObject event34Tilemap;
+
     // カメラのz座標
     [SerializeField] float CameraBufferZ = -6.53f;
     [SerializeField] float CameraOffsetY = 2;
@@ -136,6 +138,7 @@ public class CF_Event3_4 : CharactorFunction
         GameManager.instance.currentGameState = GameState.POSE;
         // イベント1_3_4
         GameManager.instance.currentEvent1Scene = Event1Scene.EVENT1_3_4;
+
         // 当たり判定をオフ
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         Move2Village();
