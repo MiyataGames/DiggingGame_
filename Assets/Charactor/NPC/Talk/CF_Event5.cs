@@ -19,6 +19,7 @@ public class CF_Event5 : CharactorFunction
 
 
 
+
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
 
@@ -32,6 +33,8 @@ public class CF_Event5 : CharactorFunction
     private GameObject boss;
 
     private GameObject sontyo;
+
+
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -74,6 +77,9 @@ public class CF_Event5 : CharactorFunction
 
                 case "MaoStop":
                     MaoStop();
+                    break;
+                case "MaoUp":
+                    MaoUp();
                     break;
                 case "MaoSecondMove":
                     MaoSecondMove();
@@ -296,6 +302,12 @@ public class CF_Event5 : CharactorFunction
     }
 
 
+    public void MaoUp()
+    {
+        
+        CharactorChangeVec(mao, "Up");
+        CharactorChangeVec(syo, "Up");
+    }
 
 
 
