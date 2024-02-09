@@ -28,7 +28,7 @@
 26,set_text,マオ,Player,1,今は喜んでる場合じゃないかも,,,,,,,,,,,,,
 27,DeleteText,,,,,,,,,,,,,,,,,
 28,chara_func,,,,,,,,,,,,,,,BossMove,,
-29,set_text,ボス,BOSS,1,ウォォォォォォ！！！！！！,,,,,,,,,,,,,
+29,set_text,ボス,Transparent,1,ウォォォォォォ！！！！！！,,,,,,,,,,,,,
 30,play_sound,,,,,,,,,,,,,,,,,SE/Monster/Nakigoe
 31,fade_blackOut,,,,,,,,,,,,,,,,,
 32,chara_func,,,,,,,,,,,,,,,EndEvent,,

@@ -71,6 +71,7 @@ public class CF_Event1 : CharactorFunction
     void AdjustCamera()
     {
         // カメラを調整するスクリプトをオフ
+        Debug.Log("あああ");
         Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
         Camera.main.transform.position = new Vector3(player_Field.transform.position.x, player_Field.transform.position.y + cameraOffsetY, cameraOffsetZ);
     }
