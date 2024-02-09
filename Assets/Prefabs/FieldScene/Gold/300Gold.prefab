@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2173713711059015254}
   - component: {fileID: 2173713711059015255}
-  - component: {fileID: 2173713711059015252}
   - component: {fileID: 2173713711059015248}
   - component: {fileID: 2173713711059015251}
   - component: {fileID: 6650744564117756065}
+  - component: {fileID: 4363748973424001855}
   m_Layer: 0
   m_Name: 300Gold
   m_TagString: Coin
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3000
+  m_SortingOrder: 2500
   m_Sprite: {fileID: 21300000, guid: 308fd41bb7eb17d4fbd2a7a7af126e33, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -90,32 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &2173713711059015252
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2173713711059015210}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.0666667, y: 1.0666667}
-    newSize: {x: 6.33, y: 6.33}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.0666667, y: 1.0666667}
-  m_EdgeRadius: 0
 --- !u!50 &2173713711059015248
 Rigidbody2D:
   serializedVersion: 4
@@ -162,6 +136,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f97cf7718edf17438b89953e4ef6e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &4363748973424001855
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2173713711059015210}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.00000011920929, y: 0.09530771}
+  serializedVersion: 2
+  m_Radius: 0.47409213
 --- !u!1 &7940028687392940586
 GameObject:
   m_ObjectHideFlags: 0

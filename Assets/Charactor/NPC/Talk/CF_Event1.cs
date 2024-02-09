@@ -91,6 +91,7 @@ public class CF_Event1 : CharactorFunction
     private void SpawnSyo_Story()
     {
         syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(3, 0), StoryParent);
+        CharactorChangeVec(syo, "Left");
     }
 
     /// <summary>

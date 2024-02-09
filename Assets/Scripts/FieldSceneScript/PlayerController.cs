@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public float cellSize = 100f;
 
     // アイテムの選択されているインデックス番号
-    private int selectedItemIndex;
+    private int selectedItemIndex = 0;
 
     // アイテムのターゲットのインデックス番号
     private int selectedItemTargetIndex;

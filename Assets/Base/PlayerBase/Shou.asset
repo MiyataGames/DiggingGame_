@@ -33,11 +33,7 @@ MonoBehaviour:
     level: 0
   - skillBase: {fileID: 11400000, guid: 9a7eea8eb378b6b4294bef7f9a4def56, type: 2}
     level: 0
-  - skillBase: {fileID: 11400000, guid: 9a7eea8eb378b6b4294bef7f9a4def56, type: 2}
-    level: 0
   - skillBase: {fileID: 11400000, guid: 39b05511c14630241883b8c5ae01a024, type: 2}
-    level: 0
-  - skillBase: {fileID: 11400000, guid: f21110eaa1a694e4396899a614e78ffa, type: 2}
     level: 0
   - skillBase: {fileID: 11400000, guid: 9358b97a5d34cb944adfd4018210c29d, type: 2}
     level: 0

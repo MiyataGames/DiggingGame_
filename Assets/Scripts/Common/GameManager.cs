@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     public PlayMode playMode;
     private GameMode currentGameMode;
     public GameState currentGameState;
-    public Event1Scene currentEvent1Scene;
+    private Event1Scene currentEvent1Scene;
     [SerializeField] private BattleSceneManager battleSceneManager;
     [SerializeField] private ResultSceneMangaer resultSceneManager;
     // [SerializeField] private ResultSceneMangaer resultSceneManager;

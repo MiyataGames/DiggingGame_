@@ -86,7 +86,7 @@ public class CF_Event7 : CharactorFunction
         // 操作を受け付けなくする
         GameManager.instance.currentGameState = GameState.POSE;
         // イベント1_7
-        GameManager.instance.currentEvent1Scene = Event1Scene.EVENT1_7;
+        GameManager.instance.CurrenEvent1Scene = Event1Scene.EVENT1_7;
         // プレイヤーカメラ追従を有効に
         Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
         // 当たり判定をオフ
