@@ -182,6 +182,7 @@ public class CF_Event3_4 : CharactorFunction
     {
         storyEventScript.moveFlag = false;
         syoAnim.SetBool("isWalk", false);
+        maoAnim.SetBool("isWalk", false);
         //maoAnim.SetBool("isWalk", false);
         storyEventScript.ReadNextMessage();
     }
