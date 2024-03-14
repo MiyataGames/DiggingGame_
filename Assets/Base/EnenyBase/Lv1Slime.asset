@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: Lv1Slime
   m_EditorClassIdentifier: 
   enemyID: 0
-  enemyName: "\u30B9\u30E9\u30A4\u30E0"
+  enemyName: "\u76D7\u8CCA"
   weakTypes: 0100000002000000
   resistanceTypes: 
-  level: 1
+  level: 2
   description: 
   enemyPrefab: {fileID: 7052581729758501505, guid: 6e6be0eb08ea79c4fbe3f95e4ef0d184, type: 3}
-  maxHp: 7
-  atk: 10
-  magicPower: 0
-  def: 8
+  maxHp: 10
+  atk: 11
+  magicPower: 10
+  def: 9
   agi: 6
   luck: 0
   learnableEnemySkills:

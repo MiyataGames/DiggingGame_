@@ -65,7 +65,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellIdentifier: 
-  selectedIcon: {fileID: 8909799560858599475}
   itemNameText: {fileID: 2745487636094064292}
   itemCountText: {fileID: 6926500413583018818}
 --- !u!114 &8330075103156820186
@@ -99,7 +98,7 @@ MonoBehaviour:
   m_SpriteState:
     m_HighlightedSprite: {fileID: 21300000, guid: 039984dee5fc04d67a451a43395282b9, type: 3}
     m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 21300000, guid: 039984dee5fc04d67a451a43395282b9, type: 3}
+    m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 21300000, guid: b79f9e9b59d6149118ebe41e7a830d91, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
@@ -443,7 +442,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2680839314749685218
 RectTransform:
   m_ObjectHideFlags: 0

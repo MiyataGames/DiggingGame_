@@ -31,11 +31,13 @@ public class GameManager : MonoBehaviour
     }
 
     public GameObject[] fieldObjects;
+    public GameObject[] eventSceneObjects;
 
     private int currentSceneIndex;
     public PlayMode playMode;
     private GameMode currentGameMode;
     public GameState currentGameState;
+    private Event1Scene currentEvent1Scene;
     [SerializeField] private BattleSceneManager battleSceneManager;
     [SerializeField] private ResultSceneMangaer resultSceneManager;
     // [SerializeField] private ResultSceneMangaer resultSceneManager;
@@ -105,8 +107,6 @@ public class GameManager : MonoBehaviour
             ActivateCurrentScene(currentSceneIndex);
         }
     }
-
-
 
     // ゲームの全ての初期設定を行う
     public void InitGame(Party party)
@@ -222,6 +222,31 @@ public class GameManager : MonoBehaviour
         }
         yield return enumerator;
         //ActivateCurrentScene((int)World.GameMode.FIELD_SCENE);
+    }
+
+    // イベント関係
+    /// <summary>
+    /// 今のイベントのシーンを呼び出す
+    /// </summary>
+    public Event1Scene CurrenEvent1Scene
+    {
+        get { return currentEvent1Scene; }
+        set
+        {
+            currentEvent1Scene = value;
+            Debug.Log(currentEvent1Scene);
+            // イベントでなければ何もしない
+            if (currentEvent1Scene != Event1Scene.NONE)
+            {
+                for (int i = 0; i < (int)Event1Scene.END -1; i++) {
+                    if (eventSceneObjects[i] != null)
+                    {
+                        eventSceneObjects[i].SetActive(false);
+                    }
+                }
+                eventSceneObjects[(int)currentEvent1Scene].SetActive(true);
+            }
+        }
     }
 }
 

@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public float cellSize = 100f;
 
     // アイテムの選択されているインデックス番号
-    private int selectedItemIndex;
+    private int selectedItemIndex = 0;
 
     // アイテムのターゲットのインデックス番号
     private int selectedItemTargetIndex;
@@ -619,6 +619,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // Debug.Log(players[0].Items[i].ItemBase.ItemName);
             itemCellData.Add(new ItemCellData()
             {
+                selectedId = i,
                 isSelected = i == selectedItemIndex,// 選択されているか
                 itemText = party.Players[0].Items[i].ItemBase.ItemName,
                 itemCountText = party.Players[0].Items[i].ItemCount.ToString()
@@ -646,11 +647,13 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         cell.SetData(itemCellData[dataIndex]);
         GameObject cellViewObj = cell.gameObject;
         // イベントトリガーを追加してホバー時に実行する関数を指定する
+        /*
         EventTrigger eventTrigger = cellViewObj.GetComponent<EventTrigger>();
         EventTrigger.Entry entry = new EventTrigger.Entry();
         entry.eventID = EventTriggerType.PointerEnter;
         entry.callback.AddListener((eventDate) => CellButtonOnHover(dataIndex));
         eventTrigger.triggers.Add(entry);
+        */
         return cell;
     }
 
@@ -665,14 +668,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // 見た目の更新
         itemPanel.RefreshActiveCellViews();
     }
+
     private void CellButtonClicked(int selectedIndex)
     {
+        selectedItemIndex = selectedIndex;
         // アクティブセルに対してUIの更新をする
         itemPanel.RefreshActiveCellViews();
-        Debug.Log("アイテムを使うよ");
+        Debug.Log("アイテムを使うよ" + party.Players[0].Items[selectedItemIndex].ItemBase.ItemName);
         // 使うアイテムの情報を保持
         Item item = party.Players[0].Items[selectedItemIndex];
-
+        
         // 回復アイテムだったら
         if (item.ItemBase.ItemType == ItemType.HEAL_ITEM)
         {

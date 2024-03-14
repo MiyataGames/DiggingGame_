@@ -11,6 +11,7 @@ public class CF_Event1 : CharactorFunction
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject sontyo_StoryPrefab;
+    [SerializeField] private GameObject ShouTile;
 
     [SerializeField] private Transform FieldParent;
     [SerializeField] private Transform StoryParent;
@@ -19,12 +20,18 @@ public class CF_Event1 : CharactorFunction
 
     private GameObject sontyo;
 
+    [SerializeField] float cameraOffsetY;
+    [SerializeField] float cameraOffsetZ;
+
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
         if (functionName != null)
         {
             switch (functionName)
             {
+                case "AdjustCamera":
+                    AdjustCamera();
+                    break;
                 case "SpawnSyo_Field":
                     SpawanSyo_Filed();
                     break;
@@ -60,12 +67,23 @@ public class CF_Event1 : CharactorFunction
         }
     }
 
+    // カメラの位置を調整する
+    void AdjustCamera()
+    {
+        // カメラを調整するスクリプトをオフ
+        Debug.Log("あああ");
+        Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
+        Camera.main.transform.position = new Vector3(player_Field.transform.position.x, player_Field.transform.position.y + cameraOffsetY, cameraOffsetZ);
+    }
+
     /// <summary>
     /// ショウをフィールドシーン上に生成する
     /// </summary>
     private void SpawanSyo_Filed()
     {
         syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
+        ShouTile.SetActive(true);
+
     }
 
     /// <summary>
@@ -74,6 +92,7 @@ public class CF_Event1 : CharactorFunction
     private void SpawnSyo_Story()
     {
         syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(3, 0), StoryParent);
+        CharactorChangeVec(syo, "Left");
     }
 
     /// <summary>

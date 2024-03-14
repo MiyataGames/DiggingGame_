@@ -20,7 +20,22 @@ public class FadeController : MonoBehaviour
 
     }
 
+    public void StartFadeOutIn()
+    {
+        StartCoroutine(FadeOutIn());
+    }
 
+    private IEnumerator FadeOutIn()
+    {
+        Debug.Log("フェードOutIn開始");
+        fadePanel.color = new Color(0, 0, 0, 1);
+        Debug.Log("パネルを黒くした");
+        yield return new WaitForSeconds(1);
+        Debug.Log("1秒まった");
+        StartCoroutine(Fade(0));
+        Debug.Log("フェードOutIn終了");
+
+    }
 
     public void FadeIn()
     {
@@ -40,6 +55,8 @@ public class FadeController : MonoBehaviour
     private IEnumerator Fade(float targetAlpha)
     {
         float alpha = fadePanel.color.a;
+        Debug.Log("フェードかいし" + alpha);
+
         float time = 0;
 
         while (time < fadeDuration)
@@ -62,6 +79,8 @@ public class FadeController : MonoBehaviour
         {
             OnFadeInComplete?.Invoke();
         }
+        Debug.Log("フェード終了" + alpha);
+
     }
 
     //任意の秒数待機
