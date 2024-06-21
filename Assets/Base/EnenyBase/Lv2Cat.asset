@@ -31,5 +31,6 @@ MonoBehaviour:
   dropItemBase:
   - {fileID: 11400000, guid: 22e5c46c5a0d149e8b7f69e9f5b7c450, type: 2}
   - {fileID: 11400000, guid: b9fc0499d97cb446ab77789b22c6e7db, type: 2}
+  - {fileID: 11400000, guid: cdfdd07f3cc8c9043a375341ff92064c, type: 2}
   maxDropGold: 2
   minDropGold: 5
