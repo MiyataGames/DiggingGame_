@@ -283,7 +283,7 @@ public class Player : Character
             currentHP = CurrentMaxHp;
             currentSP = CurrentMaxSp;
             // atk,def,agiを更新
-            atk = CurrentMaxAgi;
+            atk = CurrentMaxAtk;
             def = CurrentMaxDef;
             agi = currentMaxAgi;
             remainGetExp -= nextExp;

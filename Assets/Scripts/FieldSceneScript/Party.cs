@@ -29,7 +29,7 @@ public class Party : MonoBehaviour
         players = new List<Player>();
         for (int i = 0; i < playerBasies.Length; i++)
         {
-            Player player = new Player(playerBasies[i],3,debugItemBase);
+            Player player = new Player(playerBasies[i],1,debugItemBase);
            //  Debug.Log(player.level);
             players.Add(player);
             // リザルトパネル
