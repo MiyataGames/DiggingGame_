@@ -23,6 +23,8 @@ public class CF_Event1 : CharactorFunction
     [SerializeField] float cameraOffsetY;
     [SerializeField] float cameraOffsetZ;
 
+    [SerializeField] Transform leftPoint;
+
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
         if (functionName != null)
@@ -50,6 +52,9 @@ public class CF_Event1 : CharactorFunction
                 case "StartEvent":
                     StartEvent();
                     break;
+                case "CharaLeft":
+                    StartCoroutine(CharaLeft());
+                    break;
                 case "EndEvent":
                     EndEvent();
                     break;
@@ -71,7 +76,6 @@ public class CF_Event1 : CharactorFunction
     void AdjustCamera()
     {
         // カメラを調整するスクリプトをオフ
-        Debug.Log("あああ");
         Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
         Camera.main.transform.position = new Vector3(player_Field.transform.position.x, player_Field.transform.position.y + cameraOffsetY, cameraOffsetZ);
     }
@@ -138,4 +142,28 @@ public class CF_Event1 : CharactorFunction
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
     }
+
+    // 尊重とショウが去る
+    private IEnumerator CharaLeft()
+    {
+        Debug.Log("charaleft実行");
+        CharactorChangeVec(sontyo, "Up");
+        CharactorChangeVec(syo, "Up");
+        storyEventScript.moveFlag = true;
+        Animator sontyoAnim = sontyo.GetComponent<Animator>();
+        sontyoAnim.SetBool("isWalk", true);
+        Animator syoAnim = syo.GetComponent<Animator>();
+        syoAnim.SetBool("isWalk", true);
+        sontyo.transform.DOMoveY(leftPoint.position.y, 3f);
+        syo.transform.DOMoveY(leftPoint.position.y, 3f);
+        yield return new WaitForSeconds(3);
+        sontyoAnim.SetBool("isWalk", false);
+        syoAnim.SetBool("isWalk", false);
+        storyEventScript.moveFlag = false;
+        Destroy(sontyo.gameObject);
+        Destroy(syo.gameObject);
+        storyEventScript.ReadNextMessage();
+
+    }
+
 }

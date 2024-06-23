@@ -22,7 +22,7 @@ public class EnemyUnit : MonoBehaviour
     private List<Enemy> enemies;
 
     public List<Enemy> Enemies { get => enemies; }
-    int[] debugPositionIndexs = { 7, 8, 4 };
+    int[] debugPositionIndexs = {4,7, 8 };
     Dictionary<Enemy, int> enemyKindNums;// エネミーごとの数
     public void SetUp()
     {
@@ -46,22 +46,23 @@ public class EnemyUnit : MonoBehaviour
 
         List<int> positions = new List<int>();
         int positionIndex;
+        UnityEngine.Random.InitState(DateTime.Now.Millisecond);
         foreach (var enemy in agiEnemyDic.OrderByDescending(c => c.Value))
         {
-            /*
-            positionIndex = Random.Range(0, enemyPos9.Length);
+            
+            positionIndex = UnityEngine.Random.Range(0, enemyPos9.Length);
             // 敵を生成する位置をきめる
             // 前に生成した敵と同じ位置だったら
             while (positions.Any(value => value == positionIndex))
             {
                 // ふりなおす
-                positionIndex = Random.Range(0, enemyPos9.Length - 1);
+                positionIndex = UnityEngine.Random.Range(0, enemyPos9.Length - 1);
 
-            }*/
-            //positions.Add(positionIndex);
+            }
+            positions.Add(positionIndex);
             enemies.Add(enemy.Key);
-            //enemies[j].positionIndex = positionIndex;
-            enemies[j].positionIndex = debugPositionIndexs[j];
+            enemies[j].positionIndex = positionIndex;
+            //enemies[j].positionIndex = debugPositionIndexs[j];
             // 敵のモデルを生成
             enemies[j].EnemyPrefab = Instantiate(enemies[j].EnemyBase.EnemyPrefab, enemyPos9[enemies[j].positionIndex].transform.position, Quaternion.identity, enemyPos9[enemies[j].positionIndex].transform);
             // アニメーターをいれる

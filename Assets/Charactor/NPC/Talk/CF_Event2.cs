@@ -225,9 +225,10 @@ private void AfterFood(){
     Food.SetActive(false);
 }
 public void MoveCameraToTarget1(){
+        storyCamera.GetComponent<FollowPlayerScript>().enabled = false;
         Vector3 newPosition = new Vector3(CameraPos1.position.x, CameraPos1.position.y, storyCamera.transform.position.z);
         storyCamera.transform.position = newPosition;
-    }
+}
 
 private void SetMorning(){
     Vector3 Shou = new Vector3(ShouPos1.position.x, ShouPos1.position.y, 1);
@@ -246,8 +247,12 @@ private void Living2kichinen(){
 #region 
     // まおがリビングから寝室に移動する
     IEnumerator MoveMao1(){
+        Vector3 newPosition = new Vector3(player_Story.transform.position.x, player_Story.transform.position.y, storyCamera.transform.position.z);
+        storyCamera.transform.position = newPosition;
+        storyCamera.GetComponent<FollowPlayerScript>().enabled = true;
         storyEventScript.moveFlag = true;
         var seq = DOTween.Sequence();
+        CharactorChangeVec(player_Story, "Up");
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(4, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, 1, 0), 1f).SetEase(Ease.Linear).SetRelative());
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(7, 0, 0), 3f).SetEase(Ease.Linear).SetRelative());
@@ -265,6 +270,7 @@ private void Living2kichinen(){
     //　寝室からリビングに移動する
     IEnumerator MoveMao2(){
         storyEventScript.moveFlag = true;
+        CharactorChangeVec(player_Story, "down");
         var seq = DOTween.Sequence();
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(0, -4, 0), 3f).SetEase(Ease.Linear).SetRelative());
         seq.Append(player_Story.transform.DOLocalMove(new Vector3(-6, 0, 0), 5f).SetEase(Ease.Linear).SetRelative());
@@ -277,6 +283,7 @@ private void Living2kichinen(){
 
     IEnumerator MoveShou1(){
         var seq = DOTween.Sequence();
+        CharactorChangeVec(shou, "Up");
         seq.Append(shou.transform.DOLocalMove(new Vector3(4, 0, 0), 1f).SetEase(Ease.Linear).SetRelative());
         seq.Append(shou.transform.DOLocalMove(new Vector3(0, 1, 0), 1f).SetEase(Ease.Linear).SetRelative());
         seq.Append(shou.transform.DOLocalMove(new Vector3(6, 0, 0), 2f).SetEase(Ease.Linear).SetRelative());
