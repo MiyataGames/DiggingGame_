@@ -79,7 +79,6 @@ public class FadeController : MonoBehaviour
         {
             OnFadeInComplete?.Invoke();
         }
-        Debug.Log("フェード終了" + alpha);
 
     }
 

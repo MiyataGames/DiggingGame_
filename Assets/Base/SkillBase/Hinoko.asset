@@ -16,7 +16,7 @@ MonoBehaviour:
   magicType: 1
   description: 
   power: 1
-  sp: 5
+  sp: 2
   accuracy: 100
   skillCategory: 0
   skillTargetKind: 1

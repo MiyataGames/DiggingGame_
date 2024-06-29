@@ -37,31 +37,31 @@ public class Player : Character
     public int CurrentMaxHp
     {
         // expSheet.sheets[0].list[level - 1].nextExp;
-        get { return playerStatusBase.sheets[PlayerID].list[level].hp; }
+        get { return playerStatusBase.sheets[PlayerID].list[level-1].hp; }
     }
 
     // レベルに応じたSPを返す
     public int CurrentMaxSp
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level].hp; }
+        get { return playerStatusBase.sheets[PlayerID].list[level-1].sp; }
     }
 
     // レベルに応じたAtkを返す
     public int CurrentMaxAtk
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level].atk; }
+        get { return playerStatusBase.sheets[PlayerID].list[level-1].atk; }
     }
 
     // レベルに応じたDefを返す
     public int CurrentMaxDef
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level].def; }
+        get { return playerStatusBase.sheets[PlayerID].list[level-1].def; }
     }
 
     // レベルに応じたAgiを返す
     public int CurrentMaxAgi
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level].agi; }
+        get { return playerStatusBase.sheets[PlayerID].list[level-1].agi; }
     }
     // Start is called before the first frame update
     public List<Item> Items { get => items; set => items = value; }
@@ -71,6 +71,7 @@ public class Player : Character
     public Player(PlayerBase pBase, int level,List<ItemBase> debugItemBase)
     {
         playerStatusBase = (PlayerStatusBase)Resources.Load("playerStatus");
+
         isPlayer = true;
         PlayerBase = pBase;
         characterName = PlayerBase.name;
@@ -86,6 +87,8 @@ public class Player : Character
         Item item;
         // セーブデータがあればアイテムは引継ぎなければ初期化
         Items = new List<Item>();
+        //Debug.Log("現在のレベルは" + level);
+        //Debug.Log("攻撃力は"+playerStatusBase.sheets[PlayerID].list[level-1].atk);
         // 主人公なら
         if (playerID == 0)
         {
@@ -217,6 +220,7 @@ public class Player : Character
             float randSeed = UnityEngine.Random.Range(0.83f, 1.17f);
             // （攻撃力/2-守備力/4）×変数(5/6~7/6)x属性効果量
             damage = (int)((character.atk / 2 - def / 4) * randSeed * skillPower * effectiveness);
+            Debug.Log("攻撃力は"+character.atk);
             Debug.Log("属性効果量" + effectiveness);
             Debug.Log("ダメージ" + damage);
             Debug.Log("現在の体力" + currentHP);
@@ -269,6 +273,8 @@ public class Player : Character
         int remainExp = nextExp - getExp;// 次のレベルまでの経験値から取得した経験値を引いた1回目のあまり
         Debug.Log("残りの経験値は" + remainExp);
         float remainGetExp = getExp;
+        Debug.Log("経験値を得る前の攻撃力は" + atk);
+
         while (remainExp <= 0)// 次のレベルまでのexpが－だったら
         {
             // レベルアップ
@@ -277,7 +283,7 @@ public class Player : Character
             currentHP = CurrentMaxHp;
             currentSP = CurrentMaxSp;
             // atk,def,agiを更新
-            atk = CurrentMaxAgi;
+            atk = CurrentMaxAtk;
             def = CurrentMaxDef;
             agi = currentMaxAgi;
             remainGetExp -= nextExp;
@@ -294,6 +300,7 @@ public class Player : Character
         expPair.nextExp = nextExps;
         expPair.newLevel = level;
         Debug.Log("経験値を得た後のレベルは" + level);
+        Debug.Log("経験値を得た後の攻撃力は" + atk);
         return expPair;
     }
 
