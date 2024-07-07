@@ -6,33 +6,33 @@ using TMPro;
 
 public class StatusDescriptionUIManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI playerNameText;
-    [SerializeField] TextMeshProUGUI playerLvText;
-    [SerializeField] TextMeshProUGUI[] typeTexts;
-    [SerializeField] TextMeshProUGUI playerDiscriptionText;
-    [SerializeField] TextMeshProUGUI hPText;
-    [SerializeField] TextMeshProUGUI maxHpText;
-    [SerializeField] TextMeshProUGUI spText;
-    [SerializeField] TextMeshProUGUI MaxSpText;
-    [SerializeField] TextMeshProUGUI atkText;
-    [SerializeField] TextMeshProUGUI defText;
-    [SerializeField] TextMeshProUGUI agiText;
-    [SerializeField] TextMeshProUGUI remainExpText;// 次のレベルまでの経験値
+    [SerializeField] private TextMeshProUGUI playerNameText;
+    [SerializeField] private TextMeshProUGUI playerLvText;
+    [SerializeField] private TextMeshProUGUI[] typeTexts;
+    [SerializeField] private TextMeshProUGUI playerDiscriptionText;
+    [SerializeField] private TextMeshProUGUI hPText;
+    [SerializeField] private TextMeshProUGUI maxHpText;
+    [SerializeField] private TextMeshProUGUI spText;
+    [SerializeField] private TextMeshProUGUI MaxSpText;
+    [SerializeField] private TextMeshProUGUI atkText;
+    [SerializeField] private TextMeshProUGUI defText;
+    [SerializeField] private TextMeshProUGUI agiText;
+    [SerializeField] private TextMeshProUGUI remainExpText;// 次のレベルまでの経験値
 
-    [SerializeField] Image overviewImage;
-    [SerializeField] Image hpFilledImage;
-    [SerializeField] Image spFilledImage;
-    [SerializeField] Image expFilledImage;
+    [SerializeField] private Image overviewImage;
+    [SerializeField] private Image hpFilledImage;
+    [SerializeField] private Image spFilledImage;
+    [SerializeField] private Image expFilledImage;
 
     public void SetUpStatusDescription(Player player)
     {
         playerNameText.text = player.PlayerBase.PlayerName;
         playerLvText.text = "Lv" + player.level.ToString();
-        for(int i = 0; i < typeTexts.Length; i++)
+        for (int i = 0; i < typeTexts.Length; i++)
         {
             typeTexts[i].text = "-";
         }
-        for(int i = 0;i < player.PlayerBase.WeakTypes.Length; i++)
+        for (int i = 0; i < player.PlayerBase.WeakTypes.Length; i++)
         {
             typeTexts[(int)player.PlayerBase.WeakTypes[i] - 1].text = "弱";
         }
@@ -44,11 +44,11 @@ public class StatusDescriptionUIManager : MonoBehaviour
         hPText.text = player.currentHP.ToString();
         maxHpText.text = "/" + player.CurrentMaxHp.ToString();
         spText.text = player.currentSP.ToString();
-        MaxSpText.text = "/"+ player.CurrentMaxSp.ToString();
-        atkText.text = player.currentMaxAtk.ToString();
-        defText.text = player.currentMaxDef.ToString();
-        agiText.text = player.currentMaxAgi.ToString();
-        remainExpText.text = "あと "+(player.NextExp - player.Exp).ToString();
+        MaxSpText.text = "/" + player.CurrentMaxSp.ToString();
+        atkText.text = player.CurrentMaxAtk.ToString();
+        defText.text = player.CurrentMaxDef.ToString();
+        agiText.text = player.CurrentMaxAgi.ToString();
+        remainExpText.text = "あと " + (player.NextExp - player.Exp).ToString();
         Debug.Log((float)player.currentHP / (float)player.CurrentMaxHp);
 
         Debug.Log(overviewImage);

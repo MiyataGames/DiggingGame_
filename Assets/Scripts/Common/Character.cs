@@ -28,11 +28,12 @@ public class Character
 
     // ステータス変化のレベル
     private int atkChangeLevel = 0;
+
     private int defChangeLevel = 0;
     private int agiChangeLevel = 0;
 
-
     public bool isParalyzed;
+
     // 状態異常リスト
     public List<StatusCondition> conditions = new List<StatusCondition>();
 
@@ -46,10 +47,12 @@ public class Character
     {
         return false;
     }
+
     public virtual bool TakeItemDamage(int damage, Character turnCharacter)
     {
         return false;
     }
+
     /// <summary>
     /// 状態異常によるダメージ 戦闘不能になったらtrueを返す
     /// </summary>
@@ -72,6 +75,7 @@ public class Character
     /// <param name="status">変化させるステータス</param>
     /// <param name="skillStatusKind">ステータスの下降か上昇か</param>
     #region
+
     // 任意のステータスを任意の方向に変更する関数
     public void ChangeStatus(STATUS status, SKILL_STATUS_KIND skillStatusKind)
     {
@@ -124,6 +128,7 @@ public class Character
             atkChangeLevel = 0;
         }
     }
+
     public void ResetDefStatus()
     {
         Debug.Log("防御力を戻したよ");
@@ -133,6 +138,7 @@ public class Character
             defChangeLevel = 0;
         }
     }
+
     public void ResetAgiStatus()
     {
         Debug.Log("素早さを戻したよ");
@@ -198,6 +204,7 @@ public class Character
 
         return true;
     }
+
     // スピードを上昇させるメソッド
     public bool IncreaseAgi()
     {
@@ -239,11 +246,14 @@ public class Character
             // SPEEDだったら速度の上昇（下降）レベルを返す
             case STATUS.SPEED:
                 return agiChangeLevel;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(STATUS), STATUS, null);
         }
     }
+
     #endregion
+
     // 状態異常の追加
     public void AddCondition(StatusCondition condition)
     {
@@ -253,20 +263,23 @@ public class Character
             case STATUS_CONDITION_TYPE.POISON:
                 Debug.Log("毒にかかった");
                 break;
+
             case STATUS_CONDITION_TYPE.PARALYSIS:
                 Debug.Log("まひにかかった");
                 break;
+
             case STATUS_CONDITION_TYPE.BURN:
                 ChangeStatus(STATUS.ATTACK, SKILL_STATUS_KIND.DOWN);
                 Debug.Log("やけどにかかった");
                 break;
+
             case STATUS_CONDITION_TYPE.FREEZE:
                 Debug.Log("凍結にかかった");
                 break;
+
             case STATUS_CONDITION_TYPE.SLEEP:
                 Debug.Log("睡眠にかかった");
                 break;
-
         }
     }
 
@@ -284,19 +297,22 @@ public class Character
                     case STATUS_CONDITION_TYPE.POISON:
                         Debug.Log("毒が解けた");
                         break;
+
                     case STATUS_CONDITION_TYPE.PARALYSIS:
                         Debug.Log("まひが解けた");
                         break;
+
                     case STATUS_CONDITION_TYPE.BURN:
                         Debug.Log("やけどが解けた");
                         break;
+
                     case STATUS_CONDITION_TYPE.FREEZE:
                         Debug.Log("凍結が解けた");
                         break;
+
                     case STATUS_CONDITION_TYPE.SLEEP:
                         Debug.Log("睡眠が解けた");
                         break;
-
                 }
                 conditions.RemoveAt(i);
             }
@@ -328,5 +344,4 @@ public class Character
         }
         return false;
     }
-
 }

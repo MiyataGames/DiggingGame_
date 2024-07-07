@@ -4,11 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements.Experimental;
 using System.IO;
+
 //using Newtonsoft.Json;
 
 public class Party : MonoBehaviour
 {
-
     [SerializeField] private PlayerBase[] playerBasies;
     private List<Player> players;
     public List<Player> Players { get => players; }
@@ -16,12 +16,12 @@ public class Party : MonoBehaviour
     // テスト用
     public List<ItemBase> debugItemBase;
 
-    [SerializeField] GameObject resultPlayerUI;
+    [SerializeField] private GameObject resultPlayerUI;
     [SerializeField] private GameObject resultAreaPanel;
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    // Start is called before the first frame update
+    private void Start()
+    {
     }
 
     public void SetupFirst()
@@ -29,8 +29,8 @@ public class Party : MonoBehaviour
         players = new List<Player>();
         for (int i = 0; i < playerBasies.Length; i++)
         {
-            Player player = new Player(playerBasies[i],1,debugItemBase);
-           //  Debug.Log(player.level);
+            Player player = new Player(playerBasies[i], 3, debugItemBase);
+            //  Debug.Log(player.level);
             players.Add(player);
             // リザルトパネル
             Players[i].ResultPlayerUI = Instantiate(resultPlayerUI, Vector3.zero, Quaternion.identity, resultAreaPanel.transform).GetComponent<ResultPlayerUI>();
