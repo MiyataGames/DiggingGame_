@@ -41,31 +41,51 @@ public class Player : Character
     public int CurrentMaxHp
     {
         // expSheet.sheets[0].list[level - 1].nextExp;
-        get { return playerStatusBase.sheets[PlayerID].list[level - 1].hp; }
+        get
+        {
+            currentMaxHp = playerStatusBase.sheets[PlayerID].list[level - 1].hp;
+            return currentMaxHp;
+        }
     }
 
     // レベルに応じたSPを返す
     public int CurrentMaxSp
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level - 1].sp; }
+        get
+        {
+            currentMaxSp = playerStatusBase.sheets[PlayerID].list[level - 1].sp;
+            return currentMaxSp;
+        }
     }
 
     // レベルに応じたAtkを返す
     public int CurrentMaxAtk
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level - 1].atk; }
+        get
+        {
+            currentMaxAtk = playerStatusBase.sheets[PlayerID].list[level - 1].atk;
+            return currentMaxAtk;
+        }
     }
 
     // レベルに応じたDefを返す
     public int CurrentMaxDef
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level - 1].def; }
+        get
+        {
+            currentMaxDef = playerStatusBase.sheets[PlayerID].list[level - 1].def;
+            return currentMaxDef;
+        }
     }
 
     // レベルに応じたAgiを返す
     public int CurrentMaxAgi
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level - 1].agi; }
+        get
+        {
+            currentMaxAgi = playerStatusBase.sheets[PlayerID].list[level - 1].agi;
+            return currentMaxAgi;
+        }
     }
 
     // Start is called before the first frame update

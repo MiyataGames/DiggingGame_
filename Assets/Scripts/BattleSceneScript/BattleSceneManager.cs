@@ -75,14 +75,18 @@ public enum InputDiggingStatement
 public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 {
     // 全体UI
-    [SerializeField] Dialog dialog;
+    [SerializeField] private Dialog dialog;
+
     // ステータス関係 =====================
-    [SerializeField] GameObject statusPanel;
+    [SerializeField] private GameObject statusPanel;
+
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
     [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
     private int selectedStatusIndex;
+
     // バトル関係 ==========================
     [SerializeField] private List<Enemy> activeEnemies;
+
     [SerializeField] private List<Player> activePlayers;
     [SerializeField] private float speed;
 
@@ -92,20 +96,26 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     public BattleState battleState = BattleState.BUSY;
     private InputSkillStatement inputSkillStatement;
     private InputItemStatement inputItemStatement;
-    StatusState statusState = StatusState.STATUS_All;
+    private StatusState statusState = StatusState.STATUS_All;
 
     [SerializeField]
     private List<Character> characters;// 戦闘に参加してるキャラクター
+
     private int turnCharacterIndex;
     [SerializeField] private Character turnCharacter;// 行動順のキャラクター
+
     [SerializeField]
     private Enemy[] selectedEnemies;
+
     [SerializeField]
     private Player[] selectedPlayers;
-    [SerializeField] int turnEndTime = 1;// ターン終了してから次のターンまでの時間
-    [SerializeField] int endTime = 1; // 戦闘終了までの時間
+
+    [SerializeField] private int turnEndTime = 1;// ターン終了してから次のターンまでの時間
+    [SerializeField] private int endTime = 1; // 戦闘終了までの時間
+
     /// スキル関係==================================
     private List<SkillCellData> skillDatas;
+
     private int selectedSkillIndex;// リストの選択されたインデックス
 
     // デリゲートのためのスクローラー　
@@ -114,6 +124,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     // スクローラーの各セルのプレハブ
     public EnhancedScrollerCellView cellViewPrefab;
+
     public float cellSize;
     private int selectedTargetIndex;
 
@@ -126,6 +137,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     //アニメーション関係=============================================
     private static readonly int hashIdle = Animator.StringToHash("Base Layer.Idle");
+
     private static readonly int hashTurnIdle = Animator.StringToHash("Base Layer.TurnIdle");
     private static readonly int hashRun = Animator.StringToHash("Base Layer.Run");
     private static readonly int hashDamage = Animator.StringToHash("Base Layer.Damage");
@@ -147,6 +159,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     // 穴掘り関係 ================================
     [SerializeField] private DiggingGridManager diggingGridManager;
+
     public InputDiggingStatement inputDiggingStatement;
     private CHECK_HOLE_POSITION_PHASE checkHolePositionPhase;
     [SerializeField] private GameObject[] diggingPositions;
@@ -170,9 +183,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
         // 攻撃アイテムがあれば
-        foreach(Item item in mainPlayer.items)
+        foreach (Item item in mainPlayer.items)
         {
-            if(item.ItemBase.ItemType == ItemType.WEAPON)
+            if (item.ItemBase.ItemType == ItemType.WEAPON)
             {
                 battleState = BattleState.DIGGING;
                 Debug.Log("穴掘りからスタート");
@@ -218,13 +231,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         else if (battleState == BattleState.CHECK_CONDITION)
         {
             // 状態異常のチェック
-            CheckCondition();
+            StartCoroutine(CheckCondition());
         }
         else if (battleState == BattleState.PLAYER_ACTION_SELECT)
         {
-                HandleActionSelection();
-
-            
+            HandleActionSelection();
         }
         else if (battleState == BattleState.PLAYER_MOVE)
         {
@@ -266,7 +277,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     PlayerEndItemInput();
                 }
-            }else if ((Move)currentMove == Move.STATUS)
+            }
+            else if ((Move)currentMove == Move.STATUS)
             {
                 if (statusState == StatusState.STATUS_All)
                 {
@@ -376,7 +388,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // リストは参照渡しになる
         activePlayers = new List<Player>(players);
         activeEnemies = new List<Enemy>(enemies);
-        
+
         for (int i = 0; i < activePlayers.Count; i++)
         {
             activePlayers[i].PlayerBattleSprite.AddComponent<SpriteButton>();
@@ -469,11 +481,39 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // =========================状態異常をチェックする
-    private void CheckCondition()
+    private IEnumerator CheckCondition()
     {
         Debug.Log("状態異常のチェックフェーズ");
         // 状態異常の更新
         turnCharacter.UpdateConditions();
+        // 毒だったら
+        if (TurnCharacter.IsCharacterPoisoned() == true)
+        {
+            // UIの表示
+            //dialog.ShowMessageCoroutine(turnCharacter.characterName + "は毒にかかっている");
+            // 後で調整　最大HPの1/8減る
+            TurnCharacter.TakeConditionDamage(TurnCharacter.currentMaxHp / 8);
+            Debug.Log("毒なので" + TurnCharacter.currentMaxHp / 8 + "ダメージ");
+            // hpspの更新　
+            // HPSPの反映
+            if (turnCharacter.isPlayer == false)
+            {
+                Enemy enemy = turnCharacter as Enemy;
+                enemy.EnemyUI.UpdateHp();
+            }
+            else
+            {
+                Player player = turnCharacter as Player;
+                player.playerUI.UpdateHpSp();
+            }
+
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                activeEnemies[i].EnemyUI.UpdateHp();
+            }
+            yield return new WaitForSeconds(2);
+        }
+        else
         // まひだったら
         if (turnCharacter.IsCharacterParalyzed() == true)
         {
@@ -515,6 +555,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
             inputSkillStatement = InputSkillStatement.INIT_SKILL;
             inputItemStatement = InputItemStatement.INIT_ITEM;
+            yield return null;
         }
     }
 
@@ -566,7 +607,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // アクティブセルに対してUIの更新をする
             playerSkillPanel.RefreshActiveCellViews();
         }
-        
+
         // アイテム決定
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -620,7 +661,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             int itemNum = LoadDiggingItemData(mainPlayer.items);
             playerSkillPanel.RefreshActiveCellViews();
             // 選択している位置まで飛ぶ
-            if (selectedItemIndex > itemNum-1)
+            if (selectedItemIndex > itemNum - 1)
             {
                 selectedItemIndex--;
             }
@@ -644,7 +685,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private float animationTransitionTime = 0;
 
     private bool onceAnim;
-    
+
     private void HandleActionSelection()
     {
         Player player = turnCharacter as Player;
@@ -704,6 +745,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         currentMove = index;
         battleCommand.ActivateBattleSelectArrow((Move)currentMove);
     }
+
     // クリックしてアクションを決定
     public void MouseClickActionSelection()
     {
@@ -711,6 +753,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         battleCommand.ActivateBattleCommandPanel(false);
         PlayerMoveInit();
     }
+
     private void PlayerAction()
     {
         // メインパネルを表示する
@@ -780,13 +823,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             battleState = BattleState.PLAYER_ACTION_SELECT;
         }
     }
+
     // ステータス画面の初期化
     private void InitStatus()
     {
         statusState = StatusState.STATUS_All;
         // ステータス選択画面だったら
         Debug.Log("ステータス画面を更新");
-        for(int i = 0;i < activePlayers.Count; i++)
+        for (int i = 0; i < activePlayers.Count; i++)
         {
             // パーティプレイヤーのHPとSPを更新
             // バトル中のプレイヤーの情報
@@ -796,7 +840,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // 更新
             updatePlayer = activePlayer;
         }
-        for(int i = 0;i < GameManager.instance.Party.Players.Count;i++)
+        for (int i = 0; i < GameManager.instance.Party.Players.Count; i++)
         {
             Debug.Log("パーティプレイヤーを更新" + GameManager.instance.Party.Players[i].currentSP);
         }
@@ -804,7 +848,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         playerStatusUIsManager.selectStatus(selectedStatusIndex);
     }
 
-    
     // マウスでステータスを選択
     public void SelectStatusButton(int selectStatusIndex)
     {
@@ -838,6 +881,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             battleCommand.ActivateBattleCommandPanel(true);
         }
     }
+
     // バトル ==============================
     //  スキルの入力の状態を遷移する関数
     private InputSkillStatement ChangeInputSkillStatement()
@@ -954,7 +998,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         /* // キー操作
         bool selectionChanged = false;
-        
+
         // 対象が敵だったら
         if (skill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
@@ -1066,7 +1110,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 selectedPlayers = new Player[activeEnemies.Count];
                 selectedPlayers = activePlayers.ToArray();
             }
-        
+
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 // 選択矢印を消す
@@ -1099,9 +1143,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-
     // マウス操作の初期化処理
-    void MouseInitTarget()
+    private void MouseInitTarget()
     {
         Player turnPlayer = turnCharacter as Player;
         EnemySkill skill = turnPlayer.Skills[selectedSkillIndex];
@@ -1165,8 +1208,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("selectedTargetIndex初期" + selectedTargetIndex);
             }
         }
-
     }
+
     // マウス操作でターゲットを選択
     public void MouseHoverPlayerTargetSelect(int index)
     {
@@ -1189,7 +1232,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
                 selectedEnemies = new Enemy[1];
                 selectedEnemies[0] = activeEnemies[selectedTargetIndex];
-
             }
         }
         // 対象がプレイヤーだったら
@@ -1209,10 +1251,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
                 selectedPlayers = new Player[1];
                 selectedPlayers[0] = activePlayers[selectedTargetIndex];
-
             }
         }
     }
+
     // マウス操作でターゲットを決定
     public void MouseClickPlayerTargetSelect()
     {
@@ -1245,7 +1287,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // 全体攻撃のモーションを変更中
-    // スキルの発動 
+    // スキルの発動
     private IEnumerator PerformPlayerSkill()
     {
         battleState = BattleState.BUSY;
@@ -1356,7 +1398,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 activeEnemies.Remove(deadEnemies[i]);
             }
             // selectedIdを更新
-            for(int i = 0; i < activeEnemies.Count; i++)
+            for (int i = 0; i < activeEnemies.Count; i++)
             {
                 activeEnemies[i].EnemyPrefab.GetComponent<SpriteButton>().selectedId = i;
             }
@@ -1885,7 +1927,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-
     private bool ShouldMoveEnemy(int currentPosition, int enemyPosition, Direction direction)
     {
         int currentRow = currentPosition / 3;
@@ -2372,7 +2413,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 }
             }
 
-
             // selectedIdを更新
             for (int i = 0; i < activePlayers.Count; i++)
             {
@@ -2605,7 +2645,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
         // アクティブセルに対してUIの更新をする
         playerSkillPanel.RefreshActiveCellViews();
-
     }
 
     public void MouseClickSkillSelection(int index)
@@ -2632,8 +2671,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             inputSkillStatement = ChangeInputSkillStatement();
         }
     }
-
-
 
     // アイテム関係============================
     private void InitItem()
@@ -2739,24 +2776,24 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // マウス操作 ホバー時にアイテムを選択する
     private void MouseHoverItemSelection(int index)
     {
-        Debug.Log(selectedItemIndex + "アイテム"+ mainPlayer.items[selectedItemIndex].ItemBase.ItemName);
+        Debug.Log(selectedItemIndex + "アイテム" + mainPlayer.items[selectedItemIndex].ItemBase.ItemName);
         HealItemBase healItemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
 
-            // 対象が単体だったら
-            if (healItemBase.TargetNum == TARGET_NUM.SINGLE)
+        // 対象が単体だったら
+        if (healItemBase.TargetNum == TARGET_NUM.SINGLE)
+        {
+            selectedTargetIndex = index;
+            for (int i = 0; i < activePlayers.Count; i++)
             {
-                selectedTargetIndex = index;
-                for (int i = 0; i < activePlayers.Count; i++)
-                {
-                    bool isActiveSelectedArrow = (i == selectedTargetIndex);
-                    activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
-                }
-
-                // activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
-
-                selectedPlayers = new Player[1];
-                selectedPlayers[0] = activePlayers[selectedTargetIndex];
+                bool isActiveSelectedArrow = (i == selectedTargetIndex);
+                activePlayers[i].battlePlayerUI.SelectedArrow.SetActive(isActiveSelectedArrow);
             }
+
+            // activePlayers[selectedTargetIndex].battlePlayerUI.SelectedArrow.SetActive(true);
+
+            selectedPlayers = new Player[1];
+            selectedPlayers[0] = activePlayers[selectedTargetIndex];
+        }
     }
 
     // マウスがクリックされたらアイテムを使う
@@ -2933,14 +2970,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // ターゲットの選択
-    void MouseHoverItemSelection()
+    private void MouseHoverItemSelection()
     {
         HealItemBase itemBase = mainPlayer.items[selectedItemIndex].ItemBase as HealItemBase;
-
-
     }
+
     // ターゲットの決定＆実行
-    void MouseClickItemSelection()
+    private void MouseClickItemSelection()
     {
         // 選択矢印を消す
         for (int i = 0; i < activePlayers.Count; i++)
@@ -3039,6 +3075,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         GameManager.instance.EndBattle();
         playerSkillPanel.gameObject.SetActive(false);
     }
+
     private void EscapeBattle()
     {
         GameManager.instance.EscapeBattle();
@@ -3063,7 +3100,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 isSelected = i == selectedSkillIndex,
                 //type = playerSkillDatas[i].skillBase.MagicType,
                 sp = playerSkillDatas[i].skillBase.Sp
-            }) ;
+            });
         }
 
         // データが揃ったのでスクローラーをリロードする
@@ -3174,14 +3211,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // 適当なデータを設定する
         itemCellDatas = new List<ItemCellData>();
         int j = 0;
-        for(int i =0;i< playerItemDatas.Count; i++)
+        for (int i = 0; i < playerItemDatas.Count; i++)
         {
             if (playerItemDatas[i].ItemBase.ItemType == ItemType.WEAPON)
             {
                 Debug.Log("アイテム：" + playerItemDatas[i].ItemBase.ItemName);
             }
         }
-        Debug.Log("アイテムのこすう"+playerItemDatas.Count);
+        Debug.Log("アイテムのこすう" + playerItemDatas.Count);
         for (int i = 0; i < playerItemDatas.Count; i++)
         {
             if (playerItemDatas[i].ItemBase.ItemType == ItemType.WEAPON)
@@ -3192,9 +3229,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     itemText = playerItemDatas[i].ItemBase.ItemName,
                     isSelected = j == selectedItemIndex,
                     itemCountText = playerItemDatas[i].ItemCount.ToString(),
-                }) ;
+                });
 
-                Debug.Log("i"+i+",j" + j + "アイテム：" + playerItemDatas[i].ItemBase.ItemName);
+                Debug.Log("i" + i + ",j" + j + "アイテム：" + playerItemDatas[i].ItemBase.ItemName);
                 j++;
             }
         }

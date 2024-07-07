@@ -319,7 +319,7 @@ public class Character
         }
     }
 
-    // 麻痺状態かどうかをチェックするメソッド
+    // 麻痺状態かどうかをチェックする関数
     public bool IsCharacterParalyzed()
     {
         foreach (var condition in conditions)
@@ -332,7 +332,20 @@ public class Character
         return false;
     }
 
-    // 麻痺状態かどうかをチェックするメソッド
+    // 毒状態かどうかをチェックする関数
+    public bool IsCharacterPoisoned()
+    {
+        foreach (var condition in conditions)
+        {
+            if (condition is PoisonCondition)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // スリープ状態かどうかをチェックする関数
     public bool IsCharacterSleeped()
     {
         foreach (var condition in conditions)
