@@ -483,6 +483,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // =========================状態異常をチェックする
     private IEnumerator CheckCondition()
     {
+        battleState = BattleState.BUSY;
         Debug.Log("状態異常のチェックフェーズ");
         // 状態異常の更新
         turnCharacter.UpdateConditions();
@@ -490,7 +491,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         if (TurnCharacter.IsCharacterPoisoned() == true)
         {
             // UIの表示
-            //dialog.ShowMessageCoroutine(turnCharacter.characterName + "は毒にかかっている");
+            dialog.ShowMessageCoroutine(turnCharacter.characterName + "は毒にかかっている");
             // 後で調整　最大HPの1/8減る
             TurnCharacter.TakeConditionDamage(TurnCharacter.currentMaxHp / 8);
             Debug.Log("毒なので" + TurnCharacter.currentMaxHp / 8 + "ダメージ");
@@ -506,14 +507,20 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 Player player = turnCharacter as Player;
                 player.playerUI.UpdateHpSp();
             }
-
-            for (int i = 0; i < activeEnemies.Count; i++)
-            {
-                activeEnemies[i].EnemyUI.UpdateHp();
-            }
             yield return new WaitForSeconds(2);
+            if (turnCharacter.isPlayer)
+            {
+                battleState = BattleState.PLAYER_MOVE;
+            }
+            else
+            {
+                battleState = BattleState.ENEMY_MOVE;
+            }
+            inputSkillStatement = InputSkillStatement.INIT_SKILL;
+            inputItemStatement = InputItemStatement.INIT_ITEM;
         }
         else
+
         // まひだったら
         if (turnCharacter.IsCharacterParalyzed() == true)
         {
@@ -555,7 +562,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
             inputSkillStatement = InputSkillStatement.INIT_SKILL;
             inputItemStatement = InputItemStatement.INIT_ITEM;
-            yield return null;
         }
     }
 
