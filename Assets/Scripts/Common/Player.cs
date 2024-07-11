@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 [System.Serializable]
 public class Player : Character
 {
-    int playerID;
+    private int playerID;
     private ExpSheet expSheet;// 経験値表
-    PlayerStatusBase playerStatusBase; // ステータス表
+    private PlayerStatusBase playerStatusBase; // ステータス表
+
     public int Exp
     {
         get; set;
@@ -24,51 +26,75 @@ public class Player : Character
 
     // UI
     public PlayerFieldUI playerUI;
+
     public BattlePlayerUI battlePlayerUI;
     public ResultPlayerUI ResultPlayerUI;
     public List<Item> items;
-    Animator playerBattleAnimator;
+    private Animator playerBattleAnimator;
 
-        // 所持金
+    // 所持金
     public int gold = 1000;
+
     public int Gold { get => gold; set => gold = value; }
 
     // レベルに応じたHPを返す
     public int CurrentMaxHp
     {
         // expSheet.sheets[0].list[level - 1].nextExp;
-        get { return playerStatusBase.sheets[PlayerID].list[level-1].hp; }
+        get
+        {
+            currentMaxHp = playerStatusBase.sheets[PlayerID].list[level - 1].hp;
+            return currentMaxHp;
+        }
     }
 
     // レベルに応じたSPを返す
     public int CurrentMaxSp
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level-1].sp; }
+        get
+        {
+            currentMaxSp = playerStatusBase.sheets[PlayerID].list[level - 1].sp;
+            return currentMaxSp;
+        }
     }
 
     // レベルに応じたAtkを返す
     public int CurrentMaxAtk
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level-1].atk; }
+        get
+        {
+            currentMaxAtk = playerStatusBase.sheets[PlayerID].list[level - 1].atk;
+            return currentMaxAtk;
+        }
     }
 
     // レベルに応じたDefを返す
     public int CurrentMaxDef
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level-1].def; }
+        get
+        {
+            currentMaxDef = playerStatusBase.sheets[PlayerID].list[level - 1].def;
+            return currentMaxDef;
+        }
     }
 
     // レベルに応じたAgiを返す
     public int CurrentMaxAgi
     {
-        get { return playerStatusBase.sheets[PlayerID].list[level-1].agi; }
+        get
+        {
+            currentMaxAgi = playerStatusBase.sheets[PlayerID].list[level - 1].agi;
+            return currentMaxAgi;
+        }
     }
+
     // Start is called before the first frame update
     public List<Item> Items { get => items; set => items = value; }
-    public int PlayerID { get => playerID;}
+
+    public int PlayerID { get => playerID; }
     public Animator PlayerBattleAnimator { get => playerBattleAnimator; set => playerBattleAnimator = value; }
 
-    public Player(PlayerBase pBase, int level,List<ItemBase> debugItemBase)
+    public Player(PlayerBase pBase, int level, List<ItemBase> debugItemBase)
     {
         playerStatusBase = (PlayerStatusBase)Resources.Load("playerStatus");
 
@@ -82,7 +108,7 @@ public class Player : Character
         currentHP = CurrentMaxHp;
         currentSP = CurrentMaxSp;
         atk = CurrentMaxAtk;
-        def= CurrentMaxDef;
+        def = CurrentMaxDef;
         agi = CurrentMaxAgi;
         Item item;
         // セーブデータがあればアイテムは引継ぎなければ初期化
@@ -92,7 +118,7 @@ public class Player : Character
         // 主人公なら
         if (playerID == 0)
         {
-           //  Debug.Log(debugItemBase.Count);
+            //  Debug.Log(debugItemBase.Count);
 
             // デバッグアイテムが入っていれば
             for (int i = 0; i < debugItemBase.Count; i++)
@@ -105,7 +131,6 @@ public class Player : Character
             {
                 Debug.Log(items[i]);
             }*/
-
         }
         Skills = new List<EnemySkill>();
 
@@ -195,7 +220,7 @@ public class Player : Character
         }
         return false;
     }
- 
+
     public override bool TakeSkillDamage(EnemySkill enemySkill, Character character)
     {
         float skillPower = enemySkill.skillBase.Power;// スキル倍率
@@ -220,7 +245,7 @@ public class Player : Character
             float randSeed = UnityEngine.Random.Range(0.83f, 1.17f);
             // （攻撃力/2-守備力/4）×変数(5/6~7/6)x属性効果量
             damage = (int)((character.atk / 2 - def / 4) * randSeed * skillPower * effectiveness);
-            Debug.Log("攻撃力は"+character.atk);
+            Debug.Log("攻撃力は" + character.atk);
             Debug.Log("属性効果量" + effectiveness);
             Debug.Log("ダメージ" + damage);
             Debug.Log("現在の体力" + currentHP);
@@ -243,7 +268,8 @@ public class Player : Character
                 float d = a * playerSkill.skillBase.Power * ((float)player.equipEnemy.MagicPower) + 2;
                 // 与えるダメージの2.5倍
                 int healHP = Mathf.FloorToInt(d * modifiers * 2.5f);*/
-        int healHP = playerSkill.skillBase.Power;
+        // 後で調整する
+        int healHP = Mathf.RoundToInt(player.atk * playerSkill.skillBase.Power * 2);
 
         currentHP += healHP;
         if (currentHP > CurrentMaxHp)
@@ -257,8 +283,6 @@ public class Player : Character
         currentSP -= playerSkill.skillBase.Sp;
     }
 
-
-
     // expを更新して上がった経験値分のnextExpを返す
     public ExpPair GetExp(int getExp)
     {
@@ -269,7 +293,7 @@ public class Player : Character
         nextExp = nextExp - Exp;// 次の経験値までの経験値
         Exp += getExp;
         nextExps.Add(nextExp);
-        Debug.Log("次までの経験値" + nextExp+ "現在の経験値" + Exp);
+        Debug.Log("次までの経験値" + nextExp + "現在の経験値" + Exp);
         int remainExp = nextExp - getExp;// 次のレベルまでの経験値から取得した経験値を引いた1回目のあまり
         Debug.Log("残りの経験値は" + remainExp);
         float remainGetExp = getExp;

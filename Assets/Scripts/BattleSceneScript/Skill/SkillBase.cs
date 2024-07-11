@@ -11,6 +11,7 @@ public enum SKILL_CATEGORY
     CONDITION,
     MOVE_ATTACK,
 }
+
 public enum SKILL_TARGET_KIND
 {
     SELF,
@@ -29,19 +30,18 @@ public class SkillBase : ScriptableObject
     // スキルのマスターデータ
 
     [SerializeField] private string skillName;
-    [SerializeField] MagicType magicType;
+    [SerializeField] private MagicType magicType;
 
     [TextArea]
     [SerializeField] private string description;
 
-    [SerializeField] private int power;
+    [SerializeField] private float power;
     [SerializeField] private int sp;
     [SerializeField] private int accuracy;// 命中率
 
-    [SerializeField] SKILL_CATEGORY skillCategory;
-    [SerializeField] SKILL_TARGET_KIND skillTargetKind;
-    [SerializeField] TARGET_NUM skillTargetNum;
-
+    [SerializeField] private SKILL_CATEGORY skillCategory;
+    [SerializeField] private SKILL_TARGET_KIND skillTargetKind;
+    [SerializeField] private TARGET_NUM skillTargetNum;
 
     /*
         [SerializeField] private bool isAll;// 単体攻撃か
@@ -55,15 +55,18 @@ public class SkillBase : ScriptableObject
 
     public string SkillName { get => skillName; }
     public string Description { get => description; }
-    public int Power { get => power; }
+    public float Power { get => power; }
     public int Sp { get => sp; }
     public int Accuracy { get => accuracy; }
+
     //public bool IsAll { get => isAll; }
     public GameObject SkillRecieveEffect { get => skillRecieveEffect; }
+
     //public bool IsHeal { get => isHeal; }
     //public bool IsRevival { get => isRevival; }
     //public bool IsAttackSkill { get => isAttackSkill; }
     public SKILL_CATEGORY SkillCategory { get => skillCategory; }
+
     public SKILL_TARGET_KIND SkillTargetKind { get => skillTargetKind; }
     public TARGET_NUM SkillTargetNum { get => skillTargetNum; }
     public MagicType MagicType { get => magicType; }

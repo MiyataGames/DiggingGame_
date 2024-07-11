@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayMode{
+public enum PlayMode
+{
     DEBUG,
     RELEASE
 };
@@ -40,29 +41,35 @@ public class GameManager : MonoBehaviour
     private Event1Scene currentEvent1Scene;
     [SerializeField] private BattleSceneManager battleSceneManager;
     [SerializeField] private ResultSceneMangaer resultSceneManager;
+
     // [SerializeField] private ResultSceneMangaer resultSceneManager;
     [SerializeField] private PlayerController playerController;
+
     [SerializeField] private PlayerTownController playerTownController;
-    [SerializeField] Party party;// パーティ情報　ID順
+    [SerializeField] private Party party;// パーティ情報　ID順
     [SerializeField] private PlayerUnit playerUnit;
     [SerializeField] private EnemyUnit enemyUnit;
-    Player mainPlayer;
-    DropObjectsStruct dropObjects;
+    private Player mainPlayer;
+    private DropObjectsStruct dropObjects;
+
     // フィールド上の敵のシンボル
-    GameObject enemySymbol;
+    private GameObject enemySymbol;
+
     // バトル中のプレイヤー
-    List<Player> battlePlayers;
+    private List<Player> battlePlayers;
+
     [SerializeField]
     private List<Enemy> enemies;// バトル中の敵
+
     [SerializeField] private ExpSheet expSheet;// 経験値表
 
     // デバッグ用のボタン
-    [SerializeField] GameObject skipButton;
+    [SerializeField] private GameObject skipButton;
 
     public Party Party { get => party; set => party = value; }
-    public DropObjectsStruct DropObjects { get => dropObjects;}
+    public DropObjectsStruct DropObjects { get => dropObjects; }
 
-    void Start()
+    private void Start()
     {
         if (playMode == PlayMode.DEBUG)
         {
@@ -76,19 +83,17 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-//        Debug.Log(currentSceneIndex);
+        //        Debug.Log(currentSceneIndex);
         if (currentSceneIndex == (int)GameMode.FIELD_SCENE)
         {
-//            Debug.Log("フィールド実行中でーす");
             playerController.HandleUpdate();
         }
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {
- //           Debug.Log("バトル実行中でーす");
             battleSceneManager.HandleUpdate();
-        }else if(currentSceneIndex == (int)GameMode.TOWN_SCENE)
+        }
+        else if (currentSceneIndex == (int)GameMode.TOWN_SCENE)
         {
- //           Debug.Log("タウン実行中でーす");
             playerTownController.HandleUpdate();
         }
         /*
@@ -139,9 +144,9 @@ public class GameManager : MonoBehaviour
         // モンスターの生成
         enemyUnit.SetUp();
         battlePlayers = new List<Player>(playerUnit.SortedBattlePlayers);
-        for(int i = 0;i<battlePlayers.Count; i++)
+        for (int i = 0; i < battlePlayers.Count; i++)
         {
-            Debug.Log("バトルに出たプレイヤーID"+battlePlayers[i].PlayerBase.PlayerId);
+            Debug.Log("バトルに出たプレイヤーID" + battlePlayers[i].PlayerBase.PlayerId);
         }
         enemies = new List<Enemy>(enemyUnit.Enemies);
         Debug.Log("enemyCount" + enemies.Count);
@@ -149,7 +154,7 @@ public class GameManager : MonoBehaviour
         // 主人公を探す
         mainPlayer = Party.Players[0];
 
-        battleSceneManager.InitBattle(battlePlayers, enemies,mainPlayer);
+        battleSceneManager.InitBattle(battlePlayers, enemies, mainPlayer);
     }
 
     public void EndBattle()
@@ -160,7 +165,8 @@ public class GameManager : MonoBehaviour
         // 報酬をゲットする
         int totalGold = 0;
         // ① お金
-        for (int i = 0; i < enemies.Count; i++) {
+        for (int i = 0; i < enemies.Count; i++)
+        {
             totalGold += enemies[i].DropGold;
         }
         dropObjects.totalDropGold = totalGold;
@@ -168,25 +174,24 @@ public class GameManager : MonoBehaviour
         Debug.Log("落としたお金は" + totalGold);
         // ② アイテム
         List<Item> dropItems = new List<Item>(); ;
-        for(int i = 0; i < enemies.Count; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
-           for(int j = 0;j < enemies[i].DropItems.Count; j++)
+            for (int j = 0; j < enemies[i].DropItems.Count; j++)
             {
                 dropItems.Add(enemies[i].DropItems[j]);
             }
         }
         dropObjects.dropItems = new List<Item>(dropItems);
-        for(int i = 0; i< dropItems.Count; i++)
+        for (int i = 0; i < dropItems.Count; i++)
         {
             mainPlayer.AddItem(dropItems[i]);
             Debug.Log("落としたアイテムは" + dropItems[i].ItemBase.ItemName);
         }
         StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
-        if(enemySymbol != null)
+        if (enemySymbol != null)
         {
             Destroy(enemySymbol);
         }
-        
     }
 
     // 逃げる
@@ -198,7 +203,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(enemySymbol.GetComponent<FieldEnemy>().Blinking());
     }
 
-    
     public IEnumerator UpdateExpAnimation()
     {
         // 経験値の処理
@@ -209,7 +213,6 @@ public class GameManager : MonoBehaviour
             exp += expSheet.sheets[0].list[enemies[i].Level - 1].exp;
             Debug.Log("倒した敵の経験値は" + expSheet.sheets[0].list[enemies[i].Level - 1].exp);
         }
-        // floatでよみこまなきゃだめ？
         IEnumerator enumerator = null;
         for (int i = 0; i < battlePlayers.Count; i++)
         {
@@ -238,7 +241,8 @@ public class GameManager : MonoBehaviour
             // イベントでなければ何もしない
             if (currentEvent1Scene != Event1Scene.NONE)
             {
-                for (int i = 0; i < (int)Event1Scene.END -1; i++) {
+                for (int i = 0; i < (int)Event1Scene.END - 1; i++)
+                {
                     if (eventSceneObjects[i] != null)
                     {
                         eventSceneObjects[i].SetActive(false);
@@ -249,4 +253,3 @@ public class GameManager : MonoBehaviour
         }
     }
 }
-
