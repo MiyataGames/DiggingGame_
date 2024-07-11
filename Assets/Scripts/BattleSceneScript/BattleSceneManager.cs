@@ -238,7 +238,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
         else if (battleState == BattleState.PLAYER_ACTION_SELECT)
         {
-            //HandleActionSelection();
+            HandleActionSelection();
         }
         else if (battleState == BattleState.PLAYER_MOVE)
         {
@@ -770,7 +770,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void PlayerAction()
     {
         // メインパネルを表示する
-        //battleState = BattleState.PLAYER_ACTION_SELECT;
+        battleState = BattleState.PLAYER_ACTION_SELECT;
         Debug.Log("=====================" + battleState + "====================");
 
         battleCommand.ActivateBattleCommandPanel(true);
@@ -837,7 +837,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             //currentMove = Move()
             // メインパネルを表示する
             battleCommand.ActivateBattleCommandPanel(true);
-            //battleState = BattleState.PLAYER_ACTION_SELECT;
+            battleState = BattleState.PLAYER_ACTION_SELECT;
         }
     }
 
@@ -2640,7 +2640,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
             */
 
-            //battleState = BattleState.PLAYER_ACTION_SELECT;
+            battleState = BattleState.PLAYER_ACTION_SELECT;
         }
 
         // 選択中
@@ -2796,7 +2796,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", true);
             player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
             */
-            //battleState = BattleState.PLAYER_ACTION_SELECT;
+            battleState = BattleState.PLAYER_ACTION_SELECT;
         }
 
         // 選択中
