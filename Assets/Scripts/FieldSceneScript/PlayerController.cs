@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
         // saveLoadCtrl.Load();
         myAnim.SetFloat("isLeft", -1);
+        digCollider.SetActive(false);
     }
 
     void OnEnable()
@@ -172,14 +173,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // マップを開く
             }
 
-            if (isDigging == false)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    startDig();
-                }
-            }
-
             // 移動
             vx = 0;
             vy = 0;
@@ -188,12 +181,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             if (Input.GetKey(KeyCode.A))
             {
                 vx = -speed;
-                isLeft = true;
+
+                if(isDigging == false){
+                    isLeft = true;
+                    myAnim.SetFloat("isLeft", 1);
+                }
+
                 // 上下穴掘り中なら速度0
                 if (isDigging == true && myAnim.GetFloat("isUp") != 0)
                 {
                     vx = 0;
-                }// 穴掘り中じゃないなら
+                }// 上下穴掘り中じゃないなら
                 else
                 {
                     // ジャンプ中じゃなければ
@@ -202,14 +200,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                         myAnim.SetBool("isWalking", true);
                         myAnim.SetFloat("isUp", 0);
                     }
-                    myAnim.SetFloat("isLeft", 1);
+    
                 }
             }
             // D：右
             else if (Input.GetKey(KeyCode.D))
             {
                 vx = speed;
-                isLeft = false;
+
+                if(isDigging == false){
+                    isLeft = false;
+                    myAnim.SetFloat("isLeft", -1);
+                }
+
                 // 上下穴掘り中なら速度0
                 if (isDigging == true && myAnim.GetFloat("isUp") != 0 )
                 {
@@ -223,7 +226,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                         myAnim.SetBool("isWalking", true);
                         myAnim.SetFloat("isUp", 0);
                     }
-                    myAnim.SetFloat("isLeft", -1);
+                    
                 }
             }
 
@@ -234,7 +237,15 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 myAnim.SetBool("isWalking", false);
             }
 
-            // 上キーを入力
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (isDigging == false)
+                {
+                    startDig();
+                }
+            }
+
+            /*// 上キーを入力
             if (Input.GetKey(KeyCode.W))
             {
                 myAnim.SetFloat("isUp", 1);
@@ -243,7 +254,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             else if (Input.GetKey(KeyCode.S))
             {
                 myAnim.SetFloat("isUp", -1);
-            }
+            }*/
 
             if (Input.GetKey("space") && groundFlag == true)
             {
@@ -310,12 +321,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
         if (Input.GetKey(KeyCode.W))
         {
+            myAnim.SetFloat("isUp", 1);
             dc.offset = new Vector2(0.0f, 0.68f);
             dc.size = new Vector2(0.76f, 0.45f);
             dc.direction = CapsuleDirection2D.Horizontal;
         }
         else if (Input.GetKey(KeyCode.S))
         {
+            myAnim.SetFloat("isUp", -1);
             dc.offset = new Vector2(0.0f, -0.85f);
             dc.size = new Vector2(0.76f, 0.45f);
             dc.direction = CapsuleDirection2D.Horizontal;
@@ -341,9 +354,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     void endDig()
     {
+        myAnim.SetBool("isDigging", false);
         isDigging = false;
         digCollider.SetActive(false);
-        myAnim.SetBool("isDigging", false);
     }
     private void HandleMenuSelect()
     {
