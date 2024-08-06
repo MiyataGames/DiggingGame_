@@ -317,7 +317,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         isDigging = true;
         CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
-
+        //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
 
         if (Input.GetKey(KeyCode.W))
         {
@@ -336,13 +336,13 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         else if (isLeft == true)
         {
             dc.offset = new Vector2(-0.47f, -0.06f);
-            dc.size = new Vector2(0.5f, 0.76f);
+            dc.size = new Vector2(0.5f, 0.8f);
             dc.direction = CapsuleDirection2D.Vertical;
         }
         else if (isLeft == false)
         {
             dc.offset = new Vector2(0.47f, -0.06f);
-            dc.size = new Vector2(0.5f, 0.76f);
+            dc.size = new Vector2(0.5f, 0.85f);
             dc.direction = CapsuleDirection2D.Vertical;
         }
 
