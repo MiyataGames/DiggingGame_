@@ -336,13 +336,13 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         else if (isLeft == true)
         {
             dc.offset = new Vector2(-0.47f, -0.06f);
-            dc.size = new Vector2(0.45f, 0.76f);
+            dc.size = new Vector2(0.5f, 0.76f);
             dc.direction = CapsuleDirection2D.Vertical;
         }
         else if (isLeft == false)
         {
             dc.offset = new Vector2(0.47f, -0.06f);
-            dc.size = new Vector2(0.45f, 0.76f);
+            dc.size = new Vector2(0.5f, 0.76f);
             dc.direction = CapsuleDirection2D.Vertical;
         }
 
