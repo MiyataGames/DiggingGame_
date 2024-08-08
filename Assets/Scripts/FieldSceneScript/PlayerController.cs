@@ -249,7 +249,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 if (isDigging == false)
                 {
-                    startDig();
+                    startDigAction();
                 }
             }
 
@@ -329,15 +329,30 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // 掘るアニメーション終了時にアニメーション側から呼び出し
     public void endDiggingAnim()
     {
-        endDig();
+        endDigAction();
     }
     public void endDiggingDownUpAnim()
     {
         myAnim.SetFloat("isUp", 0);
-        endDig();
+        endDigAction();
     }
 
-    void startDig()
+    void endDigAction()
+    {
+        myAnim.SetBool("isDigging", false);
+        isDigging = false;
+        digCollider.SetActive(false);
+    }
+
+    void StartDig(){
+        digCollider.SetActive(true);
+    }
+
+    void EndDig(){
+        digCollider.SetActive(false);
+    }
+
+    void startDigAction()
     {
         isDigging = true;
         CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
@@ -360,7 +375,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         else if (isLeft == true)
         {
             dc.offset = new Vector2(-0.47f, -0.06f);
-            dc.size = new Vector2(0.5f, 0.8f);
+            dc.size = new Vector2(0.5f, 0.85f);
             dc.direction = CapsuleDirection2D.Vertical;
         }
         else if (isLeft == false)
@@ -370,17 +385,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             dc.direction = CapsuleDirection2D.Vertical;
         }
 
-        digCollider.SetActive(true);
         myAnim.SetBool("isJumping", false);
         myAnim.SetBool("isWalking", false);
         myAnim.SetBool("isDigging", true);
-    }
-
-    void endDig()
-    {
-        myAnim.SetBool("isDigging", false);
-        isDigging = false;
-        digCollider.SetActive(false);
     }
 
     void SetSoilTile(Bounds bounds)
