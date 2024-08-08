@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using System.Linq;
 using System;
 using TMPro;
+using UnityEngine.Tilemaps;
 
 public enum FieldGameState
 {
@@ -57,7 +58,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private bool pushFlag;
     private bool jumpFlag;
     private bool groundFlag;
-    
+
     private Define.DirectionNumber currentDirectionNumber;
     [SerializeField] private Menu menu;
 
@@ -107,6 +108,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     [SerializeField] FadeController fadeController;
 
+    [SerializeField] Tilemap soilTilemap;
+    [SerializeField] TileBase soilTile;
+    [SerializeField] BoxCollider2D SetSoilCollider;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -141,7 +146,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         // ゲームがポーズ中だったら全ての処理を受け付けない
         if (GameManager.instance.currentGameState == GameState.POSE)
-        { 
+        {
             vx = 0;
             vy = 0;
             myAnim.SetBool("isWalking", false);
@@ -182,7 +187,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = -speed;
 
-                if(isDigging == false){
+                if (isDigging == false)
+                {
                     isLeft = true;
                     myAnim.SetFloat("isLeft", 1);
                 }
@@ -200,7 +206,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                         myAnim.SetBool("isWalking", true);
                         myAnim.SetFloat("isUp", 0);
                     }
-    
+
                 }
             }
             // D：右
@@ -208,13 +214,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 vx = speed;
 
-                if(isDigging == false){
+                if (isDigging == false)
+                {
                     isLeft = false;
                     myAnim.SetFloat("isLeft", -1);
                 }
 
                 // 上下穴掘り中なら速度0
-                if (isDigging == true && myAnim.GetFloat("isUp") != 0 )
+                if (isDigging == true && myAnim.GetFloat("isUp") != 0)
                 {
                     vx = 0;
                 }// 穴掘り中じゃないなら
@@ -226,7 +233,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                         myAnim.SetBool("isWalking", true);
                         myAnim.SetFloat("isUp", 0);
                     }
-                    
+
                 }
             }
 
@@ -242,6 +249,20 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 if (isDigging == false)
                 {
                     startDig();
+                }
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (isDigging == false)
+                {
+
+                    if (SetSoilCollider != null)
+                    {
+                        Bounds bounds = SetSoilCollider.bounds;
+
+                        SetSoilTile(bounds);
+                    }
                 }
             }
 
@@ -358,6 +379,25 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         isDigging = false;
         digCollider.SetActive(false);
     }
+
+    void SetSoilTile(Bounds bounds)
+    {
+        Vector3Int min = soilTilemap.WorldToCell(bounds.min);
+        Vector3Int max = soilTilemap.WorldToCell(bounds.max);
+
+        for (int x = min.x; x <= max.x; x++)
+        {
+            for (int y = min.y; y <= max.y; y++)
+            {
+                Vector3Int cellPosition = new Vector3Int(x, y, 0);
+                if (soilTilemap.HasTile(cellPosition) == false)
+                {
+                    soilTilemap.SetTile(cellPosition, soilTile);
+                }
+            }
+        }
+    }
+
     private void HandleMenuSelect()
     {
 
@@ -690,7 +730,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("アイテムを使うよ" + party.Players[0].Items[selectedItemIndex].ItemBase.ItemName);
         // 使うアイテムの情報を保持
         Item item = party.Players[0].Items[selectedItemIndex];
-        
+
         // 回復アイテムだったら
         if (item.ItemBase.ItemType == ItemType.HEAL_ITEM)
         {
@@ -750,9 +790,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             int coinValue = other.GetComponent<FieldCoin>().Price;
             party.Players[0].Gold = party.Players[0].Gold + coinValue;
-            print("CoinValue:"+party.Players[0].Gold);
+            print("CoinValue:" + party.Players[0].Gold);
             Destroy(other.gameObject);
-                        return;
+            return;
         }
 
     }
@@ -908,6 +948,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void OnTriggerStay2D(Collider2D other)
     {
+
         if (other.gameObject.tag == "ground" || other.gameObject.tag == "digObject" || other.gameObject.tag == "Enemy")
         {
             groundFlag = true;
@@ -937,7 +978,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             //Fade.Instance.StartFadeInBattle(collision.gameObject);
             GameManager.instance.StartBattle(collision.gameObject);
 
-        }else if(collision.gameObject.tag == "Town")
+        }
+        else if (collision.gameObject.tag == "Town")
         {
             Debug.Log("タウンに切り替え");
             // 街へ入る
