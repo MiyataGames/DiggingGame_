@@ -132,6 +132,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // saveLoadCtrl.Load();
         myAnim.SetFloat("isLeft", -1);
         digCollider.SetActive(false);
+        SetSoilCollider.enabled = false;
     }
 
     void OnEnable()
@@ -259,6 +260,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
                     if (SetSoilCollider != null)
                     {
+                        SetSoilCollider.enabled = true;
+
                         Bounds bounds = SetSoilCollider.bounds;
 
                         SetSoilTile(bounds);
@@ -396,6 +399,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 }
             }
         }
+
+        SetSoilCollider.enabled = false;
     }
 
     private void HandleMenuSelect()
