@@ -86,6 +86,7 @@ public class StoryEventScript : MonoBehaviour
     private bool isPlayerInErea = false; //エリア内にプレイヤーがいるかのフラグ
     private bool isInEventNow = false; //会話中かフラグ
     private bool isCanNextText = true;
+    private bool isNowFading = false;
     private bool isSettingEventFlag = false;
 
     void Awake(){
@@ -144,12 +145,12 @@ public class StoryEventScript : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other){
-        if(other.gameObject.tag == "Player"){
+    void OnTriggerEnter2D(Collider2D other){ //コリジョンのトリガーが発火したとき
+        if(other.gameObject.tag == "Player"){ //タグがPlayerなら
             isPlayerInErea = true;
         }
-        if(TriggerIsFkey == false){
-            if(isInEventNow == false){
+        if(TriggerIsFkey == false){ //イベント開始トリガーがFキーではなく
+            if(isInEventNow == false){ //現在イベント中でないなら
                 isInEventNow = true; //イベント中フラグをtrue
                 textStart(); //テキストスタート
             }
@@ -169,7 +170,7 @@ public class StoryEventScript : MonoBehaviour
         //会話ダイアログを表示
         //SwichTalkDialogActivate(true);
         //ボタンにReadNextMessageを登録
-        readNext.onClick.AddListener(ReadNextMessage);
+        //readNext.onClick.AddListener(ReadNextMessage);
 
         //最初のコマンドをセット
         currentCommand = EventDatas[currentTextID].command;
@@ -224,6 +225,7 @@ public class StoryEventScript : MonoBehaviour
                 PlaySE(EventDatas[currentTextID].SEpath);
                 break;
             case "chara_func":
+            isCanNextText = false;
                 charactorFunction.ExecuteCommand(EventDatas[currentTextID].chractorFunction,EventDatas[currentTextID].animFuncName);
                 if(moveFlag == false){
                     ReadNextMessage();
@@ -235,25 +237,37 @@ public class StoryEventScript : MonoBehaviour
             case "set_text":
                 ShowText(EventDatas[currentTextID].mainText);
 
-                if(EventDatas[currentTextID].setBranch){
-                    ShowBranchText(EventDatas[currentTextID].yesText, EventDatas[currentTextID].noText);
-                }
-                //Debug.Log(charaImage[currentTextID]);
                 image.sprite = charaImage[currentTextID];
                 //Debug.Log(image);
+
+                if(EventDatas[currentTextID].setBranch){
+                    ShowBranchText(EventDatas[currentTextID].yesText, EventDatas[currentTextID].noText);
+                    isCanNextText = false;
+                }else{
+                    isCanNextText = true;
+                }
+                //Debug.Log(charaImage[currentTextID]);
+                
                 break;
             case "set_EventFlag":
                 SetEventFlag();
                 break;
             case "fade_blackOut":
+                isCanNextText = false;
                 fadeController.OnFadeOutComplete += OnFadeOutComplete;
                 fadeController.FadeOut();
                 break;
             case "fade_blackWait":
+                if(isCanNextText == true){
+                        isCanNextText = false;
+                    }
                 fadeController.OnFadeWaitComplete += OnFadeWaitComplete;
                 fadeController.FadeWait();
                 break;
             case "fade_blackIn":
+                if(isCanNextText == true){
+                    isCanNextText = false;
+                }
                 fadeController.OnFadeInComplete += OnFadeInComplete;
                 fadeController.FadeIn();
                 break;
@@ -473,6 +487,7 @@ public class StoryEventScript : MonoBehaviour
     {
         Debug.Log("Fade In Complete");
         ReadNextMessage();
+        isCanNextText = true;
         fadeController.OnFadeInComplete -= OnFadeInComplete;
     }
 

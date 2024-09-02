@@ -19,11 +19,14 @@ public class FieldTalk : MonoBehaviour
     private bool isFadeIn = false;
     private Sprite image;
     private Vector2 defaultPos;
+    private float defaultWidth;
 
     // Start is called before the first frame update
     void Awake()
     {
         defaultPos = fieldTalkDialog.transform.position;
+        defaultPos.x = Screen.width + 250;
+        fieldTalkDialog.transform.position = defaultPos; 
     }
 
     public void DisplayFieldText(string message, string imagePath)

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using DG.Tweening;
 
 public class CF_Event1 : CharactorFunction
@@ -24,6 +25,12 @@ public class CF_Event1 : CharactorFunction
     [SerializeField] float cameraOffsetZ;
 
     [SerializeField] Transform leftPoint;
+
+    [SerializeField] Tilemap soilTilemap;
+
+    [SerializeField] Vector2 colliderSize = new Vector2(1, 1);
+
+    private string colliderLayer = "SetTileCollider";
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -85,9 +92,51 @@ public class CF_Event1 : CharactorFunction
     /// </summary>
     private void SpawanSyo_Filed()
     {
-        syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
-        ShouTile.SetActive(true);
+        //プレイヤーに右を向かせる
+        player_Field.GetComponent<PlayerController>().isLeft = false;
+        Animator pa = player_Field.GetComponent<Animator>();
+        pa.SetFloat("isLeft", -1);
 
+        Vector3 playerPosition = player_Field.transform.position;
+
+        // コライダーの左端がプレイヤーの位置になるように調整
+        Vector3 colliderPosition = playerPosition + new Vector3(colliderSize.x / 2, 0, 0);
+
+        GameObject colliderObject = new GameObject("DynamicCollider");
+        colliderObject.transform.position = colliderPosition;
+
+        colliderObject.layer = LayerMask.NameToLayer(colliderLayer);
+
+        BoxCollider2D boxCollider = colliderObject.AddComponent<BoxCollider2D>();
+        boxCollider.size = colliderSize;
+
+        Bounds bounds = boxCollider.bounds;
+
+        DeleteTilesInBounds(bounds);
+
+        Destroy(colliderObject);
+
+        syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
+        //ShouTile.SetActive(true);
+
+    }
+
+    private void DeleteTilesInBounds(Bounds bounds)
+    {
+        Vector3Int min = soilTilemap.WorldToCell(bounds.min);
+        Vector3Int max = soilTilemap.WorldToCell(bounds.max);
+
+        for (int x = min.x; x <= max.x; x++)
+        {
+            for (int y = min.y; y <= max.y; y++)
+            {
+                Vector3Int cellPosition = new Vector3Int(x, y, 0);
+                if (soilTilemap.HasTile(cellPosition))
+                {
+                    soilTilemap.SetTile(cellPosition, null);
+                }
+            }
+        }
     }
 
     /// <summary>

@@ -80,6 +80,6 @@ public class DigController : MonoBehaviour
         isDigging = false; 
         digCollider.SetActive(false);
         playerAnimController.SetBool("isDigging",false);
-        playerAnimController.SetBool("isUnderDigging",false);
+        //playerAnimController.SetBool("isUnderDigging",false);
     }
 }
