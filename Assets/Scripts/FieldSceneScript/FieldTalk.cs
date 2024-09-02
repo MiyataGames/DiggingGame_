@@ -26,6 +26,7 @@ public class FieldTalk : MonoBehaviour
     {
         defaultPos = fieldTalkDialog.transform.position;
         defaultPos.x = Screen.width + 250;
+        Debug.Log("Screen : " + Screen.width);
         fieldTalkDialog.transform.position = defaultPos; 
     }
 
