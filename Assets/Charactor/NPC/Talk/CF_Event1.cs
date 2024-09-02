@@ -92,6 +92,11 @@ public class CF_Event1 : CharactorFunction
     /// </summary>
     private void SpawanSyo_Filed()
     {
+        //プレイヤーに右を向かせる
+        player_Field.GetComponent<PlayerController>().isLeft = false;
+        Animator pa = player_Field.GetComponent<Animator>();
+        pa.SetFloat("isLeft", -1);
+
         Vector3 playerPosition = player_Field.transform.position;
 
         // コライダーの左端がプレイヤーの位置になるように調整

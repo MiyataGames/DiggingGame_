@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private float vy;
     private float minVelocityY = -9.0f;
     private float maxVelocityY = 10.0f;
-    private bool pushFlag;
+    private bool jumpPushFlag = true;
     private bool jumpFlag;
     private bool groundFlag;
 
@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public bool isUp = false;
     private bool isDigging = false;
     private bool isJumping = false;
+
+    [SerializeField]private float jumpWaitTIme = 0.1f;
     [SerializeField] private GameObject digCollider;
     DigController digController;
 
@@ -198,7 +200,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 if (isDigging == true && myAnim.GetFloat("isUp") != 0)
                 {
                     vx = 0;
-                }// 上下穴掘り中じゃないなら
+                }// 上下穴掘り中じゃないならaaaaaaaaaaaaaaaaaaaaaaaaaa 
                 else
                 {
                     // ジャンプ中じゃなければ
@@ -280,19 +282,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 myAnim.SetFloat("isUp", -1);
             }*/
 
-            if (Input.GetKey("space") && groundFlag == true)
+            //ジャンプキー
+            if (jumpPushFlag == true)
             {
-                if (pushFlag == false)
+                if (Input.GetKey("space") && groundFlag == true)
                 {
-                    // myAnim.SetBool("isJump",true);
+                    jumpPushFlag = false;
                     jumpFlag = true;
                     isJumping = true;
-                    pushFlag = true;
+
                 }
-            }
-            else
-            {
-                pushFlag = false;
             }
         }
 
@@ -344,11 +343,13 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         digCollider.SetActive(false);
     }
 
-    void StartDig(){
+    void StartDig()
+    {
         digCollider.SetActive(true);
     }
 
-    void EndDig(){
+    void EndDig()
+    {
         digCollider.SetActive(false);
     }
 
@@ -964,9 +965,21 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (other.gameObject.tag == "ground" || other.gameObject.tag == "digObject" || other.gameObject.tag == "Enemy")
         {
             groundFlag = true;
-            isJumping = false;
+            if (isJumping == true)
+            {
+                isJumping = false;
+                StartCoroutine(WaitJump(jumpWaitTIme));
+            }
             myAnim.SetBool("isJumping", false);
         }
+    }
+
+    private IEnumerator WaitJump(float waitTime)
+    {
+
+        yield return new WaitForSeconds(waitTime);
+
+        jumpPushFlag = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
