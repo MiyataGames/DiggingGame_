@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public bool isUp = false;
     private bool isDigging = false;
     private bool isJumping = false;
+    private bool isWallKickJumping;
 
     private bool WallKickFlag = false;
 
@@ -184,7 +185,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
             // 移動
-            if (isJumping == true)
+            if (isWallKickJumping == true )
             {
                 vx = rb.velocity.x;
             }
@@ -197,17 +198,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // A：左
             if (Input.GetKey(KeyCode.A))
             {
-                if(isJumping == false){   
+                if (isWallKickJumping == false)
+                {
                     vx = -speed;
-                }
-                else if(rb.velocity.x == 0.0f){
-                    vx = -speed/3;
                 }
 
                 if (isDigging == false)
                 {
                     isLeft = true;
                     myAnim.SetFloat("isLeft", 1);
+
                 }
 
                 // 上下穴掘り中なら速度0
@@ -229,17 +229,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             // D：右
             else if (Input.GetKey(KeyCode.D))
             {
-                if(isJumping == false){   
+                if (isWallKickJumping == false)
+                {
                     vx = speed;
-                }
-                else if(rb.velocity.x == 0.0f){
-                    vx = speed/3;
                 }
 
                 if (isDigging == false)
                 {
                     isLeft = false;
                     myAnim.SetFloat("isLeft", -1);
+
                 }
 
                 // 上下穴掘り中なら速度0
@@ -311,25 +310,27 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     jumpFlag = true;
                     isJumping = true;
                 }
-                else if (jumpFirstPushFlag == false && isJumping == true)
+                else if (jumpFirstPushFlag == false && groundFlag == false)
                 {
                     Vector2 point = transform.position;
                     if (isLeft == true)
                     {
-                        if (Physics2D.CapsuleCast(point + new Vector2(0.0f, -0.1f), new Vector2(0.2f, 0.4f), CapsuleDirection2D.Vertical, 0f, Vector2.left, 0.2f))
+                        if (Physics2D.CapsuleCast(point + new Vector2(0.0f, -0.1f), new Vector2(0.2f, 0.3f), CapsuleDirection2D.Vertical, 0f, Vector2.left, 0.2f))
                         {
                             WallKickFlag = true;
+                            isWallKickJumping = true;
                         }
-                        Debug.DrawRay(point + new Vector2(0.0f, -0.1f) + new Vector2(0.0f, 0.2f), Vector2.down * 0.4f, Color.red, 0.01f);
+                        Debug.DrawRay(point + new Vector2(0.0f, -0.1f) + new Vector2(0.0f, 0.15f), Vector2.down * 0.3f, Color.red, 0.01f);
                         Debug.DrawRay(point, Vector2.left * 0.2f, Color.red, 0.01f);
                     }
                     else
                     {
-                        if (Physics2D.CapsuleCast(point + new Vector2(0.0f, -0.1f), new Vector2(0.2f, 0.4f), CapsuleDirection2D.Vertical, 0f, Vector2.right, 0.2f))
+                        if (Physics2D.CapsuleCast(point + new Vector2(0.0f, -0.1f), new Vector2(0.2f, 0.3f), CapsuleDirection2D.Vertical, 0f, Vector2.right, 0.2f))
                         {
                             WallKickFlag = true;
+                            isWallKickJumping = true;
                         }
-                        Debug.DrawRay(point + new Vector2(0.0f, -0.1f) + new Vector2(0.0f, 0.2f), Vector2.down * 0.4f, Color.red, 0.01f);
+                        Debug.DrawRay(point + new Vector2(0.0f, -0.1f) + new Vector2(0.0f, 0.15f), Vector2.down * 0.3f, Color.red, 0.01f);
                         Debug.DrawRay(point, Vector2.right * 0.2f, Color.red, 0.01f);
                     }
 
@@ -1006,14 +1007,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             if (isLeft == true)
             {
-                rb.velocity = new Vector2(rb.velocity.x, 0.0f);
-                rb.AddForce(new Vector2(jumpPower/2, jumpPower), ForceMode2D.Impulse);
+                rb.velocity = new Vector2(0.0f, 0.0f);
+                rb.AddForce(new Vector2(jumpPower / 2, jumpPower), ForceMode2D.Impulse);
                 WallKickFlag = false;
             }
             else
             {
-                rb.velocity = new Vector2(rb.velocity.x, 0.0f);
-                rb.AddForce(new Vector2(-jumpPower/2, jumpPower), ForceMode2D.Impulse);
+                rb.velocity = new Vector2(-9.0f/3, 9.0f);
+                rb.AddForce(new Vector2(-jumpPower / 2, jumpPower), ForceMode2D.Impulse);
                 WallKickFlag = false;
             }
         }
@@ -1029,7 +1030,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             groundFlag = true;
             if (isJumping == true)
             {
+                Debug.Log("tyakuti");
                 isJumping = false;
+                isWallKickJumping = false;
                 StartCoroutine(WaitJump(jumpWaitTIme));
             }
             myAnim.SetBool("isJumping", false);
@@ -1041,18 +1044,17 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
         yield return new WaitForSeconds(waitTime);
 
-        Debug.Log("jumpkanryou");
         jumpFirstPushFlag = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        //groundFlag = false;
+        groundFlag = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.gameObject.tag);
+        //Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "Enemy")
         {
             Debug.Log("敵に当たった");
