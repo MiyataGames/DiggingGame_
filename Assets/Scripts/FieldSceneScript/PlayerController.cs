@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private float vx;
     private float vy;
     private float minVelocityY = -9.0f;
+    private float minVelocityX = -9.0f;
     private float maxVelocityY = 10.0f;
     private bool jumpFirstPushFlag = true;
     private bool jumpFlag;
@@ -990,6 +991,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         //Debug.Log(vx);
         float velocityY = Mathf.Clamp(rb.velocity.y, minVelocityY, jumpPower);
         rb.velocity = new Vector2(vx, velocityY);
+        
 
         if (jumpFlag == true)
         {
@@ -1013,7 +1015,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             }
             else
             {
-                rb.velocity = new Vector2(-9.0f/3, 9.0f);
+                rb.velocity = new Vector2(0.0f, 0.0f);
                 rb.AddForce(new Vector2(-jumpPower / 2, jumpPower), ForceMode2D.Impulse);
                 WallKickFlag = false;
             }
