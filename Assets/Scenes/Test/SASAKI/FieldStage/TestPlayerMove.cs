@@ -12,14 +12,11 @@ public class TestPlayerMove : MonoBehaviour
     private bool isLeftWall = false;
 
     private bool isWallJumping;
-    private bool canWallJump = true;
-    private float minA = 0.2f;
     private float wallJumpingDirection;
     private float wallJumingTime = 0.2f;
     private float inputBlockTimer;
     private float wallJumpingCounter;
     private float vx;
-    private float vy;
     [SerializeField] private float wallJumpingDuration = 0.3f;
     [SerializeField] private Vector2 wallJumpingPower = new Vector2(8f, 12f);
     [SerializeField] private float moveSpeed = 5f;
@@ -30,10 +27,8 @@ public class TestPlayerMove : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody2D rb;
-    private bool canWallKick = false;
     private bool jumpPressed = false;
     private bool jumpReleased = false;
-    private bool stopVelocity = false;
 
     void Start()
     {

@@ -47,18 +47,35 @@ public class Define
 
 public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpPower;
+    float keyDirCheck;
+    private bool isWallSliding = false;
+    private bool isRightWall = false;
+    private bool isLeftWall = false;
 
-    [SerializeField] private Rigidbody2D rb;
+    private bool isWallJumping;
+    private float wallJumpingDirection;
+    private float wallJumingTime = 0.2f;
+    private float inputBlockTimer;
+    private float wallJumpingCounter;
+    [SerializeField] private float wallJumpingDuration = 0.3f;
+    [SerializeField] private Vector2 wallJumpingPower = new Vector2(8f, 12f);
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float wallSlidingSpeed = 2f;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private Transform WallCheck;
+    [SerializeField] private LayerMask groundLayer;
+
+    private Rigidbody2D rb;
+    CapsuleCollider2D dc;
+    private bool jumpPressed = false;
+    private bool jumpReleased = false;
+
     private float vx;
     private float vy;
     private float minVelocityY = -9.0f;
     private float minVelocityX = -9.0f;
     private float maxVelocityY = 10.0f;
-    private bool jumpFirstPushFlag = true;
-    private bool jumpFlag;
-    private bool groundFlag = false;
 
     private Define.DirectionNumber currentDirectionNumber;
     [SerializeField] private Menu menu;
@@ -71,14 +88,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     public bool isLeft = false;
     public bool isUp = false;
     private bool isDigging = false;
-    private bool isJumping = false;
-    private bool isWallKickJumping;
 
-    private bool WallKickFlag = false;
-    private bool rightWallKickFlag = false;
-    private bool leftWallKickFlag = false;
-
-    [SerializeField] private float jumpWaitTIme = 0.1f;
     [SerializeField] private GameObject digCollider;
     DigController digController;
 
@@ -124,6 +134,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        dc = digCollider.GetComponent<CapsuleCollider2D>();
+        dc.enabled = false;
         myAnim = GetComponent<Animator>();
         filedGameStatus = FieldGameState.DIGGING;
         currentMenuCommandNum = 0;
@@ -139,7 +151,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         playerStatusUIsManager.statusSelectButtonClickedDelegate = SelectStatusButton;
         // saveLoadCtrl.Load();
         myAnim.SetFloat("isLeft", -1);
-        digCollider.SetActive(false);
         SetSoilCollider.enabled = false;
     }
 
@@ -187,86 +198,44 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // マップを開く
             }
 
-            // 移動
-            if (isWallKickJumping == true )
-            {
-                vx = rb.velocity.x;
-            }
-            else
-            {
-                vx = 0;
-            }
-            vy = 0;
 
-            // A：左
-            if (Input.GetKey(KeyCode.A))
+            // 左右の移動
+            keyDirCheck = Input.GetAxis("Horizontal");
+
+            if (Input.GetKey(KeyCode.D))
             {
-                if (isWallKickJumping == false)
+                if (isDigging == false)
                 {
-                    vx = -speed;
+
+                    isLeft = false;
+                    myAnim.SetFloat("isLeft", -1);
+                    vx = moveSpeed;
+
+                    myAnim.SetBool("isWalking", true);
+                    myAnim.SetFloat("isUp", 0);
+
                 }
 
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
                 if (isDigging == false)
                 {
                     isLeft = true;
                     myAnim.SetFloat("isLeft", 1);
+                    vx = -moveSpeed;
 
+                    myAnim.SetBool("isWalking", true);
+                    myAnim.SetFloat("isUp", 0);
                 }
 
-                // 上下穴掘り中なら速度0
-                if (isDigging == true && myAnim.GetFloat("isUp") != 0)
-                {
-                    vx = 0;
-                }// 上下穴掘り中じゃないならaaaaaaaaaaaaaaaaaaaaaaaaaa 
-                else
-                {
-                    // ジャンプ中じゃなければ
-                    if (isJumping == false)
-                    {
-                        myAnim.SetBool("isWalking", true);
-                        myAnim.SetFloat("isUp", 0);
-                    }
-
-                }
             }
-            // D：右
-            else if (Input.GetKey(KeyCode.D))
+            else
             {
-                if (isWallKickJumping == false)
-                {
-                    vx = speed;
-                }
-
-                if (isDigging == false)
-                {
-                    isLeft = false;
-                    myAnim.SetFloat("isLeft", -1);
-
-                }
-
-                // 上下穴掘り中なら速度0
-                if (isDigging == true && myAnim.GetFloat("isUp") != 0)
-                {
-                    vx = 0;
-                }// 穴掘り中じゃないなら
-                else
-                {
-                    // ジャンプ中じゃなければ
-                    if (isJumping == false)
-                    {
-                        myAnim.SetBool("isWalking", true);
-                        myAnim.SetFloat("isUp", 0);
-                    }
-
-                }
-            }
-
-            // 移動キーを離したら
-            if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-            {
-                //
+                vx = 0;
                 myAnim.SetBool("isWalking", false);
             }
+
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -303,42 +272,20 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 myAnim.SetFloat("isUp", -1);
             }*/
 
-            //ジャンプキー
-            if (Input.GetKeyDown("space"))
+            // ジャンプボタンが押されたことをフラグで管理
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
             {
-
-                if (jumpFirstPushFlag == true && groundFlag == true)
-                {
-                    jumpFirstPushFlag = false;
-                    jumpFlag = true;
-                    isJumping = true;
-                }
-                else if (jumpFirstPushFlag == false && groundFlag == false)
-                {
-                    Vector2 point = transform.position;
-                    if (isLeft == true)
-                    {
-                        if (Physics2D.CapsuleCast(point + new Vector2(0.0f, -0.1f), new Vector2(0.2f, 0.3f), CapsuleDirection2D.Vertical, 0f, Vector2.left, 0.2f))
-                        {
-                            WallKickFlag = true;
-                            isWallKickJumping = true;
-                        }
-                        Debug.DrawRay(point + new Vector2(0.0f, -0.1f) + new Vector2(0.0f, 0.15f), Vector2.down * 0.3f, Color.red, 0.01f);
-                        Debug.DrawRay(point, Vector2.left * 0.2f, Color.red, 0.01f);
-                    }
-                    else
-                    {
-                        if (Physics2D.CapsuleCast(point + new Vector2(0.0f, -0.1f), new Vector2(0.2f, 0.3f), CapsuleDirection2D.Vertical, 0f, Vector2.right, 0.2f))
-                        {
-                            WallKickFlag = true;
-                            isWallKickJumping = true;
-                        }
-                        Debug.DrawRay(point + new Vector2(0.0f, -0.1f) + new Vector2(0.0f, 0.15f), Vector2.down * 0.3f, Color.red, 0.01f);
-                        Debug.DrawRay(point, Vector2.right * 0.2f, Color.red, 0.01f);
-                    }
-
-                }
+                jumpPressed = true;
             }
+
+            // ジャンプボタンが離されたときの処理もフラグで管理
+            if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
+            {
+                jumpReleased = true;
+            }
+
+            WallSlide();
+            WallJump();
 
         }
 
@@ -387,23 +334,23 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         myAnim.SetBool("isDigging", false);
         isDigging = false;
-        digCollider.SetActive(false);
+        //dc.enabled = false;
     }
 
     void StartDig()
     {
-        digCollider.SetActive(true);
+        dc.enabled = true;
     }
 
     void EndDig()
     {
-        digCollider.SetActive(false);
+        dc.enabled = false;
     }
 
     void startDigAction()
     {
         isDigging = true;
-        CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
+        //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
 
         if (Input.GetKey(KeyCode.W))
@@ -990,57 +937,42 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     }
     private void FixedUpdate()
     {
-        
-        float velocityY = Mathf.Clamp(rb.velocity.y, minVelocityY, jumpPower);
 
-        if(rightWallKickFlag){
-            if(rb.velocity.x >= 0){
-                Debug.Log("aaa");
-                rb.velocity = new Vector2(0, velocityY);
-                Debug.Log(rb.velocity);
-            }
-        }
-
-        if(leftWallKickFlag){
-            if(rb.velocity.x <= 0){
-                rb.velocity = new Vector2(0, velocityY);
-            }
-        }
-        
-        Debug.Log(rb.velocity);
-        rb.velocity = new Vector2(vx, velocityY);
-        
-
-        if (jumpFlag == true)
+        //Debug.Log(isWallJumping);
+        if (!isWallJumping && inputBlockTimer <= 0)
         {
-            rb.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
-            // 穴掘り中じゃなければ
+            rb.velocity = new Vector2(vx, rb.velocity.y);
+        }
+        else if (isWallJumping && inputBlockTimer <= 0)
+        {
+            vx = Mathf.Clamp(vx, -vx / 2, vx / 2);
+            rb.velocity = new Vector2(vx, rb.velocity.y);
+        }
+
+        if (isGrounded())
+        {
+            isWallJumping = false;
+            inputBlockTimer = 0f;
+            myAnim.SetBool("isJumping", false);
+        }
+
+        // ジャンプ処理
+        if (jumpPressed)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumpPressed = false;
             if (isDigging == false)
             {
                 myAnim.SetBool("isWalking", false);
                 myAnim.SetBool("isJumping", true);
             }
-            jumpFlag = false;
         }
 
-        if (WallKickFlag == true)
+        // ジャンプボタンが離された時の処理
+        if (jumpReleased)
         {
-            if (isLeft == true)
-            {
-                rb.velocity = new Vector2(0.0f, 0.0f);
-                rb.AddForce(new Vector2(jumpPower / 2, jumpPower), ForceMode2D.Impulse);
-                WallKickFlag = false;
-                rightWallKickFlag = false;
-                leftWallKickFlag = true;
-            }
-            else
-            {
-                rb.velocity = new Vector2(0.0f, 0.0f);
-                rb.AddForce(new Vector2(-jumpPower / 2, jumpPower), ForceMode2D.Impulse);
-                WallKickFlag = false;
-                rightWallKickFlag = true;
-                leftWallKickFlag = false;
-            }
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            jumpReleased = false;
         }
 
 
@@ -1049,34 +981,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void OnTriggerStay2D(Collider2D other)
     {
 
-        if (other.gameObject.tag == "ground" || other.gameObject.tag == "digObject" || other.gameObject.tag == "Enemy")
-        {
-            groundFlag = true;
-            if (isJumping == true)
-            {
-                Debug.Log("tyakuti");
-                isJumping = false;
-                isWallKickJumping = false;
-                rightWallKickFlag = false;
-                leftWallKickFlag = false;
-                jumpFirstPushFlag = true;
-                //StartCoroutine(WaitJump(jumpWaitTIme));
-            }
-            myAnim.SetBool("isJumping", false);
-        }
-    }
-
-    private IEnumerator WaitJump(float waitTime)
-    {
-
-        yield return new WaitForSeconds(waitTime);
-
-        jumpFirstPushFlag = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        groundFlag = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -1105,5 +1009,102 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    private bool isGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.05f, groundLayer);
+    }
+
+    private bool IsWalled()
+    {
+        Vector2 origin = transform.position;
+
+        if (Physics2D.OverlapCircle(origin - new Vector2(0.25f, 0.0f), 0.1f, groundLayer))
+        {
+            if (isLeft)
+            {
+                isLeftWall = true;
+                if (isRightWall == true)
+                {
+                    inputBlockTimer = 0f;
+                }
+                return true;
+            }
+        }
+        else if (Physics2D.OverlapCircle(origin + new Vector2(0.25f, 0.0f), 0.1f, groundLayer))
+        {
+            if (!isLeft)
+            {
+                isRightWall = true;
+                if (isLeftWall == true)
+                {
+                    inputBlockTimer = 0f;
+                }
+                return true;
+            }
+        }
+
+        isLeftWall = false;
+        isRightWall = false;
+
+        return false;
+    }
+
+    private void WallSlide()
+    {
+        if (IsWalled() && !isGrounded() && keyDirCheck != 0f)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+    private void WallJump()
+    {
+        if (isWallSliding)
+        {
+            if (inputBlockTimer <= 0)
+            {
+                isWallJumping = false;
+            }
+
+            if (isLeft)
+            {
+                wallJumpingDirection = Vector2.right.x;
+            }
+            else
+            {
+                wallJumpingDirection = Vector2.left.x;
+            }
+
+            wallJumpingCounter = wallJumingTime;
+        }
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && isWallSliding)
+        {
+            isWallJumping = true;
+
+            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+
+            wallJumpingCounter = 0f;
+            inputBlockTimer = wallJumpingDuration;
+        }
+
+        inputBlockTimer -= Time.deltaTime;
+        if (inputBlockTimer <= 0)
+        {
+            isWallJumping = false;
+        }
+    }
+
 }
+
+
 
