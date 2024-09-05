@@ -486,8 +486,8 @@ public class StoryEventScript : MonoBehaviour
      private void OnFadeInComplete()
     {
         Debug.Log("Fade In Complete");
-        ReadNextMessage();
         isCanNextText = true;
+        ReadNextMessage();
         fadeController.OnFadeInComplete -= OnFadeInComplete;
     }
 

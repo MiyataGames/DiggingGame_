@@ -142,7 +142,7 @@ public class CF_Event3_4 : CharactorFunction
         // 当たり判定をオフ
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         Move2Village();
-        Camera.main.transform.position = new Vector3(0, -10, -10);
+        
     }
 
     /// <summary>
@@ -153,6 +153,10 @@ public class CF_Event3_4 : CharactorFunction
     {
         syo = SpawnCharactor(syo_StoryPrefab, syoFirstTransform.position, StoryParent);
         player_Story.transform.position = maoFirstTransform.position;
+
+        float cameraX = player_Story.transform.position.x;
+        float cameraY = player_Story.transform.position.y;
+        Camera.main.transform.position = new Vector3(cameraX, cameraY, -6f);
         CharactorChangeVec(player_Story, "down");
         CharactorChangeVec(syo, "down");
         // しょうとマオが歩く カメラはマオを追従する
