@@ -75,6 +75,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private bool isWallKickJumping;
 
     private bool WallKickFlag = false;
+    private bool rightWallKickFlag = false;
+    private bool leftWallKickFlag = false;
 
     [SerializeField] private float jumpWaitTIme = 0.1f;
     [SerializeField] private GameObject digCollider;
@@ -988,8 +990,24 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     }
     private void FixedUpdate()
     {
-        //Debug.Log(vx);
+        
         float velocityY = Mathf.Clamp(rb.velocity.y, minVelocityY, jumpPower);
+
+        if(rightWallKickFlag){
+            if(rb.velocity.x >= 0){
+                Debug.Log("aaa");
+                rb.velocity = new Vector2(0, velocityY);
+                Debug.Log(rb.velocity);
+            }
+        }
+
+        if(leftWallKickFlag){
+            if(rb.velocity.x <= 0){
+                rb.velocity = new Vector2(0, velocityY);
+            }
+        }
+        
+        Debug.Log(rb.velocity);
         rb.velocity = new Vector2(vx, velocityY);
         
 
@@ -1012,12 +1030,16 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 rb.velocity = new Vector2(0.0f, 0.0f);
                 rb.AddForce(new Vector2(jumpPower / 2, jumpPower), ForceMode2D.Impulse);
                 WallKickFlag = false;
+                rightWallKickFlag = false;
+                leftWallKickFlag = true;
             }
             else
             {
                 rb.velocity = new Vector2(0.0f, 0.0f);
                 rb.AddForce(new Vector2(-jumpPower / 2, jumpPower), ForceMode2D.Impulse);
                 WallKickFlag = false;
+                rightWallKickFlag = true;
+                leftWallKickFlag = false;
             }
         }
 
@@ -1035,7 +1057,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 Debug.Log("tyakuti");
                 isJumping = false;
                 isWallKickJumping = false;
-                StartCoroutine(WaitJump(jumpWaitTIme));
+                rightWallKickFlag = false;
+                leftWallKickFlag = false;
+                jumpFirstPushFlag = true;
+                //StartCoroutine(WaitJump(jumpWaitTIme));
             }
             myAnim.SetBool("isJumping", false);
         }
