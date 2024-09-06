@@ -76,6 +76,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 {
     // 全体UI
     [SerializeField] private Dialog dialog;
+    [SerializeField] private GameObject gameOverCanvas;
 
     // ステータス関係 =====================
     [SerializeField] private GameObject statusPanel;
@@ -2407,9 +2408,16 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // アニメーションやUI表示
                 for (int i = 0; i < activePlayers.Count; i++)
                 {
-                    // ダメージモーション　敵のアニメーターにダメージのステート追加
-                    activePlayers[i].PlayerBattleAnimator.Play(hashDamage);
-                    yield return null;// ステートの反映
+                    if (activePlayers[i].currentHP > 0)
+                    {
+                        // ダメージモーション　敵のアニメーターにダメージのステート追加
+                        activePlayers[i].PlayerBattleAnimator.Play(hashDamage);
+                        yield return null;// ステートの反映
+                    }
+                    else
+                    {
+                        activePlayers[i].PlayerBattleAnimator.Play(hashDeath);
+                    }
                 }
                 // 一体（回）分だけ待つ
                 yield return new WaitForAnimation(activePlayers[0].PlayerBattleAnimator, 0);
@@ -2430,9 +2438,15 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
                 Instantiate(enemySkill.skillBase.SkillRecieveEffect, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.position, activePlayers[selectedTargetIndex].PlayerBattleSprite.transform.rotation);
 
-                // ダメージモーション
-                activePlayers[selectedTargetIndex].PlayerBattleAnimator.Play(hashDamage);
-                yield return null;
+                if (activePlayers[selectedTargetIndex].currentHP > 0)
+                {
+                    // ダメージモーション
+                    activePlayers[selectedTargetIndex].PlayerBattleAnimator.Play(hashDamage);
+                    yield return null;
+                }
+                else {
+                    activePlayers[selectedTargetIndex].PlayerBattleAnimator.Play(hashDeath);
+                }
 
                 // ダメージモーションを待つ 追加
                 yield return new WaitForAnimation(activePlayers[selectedTargetIndex].PlayerBattleAnimator, 0);
@@ -2477,7 +2491,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 //フィールドのシーンに戻る
                 yield return new WaitForSeconds(endTime);
                 Debug.Log(endTime + "秒待って終了");
-                EndBattle();
+                gameOverCanvas.SetActive(true);
+                //EndBattle();
             }
             else
             {
