@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public class CF_Event1 : CharactorFunction
 {
-    [SerializeField] private StoryEventScript storyEventScript;
+    //[SerializeField] private StoryEventScript storyEventScript;
     [SerializeField] private GameObject player_Field;
     [SerializeField] private GameObject player_Story;
     [SerializeField] private GameObject syo_FieldPrefab;
@@ -74,6 +74,7 @@ public class CF_Event1 : CharactorFunction
             {
                 case "VecUp_Syo":
                     CharactorChangeVec(syo, "Up");
+                    storyEventScript.ReadNextMessage();
                     break;
             }
         }
@@ -85,6 +86,7 @@ public class CF_Event1 : CharactorFunction
         // カメラを調整するスクリプトをオフ
         Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
         Camera.main.transform.position = new Vector3(player_Field.transform.position.x, player_Field.transform.position.y + cameraOffsetY, cameraOffsetZ);
+        storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
@@ -119,6 +121,8 @@ public class CF_Event1 : CharactorFunction
         syo = SpawnCharactor(syo_FieldPrefab, player_Field.transform.position + new Vector3(3, 0), FieldParent);
         //ShouTile.SetActive(true);
 
+        storyEventScript.ReadNextMessage();
+
     }
 
     private void DeleteTilesInBounds(Bounds bounds)
@@ -146,6 +150,7 @@ public class CF_Event1 : CharactorFunction
     {
         syo = SpawnCharactor(syo_StoryPrefab, player_Story.transform.position + new Vector3(3, 0), StoryParent);
         CharactorChangeVec(syo, "Left");
+        storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
@@ -154,6 +159,7 @@ public class CF_Event1 : CharactorFunction
     private void SpawnSontyo_Story()
     {
         sontyo = SpawnCharactor(sontyo_StoryPrefab, player_Story.transform.position + new Vector3(1.5f, 10), StoryParent);
+        storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
@@ -162,6 +168,7 @@ public class CF_Event1 : CharactorFunction
     private void Move2Village()
     {
         SideView2TopDown();
+        storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
@@ -169,7 +176,7 @@ public class CF_Event1 : CharactorFunction
     /// </summary>
     private void SontyoMove()
     {
-        storyEventScript.moveFlag = true;
+        //storyEventScript.moveFlag = true;
 
         Animator anim = sontyo.GetComponent<Animator>();
         anim.SetBool("isWalk", true);

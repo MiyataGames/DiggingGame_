@@ -36,7 +36,7 @@
 34,set_text,村長,Sontyo1,1,おーい,,,,,,,,,,,,,
 35,chara_func,,,,,,,,,,,,,,,SpawnSontyo_Story,,
 36,chara_func,,,,,,,,,,,,,,,SontyoMove,,
-37,chara_func,,,,,,,,,,,,,,,,VecUp_Syo,
+37,chara_func,,,,,,,,,,,,,,,VecUp_Syo,,
 38,set_text,村長,Sontyo1,1,お前、また一人で採掘場に行ってたのか,,,,,,,,,,,,,
 39,set_text,ショウ,BRDF,1,やべ、父ちゃんだ,,,,,,,,,,,,,
 40,set_text,村長,Sontyo1,1,いつも言ってるだろう。危ねえから勝手に採掘場には近づくなって……,,,,,,,,,,,,,

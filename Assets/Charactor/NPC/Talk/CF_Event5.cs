@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class CF_Event5 : CharactorFunction
 {
-    [SerializeField] private StoryEventScript storyEventScript;
+    //[SerializeField] private StoryEventScript storyEventScript;
     [SerializeField] private GameObject player_Field;
     [SerializeField] private GameObject player_Story;
     [SerializeField] private GameObject syo_FieldPrefab;

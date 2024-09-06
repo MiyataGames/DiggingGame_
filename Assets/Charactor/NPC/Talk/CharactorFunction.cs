@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CharactorFunction : MonoBehaviour
 {
+
+    public StoryEventScript storyEventScript;
+
     public virtual void ExecuteCommand(string functionName,string animFuncName){
 
     }
@@ -64,15 +67,17 @@ public class CharactorFunction : MonoBehaviour
         GameManager.instance.CurrentSceneIndex = (int)GameMode.TOWN_SCENE;
     }
 
-    protected void StartEvent()
+    protected  virtual void StartEvent()
     {
         Debug.Log("StartEvent");
         GameManager.instance.currentGameState = GameState.POSE;
+        storyEventScript.ReadNextMessage();
     }
 
     protected void EndEvent(){
         GameManager.instance.currentGameState = GameState.PLAYING;
         Camera.main.GetComponent<FollowPlayerScript>().enabled = true;
+        storyEventScript.ReadNextMessage();
     }
 
     void Update()

@@ -10,7 +10,8 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class EventDatas{
+public class EventDatas
+{
     public int id;
     public string command;
     public string character;
@@ -71,7 +72,7 @@ public class StoryEventScript : MonoBehaviour
     [Header("キャラクター関数が詰め込まれたスクリプト。イベントごとに作ってください")]
     [SerializeField] private CharactorFunction charactorFunction;
 
-     [Header("ダイアログに必要なオブジェクトたち")]
+    [Header("ダイアログに必要なオブジェクトたち")]
     [SerializeField] private GameObject talkDialog; //会話用ダイアログ
     [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
     [SerializeField] private Button readNext; //次の会話を表示するボタン
@@ -89,37 +90,45 @@ public class StoryEventScript : MonoBehaviour
     private bool isNowFading = false;
     private bool isSettingEventFlag = false;
 
-    void Awake(){
+    void Awake()
+    {
         //テキストファイルの読み込ませるクラス
         TextAsset textAsset = new TextAsset();
 
         //用意したcsvファイルを読み込む
-        textAsset = Resources.Load(TypeOfStory + "/" + eventPlace + "/" + eventNum,typeof(TextAsset)) as TextAsset;
+        textAsset = Resources.Load(TypeOfStory + "/" + eventPlace + "/" + eventNum, typeof(TextAsset)) as TextAsset;
         //実際にデータを変数に格納
         EventDatas = CSVSerializer.Deserialize<EventDatas>(textAsset.text);
 
         charaImage = new Sprite[EventDatas.Length];
 
-        for(int i = 0 ; i < EventDatas.Length;i++){
-            if(EventDatas[i].imageFolderName != null ){
+        for (int i = 0; i < EventDatas.Length; i++)
+        {
+            if (EventDatas[i].imageFolderName != null)
+            {
                 //キャライメージの読み込み
                 charaImage[i] = Resources.Load<Sprite>("CharaImage/" + EventDatas[i].imageFolderName + "/" + EventDatas[i].imageNum);
-                
+
             }
         }
         Debug.Log(charaImage.Length);
     }
 
-    void Start(){
-        
-        
-        
+    void Start()
+    {
+
+
+
     }
 
-    void Update(){
+    void Update()
+    {
+
+        Debug.Log(isCanNextText);
 
         //イベント中ではなく，プレイヤーが会話エリアにいたら
-        if(isInEventNow == false && isPlayerInErea == true){
+        if (isInEventNow == false && isPlayerInErea == true)
+        {
             /* トーク開始をクリックで判定する場合
             if(Input.GetMouseButton(0)){ // そしてマウスの左クリックされたら
                 //レイを作成
@@ -132,39 +141,50 @@ public class StoryEventScript : MonoBehaviour
                 }  
             }*/
 
-            if(TriggerIsFkey == true){
-                if(Input.GetKeyDown(KeyCode.F)){
-                isInEventNow = true; //イベント中フラグをtrue
-                textStart(); //テキストスタート
+            if (TriggerIsFkey == true)
+            {
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    isInEventNow = true; //イベント中フラグをtrue
+                    textStart(); //テキストスタート
+                }
             }
-            }
-        }else if(isInEventNow == true && Input.GetKeyDown(KeyCode.F)){
-            if(isCanNextText == true){
+        }
+        else if (isInEventNow == true && Input.GetKeyDown(KeyCode.F))
+        {
+            if (isCanNextText == true)
+            {
                 ReadNextMessage();
             }
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other){ //コリジョンのトリガーが発火したとき
-        if(other.gameObject.tag == "Player"){ //タグがPlayerなら
+    void OnTriggerEnter2D(Collider2D other)
+    { //コリジョンのトリガーが発火したとき
+        if (other.gameObject.tag == "Player")
+        { //タグがPlayerなら
             isPlayerInErea = true;
         }
-        if(TriggerIsFkey == false){ //イベント開始トリガーがFキーではなく
-            if(isInEventNow == false){ //現在イベント中でないなら
+        if (TriggerIsFkey == false)
+        { //イベント開始トリガーがFキーではなく
+            if (isInEventNow == false)
+            { //現在イベント中でないなら
                 isInEventNow = true; //イベント中フラグをtrue
                 textStart(); //テキストスタート
             }
         }
     }
 
-    void OnTriggerExit2D(Collider2D other){
+    void OnTriggerExit2D(Collider2D other)
+    {
         isPlayerInErea = false;
     }
 
 
 
-    public void textStart(){
-        
+    public void textStart()
+    {
+
         isEndOfTalk = false;//使ってない
 
         //会話ダイアログを表示
@@ -178,20 +198,25 @@ public class StoryEventScript : MonoBehaviour
         // コマンドを実行する関数
         ExecuteCommand(currentCommand);
     }
-    
+
     //次のコマンドを実行
-    public void ReadNextMessage(){
+    public void ReadNextMessage()
+    {
 
         //Debug.Log(npcTalkDatas[currentTextID]);
         //skipIDがexcelで空白なら0になる
-        if(EventDatas[currentTextID].skipID == 0 || isSettingEventFlag == true){
+        if (EventDatas[currentTextID].skipID == 0 || isSettingEventFlag == true)
+        {
             isSettingEventFlag = false;
             currentTextID++;
-        }else{
+        }
+        else
+        {
             currentTextID = EventDatas[currentTextID].skipID;
         }
 
-        if(EventDatas[currentTextID].command == "end_talk"){ //会話終了時にすべてを初期化
+        if (EventDatas[currentTextID].command == "end_talk")
+        { //会話終了時にすべてを初期化
             Debug.Log("会話の終了処理");
             currentTextID = 0;
             isEndOfTalk = true;
@@ -203,21 +228,25 @@ public class StoryEventScript : MonoBehaviour
             Destroy(this.gameObject);
 
         }
-        else{
+        else
+        {
             currentCommand = EventDatas[currentTextID].command;
             ExecuteCommand(currentCommand);
             //Debug.Log(currentCommand);
         }
 
-        if(isEndOfTalk == false){
-            
+        if (isEndOfTalk == false)
+        {
+
         }
     }
 
     //コマンドを実行
-    private void ExecuteCommand(string nowCommand){
+    private void ExecuteCommand(string nowCommand)
+    {
 
-        switch(nowCommand){
+        switch (nowCommand)
+        {
             case "set_bgm":
                 SetBGM();
                 break;
@@ -225,14 +254,15 @@ public class StoryEventScript : MonoBehaviour
                 PlaySE(EventDatas[currentTextID].SEpath);
                 break;
             case "chara_func":
-            isCanNextText = false;
-                charactorFunction.ExecuteCommand(EventDatas[currentTextID].chractorFunction,EventDatas[currentTextID].animFuncName);
-                if(moveFlag == false){
+                isCanNextText = false;
+                charactorFunction.ExecuteCommand(EventDatas[currentTextID].chractorFunction, EventDatas[currentTextID].animFuncName);
+                /*if (moveFlag == false)
+                {
                     ReadNextMessage();
-                }
+                }*/
                 break;
             case "check_EventFlag":
-                CheckEventAvailable(EventDatas[currentTextID].checkNeedEventNum,EventDatas[currentTextID].eventNum,EventDatas[currentTextID].afterEventSkipID);
+                CheckEventAvailable(EventDatas[currentTextID].checkNeedEventNum, EventDatas[currentTextID].eventNum, EventDatas[currentTextID].afterEventSkipID);
                 break;
             case "set_text":
                 ShowText(EventDatas[currentTextID].mainText);
@@ -240,14 +270,17 @@ public class StoryEventScript : MonoBehaviour
                 image.sprite = charaImage[currentTextID];
                 //Debug.Log(image);
 
-                if(EventDatas[currentTextID].setBranch){
+                if (EventDatas[currentTextID].setBranch)
+                {
                     ShowBranchText(EventDatas[currentTextID].yesText, EventDatas[currentTextID].noText);
                     isCanNextText = false;
-                }else{
+                }
+                else
+                {
                     isCanNextText = true;
                 }
                 //Debug.Log(charaImage[currentTextID]);
-                
+
                 break;
             case "set_EventFlag":
                 SetEventFlag();
@@ -258,21 +291,23 @@ public class StoryEventScript : MonoBehaviour
                 fadeController.FadeOut();
                 break;
             case "fade_blackWait":
-                if(isCanNextText == true){
-                        isCanNextText = false;
-                    }
+                if (isCanNextText == true)
+                {
+                    isCanNextText = false;
+                }
                 fadeController.OnFadeWaitComplete += OnFadeWaitComplete;
                 fadeController.FadeWait();
                 break;
             case "fade_blackIn":
-                if(isCanNextText == true){
+                if (isCanNextText == true)
+                {
                     isCanNextText = false;
                 }
                 fadeController.OnFadeInComplete += OnFadeInComplete;
                 fadeController.FadeIn();
                 break;
             case "DeleteText":
-                 DeleteText();
+                DeleteText();
                 break;
 
 
@@ -282,7 +317,8 @@ public class StoryEventScript : MonoBehaviour
     }
 
     //SEを鳴らす
-    private void PlaySE(string SEpath){
+    private void PlaySE(string SEpath)
+    {
         AudioClip SEClip = Resources.Load<AudioClip>(SEpath);
         Debug.Log(SEClip);
         audioSource.PlayOneShot(SEClip);
@@ -290,14 +326,18 @@ public class StoryEventScript : MonoBehaviour
     }
 
     //イベントフラグを立てる
-    private void SetEventFlag(){
+    private void SetEventFlag()
+    {
         bool alreadyRegistFlag = false;
-        foreach(int i in storyEventManager.story1Flag){
-            if(i == EventDatas[currentTextID].eventNum){
+        foreach (int i in storyEventManager.story1Flag)
+        {
+            if (i == EventDatas[currentTextID].eventNum)
+            {
                 alreadyRegistFlag = true;
             }
         }
-        if(alreadyRegistFlag == false){
+        if (alreadyRegistFlag == false)
+        {
             storyEventManager.story1Flag.Add(EventDatas[currentTextID].eventNum);
         }
         ReadNextMessage();
@@ -309,32 +349,41 @@ public class StoryEventScript : MonoBehaviour
     /// <param name="checkNeedEventNum">現在のイベントフラグを立てるために必要なフラグ番号</param>
     /// <param name="eventNum">現在のフラグ番号</param>
     /// <param name="afterEventSkipID">すでに現在のフラグ番号が立っているときにスキップする番号</param>
-    private void CheckEventAvailable(int checkNeedEventNum , int eventNum, int afterEventSkipID){
-        
+    private void CheckEventAvailable(int checkNeedEventNum, int eventNum, int afterEventSkipID)
+    {
+
         bool canEvent = false; //現在のフラグを立てられるか
         bool alreadyEvent = false;//すでに現在のフラグが立っているか
-        
+
         //イベントフラグのチェック中
         isSettingEventFlag = true;
-        
-        foreach(int i in storyEventManager.story1Flag){
+
+        foreach (int i in storyEventManager.story1Flag)
+        {
             //このイベントを発生させるためのフラグが立っているか
             //Debug.Log(i);
-            if(i == checkNeedEventNum){
+            if (i == checkNeedEventNum)
+            {
                 canEvent = true;
             }
             //すでにイベントを実行済みか
-            if(i == eventNum){
+            if (i == eventNum)
+            {
                 alreadyEvent = true;
             }
         }
         Debug.Log(canEvent);
         Debug.Log(alreadyEvent);
-        if(alreadyEvent == true){
+        if (alreadyEvent == true)
+        {
             skip(EventDatas[currentTextID].afterEventSkipID);
-        }else if(canEvent == true){
+        }
+        else if (canEvent == true)
+        {
             skip(EventDatas[currentTextID].skipID);
-        }else{
+        }
+        else
+        {
             ReadNextMessage();
         }
 
@@ -358,7 +407,8 @@ public class StoryEventScript : MonoBehaviour
         nMassage.text = EventDatas[currentTextID].noText;
     }
 
-    public void ChooseYes(){
+    public void ChooseYes()
+    {
         //選択肢ダイアログを無効化
         SwichChooseDialogActivate();
         skip(EventDatas[currentTextID].choseYes);
@@ -366,7 +416,8 @@ public class StoryEventScript : MonoBehaviour
         nButton.onClick.RemoveAllListeners();
     }
 
-    public void Chooseno(){
+    public void Chooseno()
+    {
         //選択肢ダイアログを無効化
         SwichChooseDialogActivate();
         skip(EventDatas[currentTextID].choseNo);
@@ -476,22 +527,24 @@ public class StoryEventScript : MonoBehaviour
     }
 
     //すべてのボタンに登録されている処理を初期化
-    void ClearAllListeners(){
+    void ClearAllListeners()
+    {
         readNext.onClick.RemoveAllListeners();
         yButton.onClick.RemoveAllListeners();
         nButton.onClick.RemoveAllListeners();
     }
 
     //フェードイン後の処理
-     private void OnFadeInComplete()
+    private void OnFadeInComplete()
     {
         Debug.Log("Fade In Complete");
-        ReadNextMessage();
         isCanNextText = true;
+        ReadNextMessage();
         fadeController.OnFadeInComplete -= OnFadeInComplete;
     }
 
-    private void OnFadeWaitComplete(){
+    private void OnFadeWaitComplete()
+    {
         Debug.Log("Fade Wait Complete");
         ReadNextMessage();
         fadeController.OnFadeWaitComplete -= OnFadeWaitComplete;

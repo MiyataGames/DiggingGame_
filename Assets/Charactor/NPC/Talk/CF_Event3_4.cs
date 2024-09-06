@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class CF_Event3_4 : CharactorFunction
 {
-    [SerializeField] private StoryEventScript storyEventScript;
+    //[SerializeField] private StoryEventScript storyEventScript;
     [SerializeField] AudioSource audioSource;
     [SerializeField] string SEPath;
     [SerializeField] private GameObject player_Field;
@@ -63,7 +63,7 @@ public class CF_Event3_4 : CharactorFunction
                     SpawnSyoMao_Story();
                     break;
                 case "CemeraStartMove":
-                    StartCoroutine(CemeraStartMove());
+                    CemeraStartMove();
                     break;
                 case "SyoTurnTowardsMao":
                     SyoTurnTowardsMao();
@@ -132,7 +132,7 @@ public class CF_Event3_4 : CharactorFunction
         }
     }
 
-    void StartEvent()
+    protected override void StartEvent()
     {
         // 操作を受け付けなくする
         GameManager.instance.currentGameState = GameState.POSE;
@@ -142,7 +142,7 @@ public class CF_Event3_4 : CharactorFunction
         // 当たり判定をオフ
         this.gameObject.GetComponent<CapsuleCollider2D>().enabled = false;
         Move2Village();
-        Camera.main.transform.position = new Vector3(0, -10, -10);
+        storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
@@ -153,34 +153,40 @@ public class CF_Event3_4 : CharactorFunction
     {
         syo = SpawnCharactor(syo_StoryPrefab, syoFirstTransform.position, StoryParent);
         player_Story.transform.position = maoFirstTransform.position;
+
+        float cameraX = player_Story.transform.position.x;
+        float cameraY = player_Story.transform.position.y;
+        Camera.main.transform.position = new Vector3(cameraX, cameraY, -6f);
         CharactorChangeVec(player_Story, "down");
         CharactorChangeVec(syo, "down");
         // しょうとマオが歩く カメラはマオを追従する
         syoAnim = syo.GetComponent<Animator>();
         maoAnim = player_Story.GetComponent<Animator>();
+        storyEventScript.ReadNextMessage();
     }
 
-    IEnumerator CemeraStartMove()
+    void CemeraStartMove()
     {
         // 2秒かけてカメラを真ん中からプレイヤーの位置へ
-        storyEventScript.moveFlag = true;
-        float cameraPosY = player_Story.transform.position.y;
-        Camera.main.transform.DOMoveY(cameraPosY - CameraOffsetY, 2f);
-        yield return new WaitForSeconds(2);
+        //storyEventScript.moveFlag = true;
+        //float cameraPosY = player_Story.transform.position.y;
+        //Camera.main.transform.DOMoveY(cameraPosY - CameraOffsetY, 2f);
+        //yield return new WaitForSeconds(2);
         syoAnim.SetBool("isWalk", true);
         maoAnim.SetBool("isWalk", true);
-        cameraPosY = player_Story.transform.position.y - moveSecondY;
-        Camera.main.transform.DOMoveY(cameraPosY - CameraOffsetY, 2f);
+        //cameraPosY = player_Story.transform.position.y - moveSecondY;
+        //Camera.main.transform.DOMoveY(cameraPosY - CameraOffsetY, 2f);
         float targetPosY = syo.transform.position.y - moveSecondY;
         syo.transform.DOMoveY(targetPosY, 2f);
         targetPosY = player_Story.transform.position.y - moveSecondY;
         player_Story.transform.DOMoveY(targetPosY, 2f).OnComplete(() => SpawnCompleteFunc());
+
     }
 
     // カメラが移動し終わったら次のメッセージ
     void SpawnCompleteFunc()
     {
-        storyEventScript.moveFlag = false;
+        //storyEventScript.moveFlag = false;
         syoAnim.SetBool("isWalk", false);
         maoAnim.SetBool("isWalk", false);
         //maoAnim.SetBool("isWalk", false);
@@ -191,12 +197,14 @@ public class CF_Event3_4 : CharactorFunction
     void SyoTurnTowardsMao()
     {
         CharactorChangeVec(syo, "Left");
+        storyEventScript.ReadNextMessage();
     }
 
     // ショウが前を向く
     void SyoTurnTowardsFront()
     {
         CharactorChangeVec(syo, "down");
+        storyEventScript.ReadNextMessage();
     }
 
     // ショウが後ろを向く
@@ -209,6 +217,7 @@ public class CF_Event3_4 : CharactorFunction
     void MaoTurnTowardsSyo()
     {
         CharactorChangeVec(player_Story, "Right");
+        storyEventScript.ReadNextMessage();
     }
 
     // 主人公が前を向く
@@ -221,6 +230,7 @@ public class CF_Event3_4 : CharactorFunction
     void MaoTurnTowardsBack()
     {
         CharactorChangeVec(player_Story, "Up");
+        storyEventScript.ReadNextMessage();
     }
 
     // ショウが周りをキョロキョロする moveFlagの使い方合ってるかわからん
@@ -333,6 +343,7 @@ public class CF_Event3_4 : CharactorFunction
     void SmallEarthquake()
     {
         tween = Camera.main.DOShakePosition(duration: 10, strength: 0.2f, vibrato: 3,fadeOut: false).SetLoops(-1);
+        storyEventScript.ReadNextMessage();
     }
 
     // 地響き大
@@ -341,6 +352,7 @@ public class CF_Event3_4 : CharactorFunction
 
         tween.Kill();
         tween = Camera.main.DOShakePosition(duration: 3, strength: 1, fadeOut: false).SetLoops(-1);
+        storyEventScript.ReadNextMessage();
     }
 
     IEnumerator SontyoMoveToExit()
@@ -372,8 +384,8 @@ public class CF_Event3_4 : CharactorFunction
         // 村長を削除
         Destroy(sontyo.gameObject);
         Vector3 CameraPos = new Vector3(player_Story.transform.position.x, player_Story.transform.position.y- CameraOffsetY, CameraBufferZ);
-        Camera.main.transform.DOMove(CameraPos,2f);
-        yield return new WaitForSeconds(2);
+        Camera.main.transform.DOMove(CameraPos,0.5f);
+        yield return new WaitForSeconds(0.5f);
         storyEventScript.moveFlag = false;
         storyEventScript.ReadNextMessage();
     }
@@ -383,6 +395,7 @@ public class CF_Event3_4 : CharactorFunction
     {
         CharactorChangeVec(syo, "Up");
         CharactorChangeVec(player_Story, "Up");
+        storyEventScript.ReadNextMessage();
     }
 
     // モンスター咆哮 & カメラ移動
@@ -433,6 +446,7 @@ public class CF_Event3_4 : CharactorFunction
         CharactorChangeVec(player_Story, "down");
         // プレイヤーカメラ追従を有効に
         Camera.main.GetComponent<FollowPlayerScript>().enabled = true;
+        storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
@@ -441,6 +455,7 @@ public class CF_Event3_4 : CharactorFunction
     private void Move2Village()
     {
         SideView2TopDown();
+        //storyEventScript.ReadNextMessage();
     }
 
     /// <summary>
