@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class CF_Event7 : CharactorFunction
 {
-    [SerializeField] private StoryEventScript storyEventScript;
+    //[SerializeField] private StoryEventScript storyEventScript;
     [SerializeField] AudioSource audioSource;
     [SerializeField] string SEPath;
     [SerializeField] private GameObject player_Story;
@@ -81,7 +81,7 @@ public class CF_Event7 : CharactorFunction
         }
     }
 
-    void StartEvent()
+    protected override void StartEvent()
     {
         // 操作を受け付けなくする
         GameManager.instance.currentGameState = GameState.POSE;
