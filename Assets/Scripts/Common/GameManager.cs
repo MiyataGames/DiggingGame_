@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
 
     //private bool FirstBattle = true;
 
-    public void StartBattle(GameObject enemyObj)
+    public void StartBattle(GameObject enemyObj, int enemyBaseNumber)
     {
         enemySymbol = enemyObj;
         ActivateCurrentScene((int)GameMode.BATTLE_SCENE);
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
         enemies = new List<Enemy>();
         playerUnit.SetUpBattle(Party);
         // モンスターの生成
-        enemyUnit.SetUp();
+        enemyUnit.SetUp(enemyBaseNumber);
         battlePlayers = new List<Player>(playerUnit.SortedBattlePlayers);
         for (int i = 0; i < battlePlayers.Count; i++)
         {

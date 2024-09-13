@@ -14,17 +14,20 @@ public class EnemyUnit : MonoBehaviour
 {
     [SerializeField]
     private List<EnemyBases> enemyBasiesList;
-    [SerializeField] int enemyBaseNumber;
+
     [SerializeField]
-    GameObject enemyCanvas;
+    private GameObject enemyCanvas;
+
     [SerializeField]
     private GameObject[] enemyPos9;
+
     private List<Enemy> enemies;
 
     public List<Enemy> Enemies { get => enemies; }
-    int[] debugPositionIndexs = {4,7, 8 };
-    Dictionary<Enemy, int> enemyKindNums;// エネミーごとの数
-    public void SetUp()
+    private int[] debugPositionIndexs = { 4, 7, 8 };
+    private Dictionary<Enemy, int> enemyKindNums;// エネミーごとの数
+
+    public void SetUp(int enemyBaseNumber)
     {
         int enemyNum = 3; /*= Random.Range(1,3);*/
         // レベル帯1-3のダンジョン
@@ -49,7 +52,6 @@ public class EnemyUnit : MonoBehaviour
         UnityEngine.Random.InitState(DateTime.Now.Millisecond);
         foreach (var enemy in agiEnemyDic.OrderByDescending(c => c.Value))
         {
-            
             positionIndex = UnityEngine.Random.Range(0, enemyPos9.Length);
             // 敵を生成する位置をきめる
             // 前に生成した敵と同じ位置だったら
@@ -57,7 +59,6 @@ public class EnemyUnit : MonoBehaviour
             {
                 // ふりなおす
                 positionIndex = UnityEngine.Random.Range(0, enemyPos9.Length - 1);
-
             }
             positions.Add(positionIndex);
             enemies.Add(enemy.Key);
@@ -76,12 +77,12 @@ public class EnemyUnit : MonoBehaviour
             j++;
         }
 
-        for(int i = 0;i < enemyNum; i++)
+        for (int i = 0; i < enemyNum; i++)
         {
-            if (enemies[i].Counted == false &&  enemies.Count(enemy => enemy.EnemyBase.EnemyID == enemies[i].EnemyBase.EnemyID) > 0)
+            if (enemies[i].Counted == false && enemies.Count(enemy => enemy.EnemyBase.EnemyID == enemies[i].EnemyBase.EnemyID) > 0)
             {
                 List<Enemy> countEnemies = enemies.FindAll(enemy => enemy.EnemyBase.EnemyID == enemies[i].EnemyBase.EnemyID);
-                for(int k = 0; k < countEnemies.Count; k++)
+                for (int k = 0; k < countEnemies.Count; k++)
                 {
                     countEnemies[k].Counted = true;
                     countEnemies[k].EnemyBattleName = countEnemies[k].EnemyBase.EnemyName + (k + 1).ToString();
@@ -89,7 +90,7 @@ public class EnemyUnit : MonoBehaviour
             }
         }
 
-        for(int i = 0;i < enemies.Count; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             // EnemyUIのセットアップ
             enemies[i].EnemyUI.SetEnemyData(enemies[i]);

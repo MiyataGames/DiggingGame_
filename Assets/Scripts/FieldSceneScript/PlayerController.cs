@@ -136,6 +136,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private TileBase soilTile;
     [SerializeField] private BoxCollider2D SetSoilCollider;
 
+    // バトル関係
+    [SerializeField] private int enemyBaseNumber;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -1000,7 +1003,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
             //fadeController.FadeOut();
             //Fade.Instance.StartFadeInBattle(collision.gameObject);
-            GameManager.instance.StartBattle(collision.gameObject);
+            GameManager.instance.StartBattle(collision.gameObject, enemyBaseNumber);
         }
         else if (collision.gameObject.tag == "Town")
         {

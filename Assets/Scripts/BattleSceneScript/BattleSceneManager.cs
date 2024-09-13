@@ -2456,7 +2456,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             turnEnemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
             turnEnemy.positionIndex = targetPositionIndex;
             yield return new WaitForSeconds(0.5f);
-            // 穴のチェック ダメージが入らん
+            // 穴のチェック
             yield return StartCoroutine(CheckHolePosition(targetPositionIndex));
         }
         // 戦闘不能じゃなければ
