@@ -38,6 +38,7 @@ public enum CHECK_HOLE_POSITION_PHASE
 public enum Move
 {
     ATTACK,
+    DIGGING,
     ITEM,
     STATUS,
     ESCAPE,
@@ -76,6 +77,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 {
     // 全体UI
     [SerializeField] private Dialog dialog;
+
     [SerializeField] private GameObject gameOverCanvas;
 
     // ステータス関係 =====================
@@ -154,7 +156,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     // 現在のMove
 
-    private int currentMove = 1;
+    private int currentMove = 2;
 
     public Character TurnCharacter { get => turnCharacter; set => turnCharacter = value; }
 
@@ -168,10 +170,13 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     // 移動先のポジション
     private int targetPositionIndex = -1;
 
+    // 穴掘りが二回目以降かのフラグ
+    private bool firstDiggingDone = false;
+
     public void StartBattle()
     {
         Application.targetFrameRate = 60;
-        currentMove = 1;
+        currentMove = 2;
         battleState = BattleState.INIT_BATTLE;
         inputSkillStatement = InputSkillStatement.INIT_SKILL;
         inputItemStatement = InputItemStatement.INIT_ITEM;
@@ -228,7 +233,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             }
             else if (inputDiggingStatement == InputDiggingStatement.END_INPUT)
             {
-                // 穴掘り処理終了
+                // 穴掘り処理終了　インプット状態を初期化
+                inputDiggingStatement = InputDiggingStatement.INIT_DIGGING;
                 // ボタンの入力を受け付けなくする
             }
         }
@@ -262,6 +268,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     PlayerEndSkillInput();
                 }
+            }
+            else if ((Move)currentMove == Move.DIGGING)
+            {
+                battleState = BattleState.DIGGING;
             }
             else if ((Move)currentMove == Move.ITEM)
             {
@@ -654,6 +664,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     /// <returns></returns>
     private bool SelectedItem(Item selectedItem)
     {
+        Debug.Log("選んだアイテムは" + selectedItem.ItemBase.ItemName);
         if (selectedItem != null)
         {
             mainPlayer.UseItem(selectedItem);
@@ -676,9 +687,23 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     /// </summary>
     private void FinishDigging()
     {
+        Debug.Log("終わり実行");
         // 穴掘りフェーズの終了処理
         inputDiggingStatement = InputDiggingStatement.END_INPUT;
-        battleState = BattleState.CHECK_CONDITION;
+        // 1回目だったら
+        if (firstDiggingDone == false)
+        {
+            // 一回目の穴掘りが終わったらフラグをtrueにする
+            firstDiggingDone = true;
+            battleState = BattleState.CHECK_CONDITION;
+        }
+        // 2回目以降だったら次の人のターンへ
+        else
+        {
+            // currentMoveの初期化
+            currentMove = (int)Move.ATTACK;
+            NextTurn();
+        }
         // 必要ならここでgridItemsのデータを他のコンポーネントに渡す
         // パネルの非表示
         battleCommand.ActivateSkillCommandPanel(false);
@@ -2444,7 +2469,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     activePlayers[selectedTargetIndex].PlayerBattleAnimator.Play(hashDamage);
                     yield return null;
                 }
-                else {
+                else
+                {
                     activePlayers[selectedTargetIndex].PlayerBattleAnimator.Play(hashDeath);
                 }
 
@@ -2878,7 +2904,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // アクティブセルに対してUIの更新をする
         //playerSkillPanel.RefreshActiveCellViews();
 
-        Debug.Log("選択されたインデックス" + selectedItemIndex + "アイテムタイプ" + mainPlayer.items[selectedItemIndex].ItemBase.ItemType);
+        Debug.Log("選択されたインデックス" + selectedItemIndex + "アイテムタイプ" + mainPlayer.items[selectedItemIndex].ItemBase.ItemType + "アイテム名" + mainPlayer.items[selectedItemIndex].ItemBase.ItemName);
         // 使えるアイテムだったら
         // 回復アイテム
         if (mainPlayer.items[selectedItemIndex].ItemBase.ItemType == ItemType.HEAL_ITEM)
@@ -3180,7 +3206,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             return skillDatas.Count;
         }
-        else if ((Move)currentMove == Move.ITEM)
+        else if ((Move)currentMove == Move.ITEM || (Move)currentMove == Move.DIGGING)
         {
             return itemCellDatas.Count;
         }
@@ -3212,7 +3238,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             */
             return cellView;
         }
-        else if ((Move)currentMove == Move.ITEM && battleState == BattleState.DIGGING)
+        else if (battleState == BattleState.DIGGING)
         {
             ItemCellView cellView = playerSkillPanel.GetCellView(itemCellViewPrefab) as ItemCellView;
             cellView.cellButtonClicked = MouseClickDiggingItemSelection;

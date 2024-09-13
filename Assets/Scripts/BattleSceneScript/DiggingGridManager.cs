@@ -5,7 +5,9 @@ using System.Linq;
 using UnityEngine.UI;
 
 public delegate void DiggingFinishDelegate();
+
 public delegate bool SelectItemDelegate(Item item);
+
 public delegate void EnbeddingItemDelegate(Item item);
 
 public class DiggingGridManager : MonoBehaviour
@@ -82,7 +84,7 @@ public class DiggingGridManager : MonoBehaviour
                 Debug.Log("使えないよ！");
             }
         }
-    
+
         /*
         if (selectedItem >= 0)
         {
@@ -99,7 +101,6 @@ public class DiggingGridManager : MonoBehaviour
         {
             FinishDigging();
         }*/
-        
     }
 
     // ボタンをきくようにする
@@ -131,7 +132,9 @@ public class DiggingGridManager : MonoBehaviour
 
     // battleSceneManagerのFinishDiggingを実行
     public void OnFinishDigging()
-    {
+    {   // 初期化処理
+        selectedItemNum = 0;
+        selectedIndex = 0;
         if (diggingFinishDelegate != null) diggingFinishDelegate();
         finishButton.gameObject.SetActive(false);
         UnInteractiveButton();
