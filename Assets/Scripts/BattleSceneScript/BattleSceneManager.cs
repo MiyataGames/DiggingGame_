@@ -313,7 +313,8 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             if (inputSkillStatement == InputSkillStatement.INIT_SKILL)
             {
-                EnemyMove();
+                StartCoroutine(EnemyMove());
+                //EnemyMove();
             }
             else if (inputSkillStatement == InputSkillStatement.SKILL_SELECT)
             {
@@ -2180,7 +2181,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // アイテムを消費
             diggingGridManager.UseGridItem(position);
         }
-
+        Debug.Log("敵の数" + activeEnemies.Count);
         // 戦闘不能チェック
         for (int i = 0; i < activeEnemies.Count; i++)
         {
@@ -2387,9 +2388,76 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // 敵============================
-    private void EnemyMove()
+    // 敵が移動する
+    private bool isMoving = false;
+
+    private IEnumerator EnemyMove()
     {
-        inputSkillStatement = ChangeInputSkillStatement();
+        battleState = BattleState.BUSY;
+        Enemy turnEnemy = TurnCharacter as Enemy;
+        List<int> movePositions = new List<int>();
+        int row = turnEnemy.positionIndex / 3;
+        int col = turnEnemy.positionIndex % 3;
+        bool findEmptyCell = false;
+        Vector3 enemyUIgroundPosition = turnEnemy.EnemyPrefab.transform.InverseTransformPoint(turnEnemy.EnemyUI.transform.position);
+
+        // 上
+        if (row > 0)
+        {
+            movePositions.Add(turnEnemy.positionIndex + 3);
+        }
+        // 下
+        if (row < 2)
+        {
+            movePositions.Add(turnEnemy.positionIndex - 3);
+        }
+        // 左
+        if (col < 2)
+        {
+            movePositions.Add(turnEnemy.positionIndex + 1);
+        }
+        // 右
+        if (col > 0)
+        {
+            movePositions.Add(turnEnemy.positionIndex - 1);
+        }
+
+        // ランダムに降る 全部埋まっている場合があるな
+        int targetPositionIndex = movePositions[Random.Range(0, movePositions.Count)];
+        // 空いているセルを検出
+        while (findEmptyCell == false)
+        {
+            for (int i = 0; i < activeEnemies.Count; i++)
+            {
+                if (turnEnemy != activeEnemies[i] && activeEnemies[i].positionIndex == targetPositionIndex)
+                {
+                    targetPositionIndex = movePositions[Random.Range(0, movePositions.Count)];
+                    Debug.Log("かぶってるので降り直し");
+                    break;
+                }
+            }
+            findEmptyCell = true;
+        }
+        Debug.Log("移動先" + targetPositionIndex);
+        // 移動
+        turnEnemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
+        turnEnemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
+        turnEnemy.positionIndex = targetPositionIndex;
+        yield return new WaitForSeconds(0.5f);
+        // 穴のチェック 戦闘不能になったときにそのまま進んでしまう
+        yield return StartCoroutine(CheckHolePosition(targetPositionIndex));
+        // 戦闘不能じゃなければ
+
+        if (turnEnemy.isDying == true)
+        {
+            selectedTargetIndex = 0;
+            NextTurn();
+        }
+        else
+        {
+            battleState = BattleState.ENEMY_MOVE;
+            inputSkillStatement = ChangeInputSkillStatement();
+        }
     }
 
     private void EnemySkillSelect()
