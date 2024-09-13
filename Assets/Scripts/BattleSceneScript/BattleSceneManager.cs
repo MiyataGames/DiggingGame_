@@ -566,8 +566,15 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         Debug.Log("---PlayerDIGGINGInit---");
         // スキルパネルを表示
         battleCommand.ActivateSkillCommandPanel(true);
-        // 穴掘りパネルを有効にする
-        diggingGridManager.StartDigging();
+        if (firstDiggingDone == false)
+        {
+            // 穴掘りパネルを有効にする
+            diggingGridManager.StartFirstDigging();
+        }
+        else
+        {
+            diggingGridManager.StartDigging();
+        }
 
         // EnhancedScrollerのデリゲートを指定する
         // デリゲートを設定することで、スクロールビューが必要な情報を取得
@@ -616,6 +623,24 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             diggingGridManager.SetSelectedItem(item);
         }
         */
+        if (firstDiggingDone == true)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                inputDiggingStatement = InputDiggingStatement.INIT_DIGGING;// 穴掘り状態を選択初期状態に戻す
+                                                                           // スキルパネルを非表示にする
+                battleCommand.ActivateSkillCommandPanel(false);
+                // メインパネルを表示する
+                battleCommand.ActivateBattleCommandPanel(true);
+                Player player = turnCharacter as Player;
+                /*
+                player.PlayerBattleAnimator.SetBool("TurnIdleToIdle", true);
+                player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
+                */
+
+                battleState = BattleState.PLAYER_ACTION_SELECT;
+            }
+        }
     }
 
     /// <summary>
@@ -3167,6 +3192,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         }
         GameManager.instance.EndBattle();
         playerSkillPanel.gameObject.SetActive(false);
+        // 穴掘りパネルの初期化
+        diggingGridManager.DiggingPanelOnFinishBattle();
+        firstDiggingDone = false;
     }
 
     private void EscapeBattle()

@@ -104,14 +104,27 @@ public class DiggingGridManager : MonoBehaviour
     }
 
     // ボタンをきくようにする
-    public void StartDigging()
+    public void StartFirstDigging()
     {
         selectedItemNum = 0;
         for (int i = 0; i < gridButtons.GetLength(0); i++)
         {
             for (int j = 0; j < gridButtons.GetLength(1); j++)
             {
-                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
+                // gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
+                gridButtons[i, j].GetComponent<Button>().interactable = true;
+            }
+        }
+        finishButton.gameObject.SetActive(true);
+    }
+
+    public void StartDigging()
+    {
+        for (int i = 0; i < gridButtons.GetLength(0); i++)
+        {
+            for (int j = 0; j < gridButtons.GetLength(1); j++)
+            {
+                // gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
                 gridButtons[i, j].GetComponent<Button>().interactable = true;
             }
         }
@@ -146,5 +159,18 @@ public class DiggingGridManager : MonoBehaviour
         Image itemImage = buttons[position].transform.GetChild(0).GetComponent<Image>();
         itemImage.sprite = transparentImage;
         gridItems[position] = null;
+    }
+
+    public void DiggingPanelOnFinishBattle()
+    {
+        for (int i = 0; i < gridButtons.GetLength(0); i++)
+        {
+            for (int j = 0; j < gridButtons.GetLength(1); j++)
+            {
+                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
+                buttons[3 * i + j].transform.GetChild(0).GetComponent<Image>().sprite = transparentImage;
+                gridItems[3 * i + j] = null;
+            }
+        }
     }
 }
