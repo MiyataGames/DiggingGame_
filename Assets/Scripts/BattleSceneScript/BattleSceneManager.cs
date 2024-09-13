@@ -7,6 +7,7 @@ using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 public enum BattleState
 {
@@ -515,7 +516,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         // まひだったら
         if (turnCharacter.IsCharacterParalyzed() == true)
         {
-            float random = Random.Range(0, 1.0f);
+            float random = UnityEngine.Random.Range(0, 1.0f);
             // 50%の確率で動けない
             if (random < 0.5f)
             {
@@ -1609,11 +1610,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // 敵が確率で状態異常にかかる
                 for (int i = 0; i < activeEnemies.Count; i++)
                 {
-                    float random = Random.Range(0.0f, 1.0f);
+                    float random = UnityEngine.Random.Range(0.0f, 1.0f);
                     // 出た値が確率以下なら
                     if (random <= skillBase.ConditionAttackAccuracy)
                     {
-                        int duration = Random.Range(2, 4);
+                        int duration = UnityEngine.Random.Range(2, 4);
                         StatusCondition condition = new StatusCondition(skillBase.Condition, duration);
                         switch (skillBase.Condition)
                         {
@@ -1661,11 +1662,11 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 // HPの反映
                 activeEnemies[selectedTargetIndex].EnemyUI.UpdateHp();
                 // 敵が確率で状態異常にかかる
-                float random = Random.Range(0.0f, 1.0f);
+                float random = UnityEngine.Random.Range(0.0f, 1.0f);
                 // 出た値が確率以下なら
                 if (random <= skillBase.ConditionAttackAccuracy)
                 {
-                    int duration = Random.Range(2, 4);
+                    int duration = UnityEngine.Random.Range(2, 4);
                     StatusCondition condition = new StatusCondition(skillBase.Condition, duration);
                     switch (skillBase.Condition)
                     {
@@ -2147,7 +2148,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                     if (activeEnemies[i].positionIndex == position)
                     {
                         // 状態異常：毒にする
-                        int duration = Random.Range(2, 4);
+                        int duration = UnityEngine.Random.Range(2, 4);
                         StatusCondition condition = new StatusCondition(itemBase.Condition, duration);
                         switch (itemBase.Condition)
                         {
@@ -2389,8 +2390,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
     // 敵============================
     // 敵が移動する
-    private bool isMoving = false;
-
     private IEnumerator EnemyMove()
     {
         battleState = BattleState.BUSY;
@@ -2400,16 +2399,16 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         int col = turnEnemy.positionIndex % 3;
         bool findEmptyCell = false;
         Vector3 enemyUIgroundPosition = turnEnemy.EnemyPrefab.transform.InverseTransformPoint(turnEnemy.EnemyUI.transform.position);
-
+        // ここが違う
         // 上
         if (row > 0)
         {
-            movePositions.Add(turnEnemy.positionIndex + 3);
+            movePositions.Add(turnEnemy.positionIndex - 3);
         }
         // 下
         if (row < 2)
         {
-            movePositions.Add(turnEnemy.positionIndex - 3);
+            movePositions.Add(turnEnemy.positionIndex + 3);
         }
         // 左
         if (col < 2)
@@ -2421,31 +2420,45 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         {
             movePositions.Add(turnEnemy.positionIndex - 1);
         }
-
-        // ランダムに降る 全部埋まっている場合があるな
-        int targetPositionIndex = movePositions[Random.Range(0, movePositions.Count)];
-        // 空いているセルを検出
-        while (findEmptyCell == false)
+        for (int i = 0; i < movePositions.Count; i++)
         {
-            for (int i = 0; i < activeEnemies.Count; i++)
+            Debug.Log("移動候補" + movePositions[i]);
+        }
+        movePositions = movePositions.OrderBy(a => Guid.NewGuid()).ToList();
+
+        // ランダムに降る
+        // 空いているセルを検出
+        int targetPositionIndex = -1;
+        for (int i = 0; i < movePositions.Count; i++)
+        {
+            bool isOccupied = false;
+            foreach (Enemy enemy in activeEnemies)
             {
-                if (turnEnemy != activeEnemies[i] && activeEnemies[i].positionIndex == targetPositionIndex)
+                if (enemy != turnEnemy && enemy.positionIndex == movePositions[i])
                 {
-                    targetPositionIndex = movePositions[Random.Range(0, movePositions.Count)];
-                    Debug.Log("かぶってるので降り直し");
+                    isOccupied = true;
                     break;
                 }
             }
-            findEmptyCell = true;
+
+            if (isOccupied == false)
+            {
+                targetPositionIndex = movePositions[i];
+                break;
+            }
         }
         Debug.Log("移動先" + targetPositionIndex);
-        // 移動
-        turnEnemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
-        turnEnemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
-        turnEnemy.positionIndex = targetPositionIndex;
-        yield return new WaitForSeconds(0.5f);
-        // 穴のチェック 戦闘不能になったときにそのまま進んでしまう
-        yield return StartCoroutine(CheckHolePosition(targetPositionIndex));
+        // 全部埋まってたら移動しない
+        if (targetPositionIndex != -1)
+        {
+            // 移動
+            turnEnemy.EnemyPrefab.transform.DOMove(new Vector3(diggingPositions[targetPositionIndex].transform.position.x, diggingPositions[targetPositionIndex].transform.position.y, diggingPositions[targetPositionIndex].transform.position.z), 0.5f);
+            turnEnemy.EnemyUI.transform.DOLocalMoveY(enemyUIgroundPosition.y, 0.5f);
+            turnEnemy.positionIndex = targetPositionIndex;
+            yield return new WaitForSeconds(0.5f);
+            // 穴のチェック ダメージが入らん
+            yield return StartCoroutine(CheckHolePosition(targetPositionIndex));
+        }
         // 戦闘不能じゃなければ
 
         if (turnEnemy.isDying == true)
@@ -2463,7 +2476,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     private void EnemySkillSelect()
     {
         Enemy turnEnemy = (Enemy)characters[turnCharacterIndex];
-        selectedSkillIndex = Random.Range(0, turnEnemy.Skills.Count);
+        selectedSkillIndex = UnityEngine.Random.Range(0, turnEnemy.Skills.Count);
         inputSkillStatement = ChangeInputSkillStatement();
         Debug.Log(inputSkillStatement);
     }
@@ -2472,15 +2485,15 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         //Debug.Log("EnemyTargetSelect()");
         // ターゲットをランダムで選択
-        // 単体だったら Random.Range(min,max) 最大値を含まない
+        // 単体だったら UnityEngine.Random.Range(min,max) 最大値を含まない
         // 敵が自分自身でなければ
         if (enemySkill.skillBase.SkillTargetKind == SKILL_TARGET_KIND.FOE)
         {
-            selectedTargetIndex = Random.Range(0, activePlayers.Count);
+            selectedTargetIndex = UnityEngine.Random.Range(0, activePlayers.Count);
         }
         else
         {
-            selectedTargetIndex = Random.Range(0, activeEnemies.Count);
+            selectedTargetIndex = UnityEngine.Random.Range(0, activeEnemies.Count);
         }
         inputSkillStatement = ChangeInputSkillStatement();
     }

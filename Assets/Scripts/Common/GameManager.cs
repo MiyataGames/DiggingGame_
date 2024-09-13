@@ -187,7 +187,14 @@ public class GameManager : MonoBehaviour
             mainPlayer.AddItem(dropItems[i]);
             Debug.Log("落としたアイテムは" + dropItems[i].ItemBase.ItemName);
         }
-        StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
+        if (battleSceneManager.TurnCharacter.isPlayer == true)
+        {
+            StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
+        }
+        else
+        {
+            StartCoroutine(resultSceneManager.ResultPlayer(mainPlayer));
+        }
         if (enemySymbol != null)
         {
             Destroy(enemySymbol);
