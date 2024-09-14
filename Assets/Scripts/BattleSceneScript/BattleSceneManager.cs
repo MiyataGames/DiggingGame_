@@ -76,6 +76,8 @@ public enum InputDiggingStatement
 // 前のターンに気絶していたかどうか
 public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 {
+    // 音
+    [SerializeField] AudioSource seAudioSource;
     // 全体UI
     [SerializeField] private Dialog dialog;
 
@@ -1429,6 +1431,12 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
 
             yield return null;// ステートの反映
             yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
+            // SEがnullじゃなければ
+            if (playerSkill.skillBase.TakeSkillSE != null)
+            {
+                Debug.Log("音" + playerSkill.skillBase.TakeSkillSE.name);
+                seAudioSource.PlayOneShot(playerSkill.skillBase.TakeSkillSE);
+            }
 
             // 全体攻撃だったら
             if (playerSkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
@@ -1752,6 +1760,12 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             player.PlayerBattleAnimator.Play(hashSkill);
             yield return null;// ステートの反映
             yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
+            // SEがnullじゃなければ
+            if (playerSkill.skillBase.TakeSkillSE != null)
+            {
+                Debug.Log("音" + playerSkill.skillBase.TakeSkillSE.name);
+                seAudioSource.PlayOneShot(playerSkill.skillBase.TakeSkillSE);
+            }
             /*
             player.PlayerBattleAnimator.SetBool("SkillToIdle", true);
             player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
@@ -2127,6 +2141,14 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
                 {
                     // ダメージ処理
                     isDying[i] = activeEnemies[i].TakeItemDamage(itemBase.DamageRatio, turnCharacter);
+                    // 敵がダメージを受けるアニメーションを再生
+                    activeEnemies[i].EnemyAnimator.Play(hashDamage);
+                    yield return new WaitForAnimation(activeEnemies[i].EnemyAnimator,0);
+                    // 音
+                    if (item.ItemBase.UseItemSE != null)
+                    {
+                        seAudioSource.PlayOneShot(item.ItemBase.UseItemSE);
+                    }
                     Debug.Log("エフェクトを発生");
                     if (itemBase.ReceivedEffect != null)
                     {
@@ -2526,6 +2548,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             enemy.EnemyAnimator.Play(hashAttack);
             yield return null;// ステートの反映
             yield return new WaitForAnimation(enemy.EnemyAnimator, 0);
+            if (enemySkill.skillBase.TakeSkillSE != null)
+            {
+                seAudioSource.PlayOneShot(enemySkill.skillBase.TakeSkillSE);
+            }
 
             // 全体選択なら
             if (enemySkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)
@@ -2681,6 +2707,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             enemy.EnemyAnimator.Play(hashSkill);
             yield return null;// ステートの反映
             yield return new WaitForAnimation(enemy.EnemyAnimator, 0);
+            if (enemySkill.skillBase.TakeSkillSE != null)
+            {
+                seAudioSource.PlayOneShot(enemySkill.skillBase.TakeSkillSE);
+            }
 
             // 全体選択なら
             if (enemySkill.skillBase.SkillTargetNum == TARGET_NUM.ALL)

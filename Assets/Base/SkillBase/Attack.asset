@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Attack
   m_EditorClassIdentifier: 
   skillName: "\u305F\u3044\u3042\u305F\u308A"
+  magicType: 0
   description: 
   power: 1
   sp: 0
@@ -21,3 +22,4 @@ MonoBehaviour:
   skillTargetKind: 1
   skillTargetNum: 0
   skillRecieveEffect: {fileID: 1758473627833946668, guid: 9b21333b068a5084ba09535839bee3c8, type: 3}
+  takeSkillSE: {fileID: 8300000, guid: b877b2ff4c60b4883aaf316fa92e0406, type: 3}

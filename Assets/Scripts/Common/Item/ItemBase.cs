@@ -13,6 +13,7 @@ public class ItemBase : ScriptableObject
     [SerializeField] private string description;
     [SerializeField] private int price; // 価格
     [SerializeField] private int id;
+    [SerializeField] private AudioClip useItemSE;
     [SerializeField] private ItemType itemType;
     public ItemType ItemType { get => itemType; }
 
@@ -21,4 +22,5 @@ public class ItemBase : ScriptableObject
     public string Description { get => description; }
     public int Price { get => price; set => price = value; } // 価格の公開プロパティ
     public int Id { get => id; set => id = value; }
+    public AudioClip UseItemSE { get => useItemSE;}
 }
