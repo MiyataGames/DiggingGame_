@@ -145,6 +145,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // バトル関係
     [SerializeField] private int enemyBaseNumber;
 
+    public bool IsDigging { get => isDigging; }
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -358,7 +360,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void startDigAction()
     {
         isDigging = true;
-        seAudioSource.PlayOneShot(diggingSE);
+        //seAudioSource.PlayOneShot(diggingSE);
         //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
 

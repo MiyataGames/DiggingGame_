@@ -2,13 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.Experimental.VFX;
+using UnityEngine.VFX;
 
 public class soil : MonoBehaviour
 {
     [SerializeField] Tilemap soilTilemap;//土のタイルマップ
     [SerializeField] Collider2D soilCollider;
-    [SerializeField] GameObject hitObj;
-    [SerializeField] GameObject scop;
+    //[SerializeField] GameObject hitObj;
+    //[SerializeField] GameObject scop;
+
+    //[SerializeField] VisualEffect soilBreakEffect;
+    [SerializeField] GameObject soilBreakEffect;
+    [SerializeField] AudioSource seAudioSource;
+    [SerializeField] AudioClip diggingSE;
+
+
+    //private List<VisualEffect> soilBreakEffects = new List<VisualEffect>();
+    //private List<Vector3> soilBreakEffectsPos = new List<Vector3>();
 
     // Start is called before the first frame update
     void Start()
@@ -72,6 +83,8 @@ public class soil : MonoBehaviour
 
                 // バウンディングボックスの範囲内のタイルを削除
                 DeleteTilesInBounds(bounds);
+
+
             }
         }
     }
@@ -81,6 +94,14 @@ public class soil : MonoBehaviour
         Vector3Int min = soilTilemap.WorldToCell(bounds.min);
         Vector3Int max = soilTilemap.WorldToCell(bounds.max);
 
+        float brokenTile = 0;
+
+        /*for (int i = 0; i < soilBreakEffects.Count; i++)
+        {
+            Destroy(soilBreakEffects[i]);
+            soilBreakEffects.Remove(soilBreakEffects[i]);
+        }*/
+
         for (int x = min.x; x <= max.x; x++)
         {
             for (int y = min.y; y <= max.y; y++)
@@ -88,10 +109,28 @@ public class soil : MonoBehaviour
                 Vector3Int cellPosition = new Vector3Int(x, y, 0);
                 if (soilTilemap.HasTile(cellPosition))
                 {
+                    if (seAudioSource.isPlaying == false)
+                    {
+                        seAudioSource.PlayOneShot(diggingSE);
+                    }
                     soilTilemap.SetTile(cellPosition, null);
+                    Instantiate(soilBreakEffect, soilTilemap.CellToWorld(cellPosition), Quaternion.identity);
+                    /*soilBreakEffects.Add(Instantiate(soilBreakEffect, new Vector3(0, 0, 0), Quaternion.identity));
+                    soilBreakEffectsPos.Add(soilTilemap.CellToWorld(cellPosition));
+                    brokenTile++;*/
+
                 }
             }
         }
+
+        /*for (int i = 0; i < brokenTile; i++)
+        {
+
+            soilBreakEffects[i].SetVector3("Position", soilBreakEffectsPos[i]);
+            soilBreakEffects[i].SendEvent("OnPlay");
+
+        }*/
+
     }
 
 }
