@@ -1434,7 +1434,6 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             // SEがnullじゃなければ
             if (playerSkill.skillBase.TakeSkillSE != null)
             {
-                Debug.Log("音" + playerSkill.skillBase.TakeSkillSE.name);
                 seAudioSource.PlayOneShot(playerSkill.skillBase.TakeSkillSE);
             }
 
@@ -1860,6 +1859,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         player.PlayerBattleAnimator.Play(hashSkill);
         yield return null;// ステートの反映
         yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
+        if (playerSkill.skillBase.TakeSkillSE != null)
+        {
+            seAudioSource.PlayOneShot(playerSkill.skillBase.TakeSkillSE);
+        }
         /*
         player.PlayerBattleAnimator.SetBool("SkillToIdle", true);
         player.PlayerBattleAnimator.SetBool("IdleToTurnIdle", false);
