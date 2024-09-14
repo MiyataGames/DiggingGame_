@@ -7,6 +7,7 @@ public class Fade : MonoBehaviour
 {
     [SerializeField]
     private Image _fadePanel = default;
+
     [SerializeField]
     private float _fadeTime = 1f;
 
@@ -30,26 +31,25 @@ public class Fade : MonoBehaviour
 
     private void Start()
     {
-        
         // if (_fadePanel)
         // {
         //     _fadeTime = 0.5f;
         //     RegisterFadeInEvent(new Action[] { () => _fadeTime = 1f });
         //     StartFadeIn();
         // }
-        
     }
 
-    public void StartFadeInBattle(GameObject enemySymbol) { StartCoroutine(FadeInBattle(enemySymbol)); }
+    public void StartFadeInBattle(GameObject enemySymbol)
+    { StartCoroutine(FadeInBattle(enemySymbol)); }
 
-    public void StartFadeOut() { StartCoroutine(FadeOut()); }
+    public void StartFadeOut()
+    { StartCoroutine(FadeOut()); }
 
     private IEnumerator FadeInBattle(GameObject gameObject)
     {
-
         _fadePanel.gameObject.SetActive(true);
 
-        GameManager.instance.StartBattle(gameObject);
+        GameManager.instance.StartBattle(gameObject, 0);
         float alpha = 1f;
         Color color = _fadePanel.color;
 
@@ -85,5 +85,4 @@ public class Fade : MonoBehaviour
             yield return null;
         }
     }
-
 }

@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Tilemaps;
+
+// using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class TestPlayerMove : MonoBehaviour
 {
-    float keyDirCheck;
+    private float keyDirCheck;
     private bool isWallSliding = false;
     private bool isLeft = false;
     private bool isRightWall = false;
@@ -30,12 +31,12 @@ public class TestPlayerMove : MonoBehaviour
     private bool jumpPressed = false;
     private bool jumpReleased = false;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    private void Update()
     {
         // 左右の移動
         keyDirCheck = Input.GetAxis("Horizontal");
@@ -49,7 +50,9 @@ public class TestPlayerMove : MonoBehaviour
         {
             isLeft = true;
             vx = -moveSpeed;
-        }else{
+        }
+        else
+        {
             vx = 0;
         }
 
@@ -69,13 +72,14 @@ public class TestPlayerMove : MonoBehaviour
         WallJump();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         Debug.Log(isWallJumping);
         if (!isWallJumping && inputBlockTimer <= 0)
         {
             rb.velocity = new Vector2(vx, rb.velocity.y);
-        }else if(isWallJumping && inputBlockTimer <= 0)
+        }
+        else if (isWallJumping && inputBlockTimer <= 0)
         {
             vx = Mathf.Clamp(vx, -vx / 2, vx / 2);
             rb.velocity = new Vector2(vx, rb.velocity.y);
@@ -94,7 +98,6 @@ public class TestPlayerMove : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
             jumpReleased = false;
         }
-
     }
 
     private bool isGrounded()
@@ -154,7 +157,8 @@ public class TestPlayerMove : MonoBehaviour
     {
         if (isWallSliding)
         {
-            if(inputBlockTimer <= 0){
+            if (inputBlockTimer <= 0)
+            {
                 isWallJumping = false;
             }
 

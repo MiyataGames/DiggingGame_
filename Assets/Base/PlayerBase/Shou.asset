@@ -17,8 +17,8 @@ MonoBehaviour:
   weakTypes: 06000000
   resistanceTypes: 05000000
   playerDiscription: "\u5730\u4E0B\u306E\u63A1\u6398\u306E\u753A\u3067\u51FA\u4F1A\u3063\u305F\u6C17\u306E\u3044\u3044\u3084\u3064\u3002\u65B0\u5929\u5730\u3067\u601D\u3044\u3063\u304D\u308A\u4F53\u3092\u52D5\u304B\u3059\u306E\u304C\u5922"
-  playerFaceIcon: {fileID: 21300000, guid: 038de84945c5a46fb9e7a2f714724f84, type: 3}
-  playerOverView: {fileID: 21300000, guid: 96ca99ea30e1846a6bb99e6e17e937af, type: 3}
+  playerFaceIcon: {fileID: 21300000, guid: 281d6c22479e5406ba469e14d8a39d76, type: 3}
+  playerOverView: {fileID: 21300000, guid: 805286dfbadf946f89c7139eb4f10892, type: 3}
   playerBattleSceneSprite: {fileID: 7337802774343779779, guid: 689384fcbf4124a56bcac78a12c7acf6, type: 3}
   playerMaxLv: 20
   playerMaxHp: 10000

@@ -16,7 +16,6 @@ public class FieldItem : MonoBehaviour
 
     public void ApplyItemAffect(Item item)
     {
-        Debug.Log("CCCCCCCCC");
         switch (item.ItemBase.ItemType)
         {
             case ItemType.WEAPON:
@@ -29,7 +28,6 @@ public class FieldItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("�Փ�");
             ApplyItemAffect(item);
         }
     }

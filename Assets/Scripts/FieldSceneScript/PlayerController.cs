@@ -44,10 +44,9 @@ public class Define
     public static Vector2[] directions = { new Vector2(1, 1), new Vector2(1, 0), new Vector2(1, -1), new Vector2(0, -1), new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(0, 0) };
 }
 
-
 public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    float keyDirCheck;
+    private float keyDirCheck;
     private bool isWallSliding = false;
     private bool isRightWall = false;
     private bool isLeftWall = false;
@@ -67,7 +66,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private LayerMask groundLayer;
 
     private Rigidbody2D rb;
-    CapsuleCollider2D dc;
+    private CapsuleCollider2D dc;
     private bool jumpPressed = false;
     private bool jumpReleased = false;
 
@@ -84,26 +83,37 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     // プレイヤーのアニメーション
     private Animator myAnim;
+
+    // プレイヤーの出すSE
+    [SerializeField] AudioSource seAudioSource;
+    [SerializeField] AudioClip diggingSE;
+    [SerializeField] AudioClip itemGetSE;
+    [SerializeField] AudioClip coinGetSE;
+
     // プレイヤーのスプライトレンダラー
     public bool isLeft = false;
+
     public bool isUp = false;
     private bool isDigging = false;
 
     [SerializeField] private GameObject digCollider;
-    DigController digController;
-
+    private DigController digController;
 
     // プレイヤー 仮
     //[SerializeField] private PlayerBase[] playerBasies;
 
     //[SerializeField] private GameObject[] playerUIs;
-    [SerializeField] Party party;
+    [SerializeField] private Party party;
+
     // セーブシステム
-    [SerializeField] SaveLoadController saveLoadCtrl;
+    [SerializeField] private SaveLoadController saveLoadCtrl;
+
     // メニュー画面 =======================
     private int currentMenuCommandNum;
+
     // アイテム関係 ======================
     private ItemUseStatus currentItemUseStatus;
+
     private int currentItemNum;
     private List<ItemCellData> itemCellData;
 
@@ -118,17 +128,22 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private int selectedItemTargetIndex;
 
     // ステータス関係 ==========================
-    StatusState statusState = StatusState.STATUS_All;
+    private StatusState statusState = StatusState.STATUS_All;
+
     // ステータス画面の選択されているインデックス番号
     private int selectedStatusIndex;
+
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
     [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
 
-    [SerializeField] FadeController fadeController;
+    [SerializeField] private FadeController fadeController;
 
-    [SerializeField] Tilemap soilTilemap;
-    [SerializeField] TileBase soilTile;
-    [SerializeField] BoxCollider2D SetSoilCollider;
+    [SerializeField] private Tilemap soilTilemap;
+    [SerializeField] private TileBase soilTile;
+    [SerializeField] private BoxCollider2D SetSoilCollider;
+
+    // バトル関係
+    [SerializeField] private int enemyBaseNumber;
 
     // Start is called before the first frame update
     private void Awake()
@@ -154,7 +169,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         SetSoilCollider.enabled = false;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         isDigging = false;
         // this.GetComponent<SpriteRenderer>().flipX = false;
@@ -198,7 +213,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 // マップを開く
             }
 
-
             // 左右の移動
             keyDirCheck = Input.GetAxis("Horizontal");
 
@@ -206,16 +220,13 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 if (isDigging == false)
                 {
-
                     isLeft = false;
                     myAnim.SetFloat("isLeft", -1);
                     vx = moveSpeed;
 
                     myAnim.SetBool("isWalking", true);
                     myAnim.SetFloat("isUp", 0);
-
                 }
-
             }
             else if (Input.GetKey(KeyCode.A))
             {
@@ -228,14 +239,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     myAnim.SetBool("isWalking", true);
                     myAnim.SetFloat("isUp", 0);
                 }
-
             }
             else
             {
                 vx = 0;
                 myAnim.SetBool("isWalking", false);
             }
-
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -249,7 +258,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             {
                 if (isDigging == false)
                 {
-
                     if (SetSoilCollider != null)
                     {
                         SetSoilCollider.enabled = true;
@@ -286,7 +294,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
             WallSlide();
             WallJump();
-
         }
 
         // メインパネルを選択中だったら
@@ -324,32 +331,34 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         endDigAction();
     }
+
     public void endDiggingDownUpAnim()
     {
         myAnim.SetFloat("isUp", 0);
         endDigAction();
     }
 
-    void endDigAction()
+    private void endDigAction()
     {
         myAnim.SetBool("isDigging", false);
         isDigging = false;
         //dc.enabled = false;
     }
 
-    void StartDig()
+    private void StartDig()
     {
         dc.enabled = true;
     }
 
-    void EndDig()
+    private void EndDig()
     {
         dc.enabled = false;
     }
 
-    void startDigAction()
+    private void startDigAction()
     {
         isDigging = true;
+        seAudioSource.PlayOneShot(diggingSE);
         //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
 
@@ -385,7 +394,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         myAnim.SetBool("isDigging", true);
     }
 
-    void SetSoilTile(Bounds bounds)
+    private void SetSoilTile(Bounds bounds)
     {
         Vector3Int min = soilTilemap.WorldToCell(bounds.min);
         Vector3Int max = soilTilemap.WorldToCell(bounds.max);
@@ -407,7 +416,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void HandleMenuSelect()
     {
-
         /*
         // キー操作
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -486,6 +494,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             filedGameStatus = FieldGameState.SYSTEM;
         }
     }
+
     private void HandleItemSelect()
     {
         if (currentItemUseStatus == ItemUseStatus.SELECT_ITEM)
@@ -648,7 +657,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    void HandleSystemSelect()
+    private void HandleSystemSelect()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -659,7 +668,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    #region 
+    #region
+
     // アイテム関係 ===========
 
     private void InitItem()
@@ -717,7 +727,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         return cell;
     }
 
-    // セルにホバーしたとき実行する関数 
+    // セルにホバーしたとき実行する関数
     public void CellButtonOnHover(int selectedIndex)
     {
         selectedItemIndex = selectedIndex;
@@ -753,6 +763,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         currentItemUseStatus = ItemUseStatus.SELECT_TARGET;
         Debug.Log("Cell Data Integer Button Clicked! Value = " + selectedItemIndex);
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         /*
@@ -760,11 +771,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             Debug.Log(player.Items[i].ItemBase.ItemName + ":" + player.Items[i].ItemCount);
         }*/
-        // 衝突したのがアイテムだったら
+        // 衝突したのがアイテムだったら 
         if (other.tag == "Item")
         {
             Item newItem = other.GetComponent<FieldItem>().Item;
             GameManager.instance.Party.Players[0].AddItem(newItem);
+            seAudioSource.PlayOneShot(itemGetSE);
             Destroy(other.gameObject);
             LoadItemData();
             /*
@@ -795,16 +807,19 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         if (other.tag == "Coin")
         {
+            seAudioSource.PlayOneShot(coinGetSE);
             int coinValue = other.GetComponent<FieldCoin>().Price;
             party.Players[0].Gold = party.Players[0].Gold + coinValue;
             print("CoinValue:" + party.Players[0].Gold);
             Destroy(other.gameObject);
             return;
         }
-
     }
+
     #endregion
-    #region 
+
+    #region
+
     // ステータス関係　=======================
     private void InitStatus()
     {
@@ -826,6 +841,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             }
         }
     }
+
     // マウスでステータスを選択　または　アイテムを使用するターゲットの選択
     public void SelectStatusButton(int selectStatusIndex)
     {
@@ -923,7 +939,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             statusState = StatusState.STATUS_All;
         }
     }
+
     #endregion
+
     // システム関係　=======================
     // マウスでセーブを選択
     public void SaveButton()
@@ -935,9 +953,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     {
         saveLoadCtrl.Load();
     }
+
     private void FixedUpdate()
     {
-
         //Debug.Log(isWallJumping);
         if (!isWallJumping && inputBlockTimer <= 0)
         {
@@ -974,13 +992,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
             jumpReleased = false;
         }
-
-
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -997,8 +1012,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
             //fadeController.FadeOut();
             //Fade.Instance.StartFadeInBattle(collision.gameObject);
-            GameManager.instance.StartBattle(collision.gameObject);
-
+            GameManager.instance.StartBattle(collision.gameObject, enemyBaseNumber);
         }
         else if (collision.gameObject.tag == "Town")
         {
@@ -1103,8 +1117,4 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             isWallJumping = false;
         }
     }
-
 }
-
-
-

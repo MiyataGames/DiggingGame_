@@ -38,10 +38,13 @@ public class StoryEventScript : MonoBehaviour
 {
     [Header("Story or SubStory")]
     public string TypeOfStory;
+
     [Header("イベントが起きる場所 ex.Abokado")]
     public string eventPlace;
+
     [Header("イベント番号 ex.Event1")]
     public string eventNum;
+
     public EventDatas[] EventDatas;
 
     public bool moveFlag = false;
@@ -55,7 +58,7 @@ public class StoryEventScript : MonoBehaviour
     private List<string> afterSetEventFlagTalk = new List<string>();
 
     [Header("スキップボタン")]
-    [SerializeField] Button skipButton;
+    [SerializeField] private Button skipButton;
 
     [Header("イベント発火にエリア内でFキーを押すか(falseなら範囲内に入った時点でイベント開始)")]
     [SerializeField] private bool TriggerIsFkey = true;
@@ -74,15 +77,16 @@ public class StoryEventScript : MonoBehaviour
 
     [Header("ダイアログに必要なオブジェクトたち")]
     [SerializeField] private GameObject talkDialog; //会話用ダイアログ
+
     [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
     [SerializeField] private Button readNext; //次の会話を表示するボタン
-    [SerializeField] TextMeshProUGUI massage; //メインテキスト
-    [SerializeField] TextMeshProUGUI nameText; //名前用テキスト
-    [SerializeField] TextMeshProUGUI yMassage; //肯定選択肢テキスト
-    [SerializeField] Button yButton; //肯定ボタン
-    [SerializeField] TextMeshProUGUI nMassage; //否定選択肢テキスト
-    [SerializeField] Button nButton; //否定ボタン
-    [SerializeField] Image image;//キャラ画像
+    [SerializeField] private TextMeshProUGUI massage; //メインテキスト
+    [SerializeField] private TextMeshProUGUI nameText; //名前用テキスト
+    [SerializeField] private TextMeshProUGUI yMassage; //肯定選択肢テキスト
+    [SerializeField] private Button yButton; //肯定ボタン
+    [SerializeField] private TextMeshProUGUI nMassage; //否定選択肢テキスト
+    [SerializeField] private Button nButton; //否定ボタン
+    [SerializeField] private Image image;//キャラ画像
 
     private bool isPlayerInErea = false; //エリア内にプレイヤーがいるかのフラグ
     private bool isInEventNow = false; //会話中かフラグ
@@ -90,7 +94,7 @@ public class StoryEventScript : MonoBehaviour
     private bool isNowFading = false;
     private bool isSettingEventFlag = false;
 
-    void Awake()
+    private void Awake()
     {
         //テキストファイルの読み込ませるクラス
         TextAsset textAsset = new TextAsset();
@@ -108,23 +112,18 @@ public class StoryEventScript : MonoBehaviour
             {
                 //キャライメージの読み込み
                 charaImage[i] = Resources.Load<Sprite>("CharaImage/" + EventDatas[i].imageFolderName + "/" + EventDatas[i].imageNum);
-
             }
         }
         Debug.Log(charaImage.Length);
     }
 
-    void Start()
+    private void Start()
     {
-
-
-
     }
 
-    void Update()
+    private void Update()
     {
-
-        Debug.Log(isCanNextText);
+        //Debug.Log(isCanNextText);
 
         //イベント中ではなく，プレイヤーが会話エリアにいたら
         if (isInEventNow == false && isPlayerInErea == true)
@@ -138,7 +137,7 @@ public class StoryEventScript : MonoBehaviour
                 if(hit.collider != null && hit.collider.gameObject == this.gameObject){
                     isTalkingNow = true; //会話中フラグをtrue
                     textStart(); //テキストスタート
-                }  
+                }
             }*/
 
             if (TriggerIsFkey == true)
@@ -159,7 +158,7 @@ public class StoryEventScript : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     { //コリジョンのトリガーが発火したとき
         if (other.gameObject.tag == "Player")
         { //タグがPlayerなら
@@ -175,16 +174,13 @@ public class StoryEventScript : MonoBehaviour
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit2D(Collider2D other)
     {
         isPlayerInErea = false;
     }
 
-
-
     public void textStart()
     {
-
         isEndOfTalk = false;//使ってない
 
         //会話ダイアログを表示
@@ -202,7 +198,6 @@ public class StoryEventScript : MonoBehaviour
     //次のコマンドを実行
     public void ReadNextMessage()
     {
-
         //Debug.Log(npcTalkDatas[currentTextID]);
         //skipIDがexcelで空白なら0になる
         if (EventDatas[currentTextID].skipID == 0 || isSettingEventFlag == true)
@@ -226,7 +221,6 @@ public class StoryEventScript : MonoBehaviour
             SwichTalkDialogActivate(false);
             // このゲームオブジェクトを消去
             Destroy(this.gameObject);
-
         }
         else
         {
@@ -237,22 +231,22 @@ public class StoryEventScript : MonoBehaviour
 
         if (isEndOfTalk == false)
         {
-
         }
     }
 
     //コマンドを実行
     private void ExecuteCommand(string nowCommand)
     {
-
         switch (nowCommand)
         {
             case "set_bgm":
                 SetBGM();
                 break;
+
             case "play_sound":
                 PlaySE(EventDatas[currentTextID].SEpath);
                 break;
+
             case "chara_func":
                 isCanNextText = false;
                 charactorFunction.ExecuteCommand(EventDatas[currentTextID].chractorFunction, EventDatas[currentTextID].animFuncName);
@@ -261,9 +255,11 @@ public class StoryEventScript : MonoBehaviour
                     ReadNextMessage();
                 }*/
                 break;
+
             case "check_EventFlag":
                 CheckEventAvailable(EventDatas[currentTextID].checkNeedEventNum, EventDatas[currentTextID].eventNum, EventDatas[currentTextID].afterEventSkipID);
                 break;
+
             case "set_text":
                 ShowText(EventDatas[currentTextID].mainText);
 
@@ -282,14 +278,17 @@ public class StoryEventScript : MonoBehaviour
                 //Debug.Log(charaImage[currentTextID]);
 
                 break;
+
             case "set_EventFlag":
                 SetEventFlag();
                 break;
+
             case "fade_blackOut":
                 isCanNextText = false;
                 fadeController.OnFadeOutComplete += OnFadeOutComplete;
                 fadeController.FadeOut();
                 break;
+
             case "fade_blackWait":
                 if (isCanNextText == true)
                 {
@@ -298,6 +297,7 @@ public class StoryEventScript : MonoBehaviour
                 fadeController.OnFadeWaitComplete += OnFadeWaitComplete;
                 fadeController.FadeWait();
                 break;
+
             case "fade_blackIn":
                 if (isCanNextText == true)
                 {
@@ -306,10 +306,10 @@ public class StoryEventScript : MonoBehaviour
                 fadeController.OnFadeInComplete += OnFadeInComplete;
                 fadeController.FadeIn();
                 break;
+
             case "DeleteText":
                 DeleteText();
                 break;
-
 
             default:
                 break;
@@ -351,7 +351,6 @@ public class StoryEventScript : MonoBehaviour
     /// <param name="afterEventSkipID">すでに現在のフラグ番号が立っているときにスキップする番号</param>
     private void CheckEventAvailable(int checkNeedEventNum, int eventNum, int afterEventSkipID)
     {
-
         bool canEvent = false; //現在のフラグを立てられるか
         bool alreadyEvent = false;//すでに現在のフラグが立っているか
 
@@ -386,7 +385,6 @@ public class StoryEventScript : MonoBehaviour
         {
             ReadNextMessage();
         }
-
     }
 
     private void ShowBranchText(string yText, string nText)
@@ -469,8 +467,6 @@ public class StoryEventScript : MonoBehaviour
         massage.text = EventDatas[currentTextID].mainText;
     }
 
-
-
     private void DeleteText()
     {
         ClearAllListeners();
@@ -478,18 +474,16 @@ public class StoryEventScript : MonoBehaviour
         ReadNextMessage();
     }
 
-
     private void SetBGM()
     {
         //BGM鳴らすコードかいて（後で）
 
         //次のコマンドを実行
         ReadNextMessage();
-
     }
 
     //トークダイアログの切り替え
-    void SwichTalkDialogActivate(bool b)
+    private void SwichTalkDialogActivate(bool b)
     {
         if (b == false)
         {
@@ -502,7 +496,7 @@ public class StoryEventScript : MonoBehaviour
     }
 
     //選択肢ダイアログの切り替え
-    void SwichChooseDialogActivate()
+    private void SwichChooseDialogActivate()
     {
         if (choosedialog.activeSelf)
         {
@@ -514,7 +508,7 @@ public class StoryEventScript : MonoBehaviour
         }
     }
 
-    void SwichReadNextInteractable()
+    private void SwichReadNextInteractable()
     {
         if (readNext.interactable)
         {
@@ -527,7 +521,7 @@ public class StoryEventScript : MonoBehaviour
     }
 
     //すべてのボタンに登録されている処理を初期化
-    void ClearAllListeners()
+    private void ClearAllListeners()
     {
         readNext.onClick.RemoveAllListeners();
         yButton.onClick.RemoveAllListeners();
@@ -557,7 +551,4 @@ public class StoryEventScript : MonoBehaviour
         ReadNextMessage();
         fadeController.OnFadeOutComplete -= OnFadeOutComplete;
     }
-
 }
-
-

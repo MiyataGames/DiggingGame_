@@ -5,7 +5,9 @@ using System.Linq;
 using UnityEngine.UI;
 
 public delegate void DiggingFinishDelegate();
+
 public delegate bool SelectItemDelegate(Item item);
+
 public delegate void EnbeddingItemDelegate(Item item);
 
 public class DiggingGridManager : MonoBehaviour
@@ -82,7 +84,7 @@ public class DiggingGridManager : MonoBehaviour
                 Debug.Log("使えないよ！");
             }
         }
-    
+
         /*
         if (selectedItem >= 0)
         {
@@ -99,18 +101,30 @@ public class DiggingGridManager : MonoBehaviour
         {
             FinishDigging();
         }*/
-        
     }
 
     // ボタンをきくようにする
-    public void StartDigging()
+    public void StartFirstDigging()
     {
         selectedItemNum = 0;
         for (int i = 0; i < gridButtons.GetLength(0); i++)
         {
             for (int j = 0; j < gridButtons.GetLength(1); j++)
             {
-                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
+                // gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
+                gridButtons[i, j].GetComponent<Button>().interactable = true;
+            }
+        }
+        finishButton.gameObject.SetActive(true);
+    }
+
+    public void StartDigging()
+    {
+        for (int i = 0; i < gridButtons.GetLength(0); i++)
+        {
+            for (int j = 0; j < gridButtons.GetLength(1); j++)
+            {
+                // gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
                 gridButtons[i, j].GetComponent<Button>().interactable = true;
             }
         }
@@ -131,7 +145,9 @@ public class DiggingGridManager : MonoBehaviour
 
     // battleSceneManagerのFinishDiggingを実行
     public void OnFinishDigging()
-    {
+    {   // 初期化処理
+        selectedItemNum = 0;
+        selectedIndex = 0;
         if (diggingFinishDelegate != null) diggingFinishDelegate();
         finishButton.gameObject.SetActive(false);
         UnInteractiveButton();
@@ -143,5 +159,18 @@ public class DiggingGridManager : MonoBehaviour
         Image itemImage = buttons[position].transform.GetChild(0).GetComponent<Image>();
         itemImage.sprite = transparentImage;
         gridItems[position] = null;
+    }
+
+    public void DiggingPanelOnFinishBattle()
+    {
+        for (int i = 0; i < gridButtons.GetLength(0); i++)
+        {
+            for (int j = 0; j < gridButtons.GetLength(1); j++)
+            {
+                gridButtons[i, j].gameObject.GetComponent<Image>().sprite = soilImage;
+                buttons[3 * i + j].transform.GetChild(0).GetComponent<Image>().sprite = transparentImage;
+                gridItems[3 * i + j] = null;
+            }
+        }
     }
 }

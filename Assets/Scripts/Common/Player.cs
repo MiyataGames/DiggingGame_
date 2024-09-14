@@ -352,6 +352,13 @@ public class Player : Character
 
     public void UseItem(Item useItem)
     {
+        Debug.Log("使用するアイテム" + useItem.ItemBase.ItemName);
+        // 前のアイテムをクリックしてなくなった状態でアイテムを埋めようとしたとき
+        if (items.Find(item => item == useItem) == null)
+        {
+            // アイテムがないよパネルを表示する
+        }
+        else
         if (items.Find(item => item == useItem).ItemCount > 0)
         {
             // プレイヤーの持っているアイテムを探す

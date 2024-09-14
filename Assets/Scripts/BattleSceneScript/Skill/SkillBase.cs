@@ -52,6 +52,7 @@ public class SkillBase : ScriptableObject
         */
 
     [SerializeField] private GameObject skillRecieveEffect;
+    [SerializeField] private AudioClip takeSkillSE;
 
     public string SkillName { get => skillName; }
     public string Description { get => description; }
@@ -70,4 +71,5 @@ public class SkillBase : ScriptableObject
     public SKILL_TARGET_KIND SkillTargetKind { get => skillTargetKind; }
     public TARGET_NUM SkillTargetNum { get => skillTargetNum; }
     public MagicType MagicType { get => magicType; }
+    public AudioClip TakeSkillSE { get => takeSkillSE;}
 }

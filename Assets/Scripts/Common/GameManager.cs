@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
 
     //private bool FirstBattle = true;
 
-    public void StartBattle(GameObject enemyObj)
+    public void StartBattle(GameObject enemyObj, int enemyBaseNumber)
     {
         enemySymbol = enemyObj;
         ActivateCurrentScene((int)GameMode.BATTLE_SCENE);
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
         enemies = new List<Enemy>();
         playerUnit.SetUpBattle(Party);
         // モンスターの生成
-        enemyUnit.SetUp();
+        enemyUnit.SetUp(enemyBaseNumber);
         battlePlayers = new List<Player>(playerUnit.SortedBattlePlayers);
         for (int i = 0; i < battlePlayers.Count; i++)
         {
@@ -187,7 +187,14 @@ public class GameManager : MonoBehaviour
             mainPlayer.AddItem(dropItems[i]);
             Debug.Log("落としたアイテムは" + dropItems[i].ItemBase.ItemName);
         }
-        StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
+        if (battleSceneManager.TurnCharacter.isPlayer == true)
+        {
+            StartCoroutine(resultSceneManager.ResultPlayer((Player)battleSceneManager.TurnCharacter));
+        }
+        else
+        {
+            StartCoroutine(resultSceneManager.ResultPlayer(mainPlayer));
+        }
         if (enemySymbol != null)
         {
             Destroy(enemySymbol);
