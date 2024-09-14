@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 
   price: 0
   id: 12
+  useItemSE: {fileID: 8300000, guid: ac43e4e7e644742b999ba6de39054520, type: 3}
   itemType: 3
   itemImageSprite: {fileID: 21300000, guid: ca73f70242d8c452fae0910be4129e71, type: 3}
   damageRatio: 1

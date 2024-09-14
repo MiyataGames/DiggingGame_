@@ -59,7 +59,6 @@ public class ActivateOnSonar : MonoBehaviour
             if (spriteRenderer != null)
             {
                 spriteRenderer.enabled = true; // SpriteRenderer を非アクティベートにする
-                Debug.Log("wwwww");
             }
         }
     }

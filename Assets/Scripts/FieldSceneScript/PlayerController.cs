@@ -87,6 +87,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // プレイヤーの出すSE
     [SerializeField] AudioSource seAudioSource;
     [SerializeField] AudioClip diggingSE;
+    [SerializeField] AudioClip itemGetSE;
+    [SerializeField] AudioClip coinGetSE;
 
     // プレイヤーのスプライトレンダラー
     public bool isLeft = false;
@@ -769,11 +771,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             Debug.Log(player.Items[i].ItemBase.ItemName + ":" + player.Items[i].ItemCount);
         }*/
-        // 衝突したのがアイテムだったら
+        // 衝突したのがアイテムだったら 
         if (other.tag == "Item")
         {
             Item newItem = other.GetComponent<FieldItem>().Item;
             GameManager.instance.Party.Players[0].AddItem(newItem);
+            seAudioSource.PlayOneShot(itemGetSE);
             Destroy(other.gameObject);
             LoadItemData();
             /*
@@ -804,6 +807,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         if (other.tag == "Coin")
         {
+            seAudioSource.PlayOneShot(coinGetSE);
             int coinValue = other.GetComponent<FieldCoin>().Price;
             party.Players[0].Gold = party.Players[0].Gold + coinValue;
             print("CoinValue:" + party.Players[0].Gold);
