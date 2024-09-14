@@ -84,6 +84,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // プレイヤーのアニメーション
     private Animator myAnim;
 
+    // プレイヤーの出すSE
+    [SerializeField] AudioSource seAudioSource;
+    [SerializeField] AudioClip diggingSE;
+
     // プレイヤーのスプライトレンダラー
     public bool isLeft = false;
 
@@ -352,6 +356,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void startDigAction()
     {
         isDigging = true;
+        seAudioSource.PlayOneShot(diggingSE);
         //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
 
