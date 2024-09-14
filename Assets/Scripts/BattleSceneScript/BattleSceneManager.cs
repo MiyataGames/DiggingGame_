@@ -3236,6 +3236,10 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
         player.PlayerBattleAnimator.Play(hashUseItem);
         yield return null;// ステートの反映
         yield return new WaitForAnimation(player.PlayerBattleAnimator, 0);
+        if(itemBase.UseItemSE != null)
+        {
+            seAudioSource.PlayOneShot(itemBase.UseItemSE);
+        }
         /*
         player.PlayerAnimator.SetBool("SkillToIdle", true);
         player.PlayerAnimator.SetBool("IdleToTurnIdle", false);
