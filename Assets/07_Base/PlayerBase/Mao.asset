@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5c08d0db4affd479555e8a26748af7, type: 3}
+  m_Name: Mao
+  m_EditorClassIdentifier: 
+  playerId: 0
+  playerName: "\u30DE\u30AA"
+  weakTypes: 01000000
+  resistanceTypes: 02000000
+  playerDiscription: "\u7121\u53E3\u3060\u304C\u5B9F\u884C\u529B\u304C\u3042\u308B\u3002\u7956\u7236\u306E\u907A\u8A00\u3092\u5B9F\u884C\u3059\u308B\u305F\u3081\u3001\u4EF2\u9593\u3092\u96C6\u3081\u306A\u304C\u3089\u65B0\u5929\u5730\u3092\u76EE\u6307\u3057\u3066\u3044\u308B"
+  playerFaceIcon: {fileID: 21300000, guid: 4c31e33fe2e464c019c1aa63ad7e9f8e, type: 3}
+  playerOverView: {fileID: 21300000, guid: 0321da47be7b24d779dbe8a8c79f06b0, type: 3}
+  playerBattleSceneSprite: {fileID: 7337802774343779779, guid: b5ef308cb4bf7b049bc259c1d7221de4, type: 3}
+  playerMaxLv: 20
+  playerMaxHp: 10000
+  playerMaxSp: 100
+  playerMaxAtk: 100
+  playerMaxDef: 100
+  playerMaxAgi: 100
+  learnablePlayerSkills:
+  - skillBase: {fileID: 11400000, guid: a8904af21f11e80458fcba9ef109bebb, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: e8e986e80ef6d034c90e1096a245b187, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: 9358b97a5d34cb944adfd4018210c29d, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: 7c99525a397203f4ea0067d8867c916a, type: 2}
+    level: 0
