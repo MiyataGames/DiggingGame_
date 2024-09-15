@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3374008862604148423}
   m_Layer: 5
   m_Name: noButton
-  m_TagString: Untagged
+  m_TagString: CommonNMessagePlate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 3374008862758694597}
   m_Layer: 5
   m_Name: CommonChooseDialog
-  m_TagString: Untagged
+  m_TagString: CommonChoseDialog
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -485,7 +485,7 @@ GameObject:
   - component: {fileID: 3374008863481817352}
   m_Layer: 5
   m_Name: yesButton
-  m_TagString: Untagged
+  m_TagString: CommonYMessagePlate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

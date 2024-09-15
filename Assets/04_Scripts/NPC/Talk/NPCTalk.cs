@@ -121,7 +121,7 @@ public class NPCTalk : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other){
-        if(other.gameObject.tag == "Player"){
+        if(other.gameObject.tag == "FieldPlayer"){
             isPlayerInErea = true;
         }
         if(TriggerIsFkey == false){

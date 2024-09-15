@@ -12,10 +12,7 @@ public class CF_Event1 : CharactorFunction
     [SerializeField] private GameObject syo_FieldPrefab;
     [SerializeField] private GameObject syo_StoryPrefab;
     [SerializeField] private GameObject sontyo_StoryPrefab;
-    [SerializeField] private GameObject ShouTile;
-
-    [SerializeField] private Transform FieldParent;
-    [SerializeField] private Transform StoryParent;
+    //[SerializeField] private GameObject ShouTile;
 
     private GameObject syo;
 
@@ -26,11 +23,16 @@ public class CF_Event1 : CharactorFunction
 
     [SerializeField] Transform leftPoint;
 
-    [SerializeField] Tilemap soilTilemap;
+    [SerializeField] Tilemap Tilemap;
 
     [SerializeField] Vector2 colliderSize = new Vector2(1, 1);
 
     private string colliderLayer = "SetTileCollider";
+
+    void Awake(){
+        player_Field = GameObject.FindWithTag("FieldPlayer");
+        Tilemap = GameObject.FindWithTag("MainTileMap").GetComponent<Tilemap>();
+    }
 
     public override void ExecuteCommand(string functionName, string animFuncName)
     {
@@ -127,17 +129,17 @@ public class CF_Event1 : CharactorFunction
 
     private void DeleteTilesInBounds(Bounds bounds)
     {
-        Vector3Int min = soilTilemap.WorldToCell(bounds.min);
-        Vector3Int max = soilTilemap.WorldToCell(bounds.max);
+        Vector3Int min = Tilemap.WorldToCell(bounds.min);
+        Vector3Int max = Tilemap.WorldToCell(bounds.max);
 
         for (int x = min.x; x <= max.x; x++)
         {
             for (int y = min.y; y <= max.y; y++)
             {
                 Vector3Int cellPosition = new Vector3Int(x, y, 0);
-                if (soilTilemap.HasTile(cellPosition))
+                if (Tilemap.HasTile(cellPosition))
                 {
-                    soilTilemap.SetTile(cellPosition, null);
+                    Tilemap.SetTile(cellPosition, null);
                 }
             }
         }

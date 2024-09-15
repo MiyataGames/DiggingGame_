@@ -30,9 +30,6 @@ public class CF_Event6  : CharactorFunction
     [SerializeField] private GameObject sontyouidou;
 
 
-    [SerializeField] private Transform FieldParent;
-    [SerializeField] private Transform StoryParent;
-
     //private Coroutine sceneShakeCoroutine = null;
     private AudioSource audioSource;
     private AudioClip zihibikiSoundClip;

@@ -14,7 +14,7 @@ public class StartFieldTalk : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
 
-        if (other.gameObject.tag == "Player" || other.gameObject.tag == "scop")
+        if (other.gameObject.tag == "FieldPlayer" || other.gameObject.tag == "scop")
         {
             if(isTalked == true)
             {

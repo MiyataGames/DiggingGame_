@@ -25,7 +25,6 @@ public class ResultSceneMangaer : MonoBehaviour
     [SerializeField] private GameObject dropItemTextPrefab;
     [SerializeField] private GameObject dropGoldText;
     private static readonly int hashWin = Animator.StringToHash("Base Layer.Win");
-    [SerializeField] private GameManager gameManager;
     private GameObject playerModel;
 
     private void Update()
@@ -48,7 +47,7 @@ public class ResultSceneMangaer : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 DeleteDropObjectTexts();
-                gameManager.CurrentSceneIndex = (int)GameMode.FIELD_SCENE;
+                GameManager.instance.CurrentSceneIndex = (int)GameMode.FIELD_SCENE;
                 // リザルトの子オブジェクトを削除
                 //Destroy(playerModel);
                 //resultPanel.SetActive(false);
@@ -75,7 +74,7 @@ public class ResultSceneMangaer : MonoBehaviour
         //playerModel = Instantiate(player.PlayerBase.PlayerModel, winPlayerPos.position, Quaternion.identity);
         // Result????????????
         resultState = ResultState.RESULT_LEVELUP_ANIM;
-        IEnumerator enumerator = gameManager.UpdateExpAnimation();
+        IEnumerator enumerator = GameManager.instance.UpdateExpAnimation();
         yield return enumerator;
         // ????????????????
         //player.PlayerAnimator = playerModel.GetComponent<Animator>();

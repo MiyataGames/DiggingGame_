@@ -14,7 +14,6 @@ public class CF_Event7 : CharactorFunction
     [SerializeField] private GameObject disableRockPrefab;
     [SerializeField] GameObject clane;
 
-    [SerializeField] private Transform StoryParent;
     [SerializeField] private Transform TilemapParent;
 
     // カメラのz座標

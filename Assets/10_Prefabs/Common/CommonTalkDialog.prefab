@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6894566148515319541}
   m_Layer: 5
   m_Name: CommonTalkDialog
-  m_TagString: Untagged
+  m_TagString: CommonTalkDialog
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 2639576392412824029}
   m_Layer: 5
   m_Name: Message
-  m_TagString: Untagged
+  m_TagString: CommonMessagePlate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 2639576392650605661}
   m_Layer: 5
   m_Name: IconImage
-  m_TagString: Untagged
+  m_TagString: CommonIconImagePlate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -425,7 +425,7 @@ GameObject:
   - component: {fileID: 3297911576477932117}
   m_Layer: 5
   m_Name: Name
-  m_TagString: Untagged
+  m_TagString: CommonNamePlate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

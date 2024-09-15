@@ -79,12 +79,12 @@ public class StoryEventScript : MonoBehaviour
     [SerializeField] private GameObject talkDialog; //会話用ダイアログ
 
     [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
-    [SerializeField] private Button readNext; //次の会話を表示するボタン
-    [SerializeField] private TextMeshProUGUI massage; //メインテキスト
+    //[SerializeField] private Button readNext; //次の会話を表示するボタン
+    [SerializeField] private TextMeshProUGUI message; //メインテキスト
     [SerializeField] private TextMeshProUGUI nameText; //名前用テキスト
-    [SerializeField] private TextMeshProUGUI yMassage; //肯定選択肢テキスト
+    [SerializeField] private TextMeshProUGUI yMessage; //肯定選択肢テキスト
     [SerializeField] private Button yButton; //肯定ボタン
-    [SerializeField] private TextMeshProUGUI nMassage; //否定選択肢テキスト
+    [SerializeField] private TextMeshProUGUI nMessage; //否定選択肢テキスト
     [SerializeField] private Button nButton; //否定ボタン
     [SerializeField] private Image image;//キャラ画像
 
@@ -114,7 +114,29 @@ public class StoryEventScript : MonoBehaviour
                 charaImage[i] = Resources.Load<Sprite>("CharaImage/" + EventDatas[i].imageFolderName + "/" + EventDatas[i].imageNum);
             }
         }
-        Debug.Log(charaImage.Length);
+        //Debug.Log(charaImage.Length);
+
+        storyEventManager = GameObject.FindWithTag("StoryEventManager").GetComponent<StoryEventManager>();
+        fadeController = GameObject.FindWithTag("FadeController").GetComponent<FadeController>();
+        charactorFunction = this.gameObject.GetComponent<CharactorFunction>();
+
+
+        talkDialog = GameObject.FindWithTag("CommonTalkDialog");
+        choosedialog = GameObject.FindWithTag("CommonChoseDialog");
+        //readNext = GameObject.FindWithTag("CommonTalkDialog").GetComponent<Button>();
+        message = GameObject.FindWithTag("CommonMessagePlate").GetComponent<TextMeshProUGUI>();
+        nameText = GameObject.FindWithTag("CommonNamePlate").GetComponent<TextMeshProUGUI>();
+        yMessage = GameObject.FindWithTag("CommonYMessagePlate").GetComponent<TextMeshProUGUI>();
+        yButton = GameObject.FindWithTag("CommonYButton").GetComponent<Button>();
+        nMessage = GameObject.FindWithTag("CommonNMessagePlate").GetComponent<TextMeshProUGUI>();
+        nButton = GameObject.FindWithTag("CommonNButton").GetComponent<Button>();
+        image = GameObject.FindWithTag("CommonIconImagePlate").GetComponent<Image>();
+    }
+
+    private void OnEnable()
+    {
+        isInEventNow = true; //イベント中フラグをtrue
+        textStart(); //テキストスタート
     }
 
     private void Start()
@@ -158,9 +180,9 @@ public class StoryEventScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    /*private void OnTriggerEnter2D(Collider2D other)
     { //コリジョンのトリガーが発火したとき
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "FieldPlayer")
         { //タグがPlayerなら
             isPlayerInErea = true;
         }
@@ -172,7 +194,7 @@ public class StoryEventScript : MonoBehaviour
                 textStart(); //テキストスタート
             }
         }
-    }
+    }*/
 
     private void OnTriggerExit2D(Collider2D other)
     {
@@ -401,8 +423,8 @@ public class StoryEventScript : MonoBehaviour
         yButton.onClick.AddListener(ChooseYes);
         nButton.onClick.AddListener(Chooseno);
 
-        yMassage.text = EventDatas[currentTextID].yesText;
-        nMassage.text = EventDatas[currentTextID].noText;
+        yMessage.text = EventDatas[currentTextID].yesText;
+        nMessage.text = EventDatas[currentTextID].noText;
     }
 
     public void ChooseYes()
@@ -464,7 +486,7 @@ public class StoryEventScript : MonoBehaviour
         //キャラの名前を表示
         nameText.text = EventDatas[currentTextID].character;
         //会話テキストを表示
-        massage.text = EventDatas[currentTextID].mainText;
+        this.message.text = EventDatas[currentTextID].mainText;
     }
 
     private void DeleteText()
@@ -508,7 +530,7 @@ public class StoryEventScript : MonoBehaviour
         }
     }
 
-    private void SwichReadNextInteractable()
+    /*private void SwichReadNextInteractable()
     {
         if (readNext.interactable)
         {
@@ -518,12 +540,12 @@ public class StoryEventScript : MonoBehaviour
         {
             readNext.interactable = true;
         }
-    }
+    }*/
 
     //すべてのボタンに登録されている処理を初期化
     private void ClearAllListeners()
     {
-        readNext.onClick.RemoveAllListeners();
+        //readNext.onClick.RemoveAllListeners();
         yButton.onClick.RemoveAllListeners();
         nButton.onClick.RemoveAllListeners();
     }

@@ -32,23 +32,28 @@ public class GameManager : MonoBehaviour
     }
 
     public GameObject[] fieldObjects;
+    public GameObject fieldScenePreab;
+    public GameObject[] battleFieldPrefabs;
+    public GameObject ResultScenePrefab;
     public GameObject[] eventSceneObjects;
+
+    [SerializeField] private Transform StoryParent;
 
     private int currentSceneIndex;
     public PlayMode playMode;
     private GameMode currentGameMode;
     public GameState currentGameState;
+    public AreaMode areaMode;
     private Event1Scene currentEvent1Scene;
-    [SerializeField] private BattleSceneManager battleSceneManager;
+    private BattleSceneManager battleSceneManager;
     [SerializeField] private ResultSceneMangaer resultSceneManager;
 
-    // [SerializeField] private ResultSceneMangaer resultSceneManager;
     [SerializeField] private PlayerController playerController;
 
     [SerializeField] private PlayerTownController playerTownController;
     [SerializeField] private Party party;// パーティ情報　ID順
-    [SerializeField] private PlayerUnit playerUnit;
-    [SerializeField] private EnemyUnit enemyUnit;
+    private PlayerUnit playerUnit;
+    private EnemyUnit enemyUnit;
     private Player mainPlayer;
     private DropObjectsStruct dropObjects;
 
@@ -64,26 +69,29 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ExpSheet expSheet;// 経験値表
 
     // デバッグ用のボタン
-    [SerializeField] private GameObject skipButton;
+    //[SerializeField] private GameObject skipButton;
 
     public Party Party { get => party; set => party = value; }
     public DropObjectsStruct DropObjects { get => dropObjects; }
+
+    GameObject nowBattleScene;
+    GameObject nowStoryScene;
 
     private void Start()
     {
         if (playMode == PlayMode.DEBUG)
         {
-            skipButton.SetActive(true);
+            //skipButton.SetActive(true);
         }
         else
         {
-            skipButton.SetActive(false);
+            //skipButton.SetActive(false);
         }
     }
 
     private void Update()
     {
-        //        Debug.Log(currentSceneIndex);
+        //Debug.Log(currentSceneIndex);
         if (currentSceneIndex == (int)GameMode.FIELD_SCENE)
         {
             playerController.HandleUpdate();
@@ -113,6 +121,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public AreaMode AreaMode
+    {
+        get { return areaMode; }
+        set
+        {
+            areaMode = value;
+        }
+    }
+
     // ゲームの全ての初期設定を行う
     public void InitGame(Party party)
     {
@@ -122,12 +139,39 @@ public class GameManager : MonoBehaviour
 
     public void ActivateCurrentScene(int sceneIndex)
     {
-        currentSceneIndex = sceneIndex;
-        for (int i = 0; i < fieldObjects.Length; i++)
+        //currentSceneIndex = sceneIndex;
+        /*for (int i = 0; i < fieldObjects.Length; i++)
         {
             fieldObjects[i].SetActive(false);
+        }*/
+        //fieldObjects[sceneIndex].SetActive(true);
+        if (sceneIndex == (int)GameMode.BATTLE_SCENE)
+        {
+            fieldScenePreab.SetActive(false);
+            ResultScenePrefab.SetActive(false);
+            nowBattleScene = Instantiate(battleFieldPrefabs[(int)areaMode], new Vector3(0, 0, 0), Quaternion.identity);
+            battleSceneManager = FindObjectOfType<BattleSceneManager>();
+            playerUnit = FindObjectOfType<PlayerUnit>();
+            enemyUnit = FindObjectOfType<EnemyUnit>();
+        }else if(sceneIndex == (int)GameMode.RESULT_SCENE){
+            
         }
-        fieldObjects[sceneIndex].SetActive(true);
+        else if (sceneIndex == (int)GameMode.FIELD_SCENE)
+        {
+            ResultScenePrefab.SetActive(false);
+            fieldScenePreab.SetActive(true);
+        }else if(sceneIndex == (int)GameMode.TOWN_SCENE){
+            nowStoryScene.SetActive(true);
+        }
+
+    }
+
+    public void StartEvent(string storyPrefabpath){
+        //Debug.Log("生成します");
+        GameObject storyPrefab = Resources.Load<GameObject>("Story"+ "/" + "Prefab" + "/" + storyPrefabpath);
+        Debug.Log(storyPrefab);
+        nowStoryScene = Instantiate(storyPrefab, new Vector3(0, 0, 0), Quaternion.identity, StoryParent);
+        nowStoryScene.transform.SetAsFirstSibling();
     }
 
     //private bool FirstBattle = true;
@@ -135,7 +179,7 @@ public class GameManager : MonoBehaviour
     public void StartBattle(GameObject enemyObj, int enemyBaseNumber)
     {
         enemySymbol = enemyObj;
-        ActivateCurrentScene((int)GameMode.BATTLE_SCENE);
+        //ActivateCurrentScene(currentSceneIndex);
         battleSceneManager.StartBattle();
         battlePlayers = new List<Player>();
         // 生成
@@ -157,10 +201,18 @@ public class GameManager : MonoBehaviour
         battleSceneManager.InitBattle(battlePlayers, enemies, mainPlayer);
     }
 
+    public void DestroyBattleScene()
+    {
+        Destroy(nowBattleScene);
+    }
+
     public void EndBattle()
     {
         //ActivateCurrentScene((int)GameMode.FIELD_SCENE);
 
+        DestroyBattleScene();
+
+        ResultScenePrefab.SetActive(true);
         CurrentSceneIndex = (int)GameMode.RESULT_SCENE;
         // 報酬をゲットする
         int totalGold = 0;
@@ -204,7 +256,9 @@ public class GameManager : MonoBehaviour
     // 逃げる
     public void EscapeBattle()
     {
-        ActivateCurrentScene((int)GameMode.FIELD_SCENE);
+        DestroyBattleScene();
+        //ActivateCurrentScene((int)GameMode.FIELD_SCENE);
+        CurrentSceneIndex = (int)GameMode.FIELD_SCENE;
         Debug.Log("逃げる");
         Debug.Log(enemySymbol.GetComponent<FieldEnemy>());
         StartCoroutine(enemySymbol.GetComponent<FieldEnemy>().Blinking());

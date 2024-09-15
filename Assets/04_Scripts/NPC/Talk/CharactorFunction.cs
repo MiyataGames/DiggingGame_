@@ -7,6 +7,14 @@ public class CharactorFunction : MonoBehaviour
 
     public StoryEventScript storyEventScript;
 
+    public Transform FieldParent;
+    public Transform StoryParent;
+
+    void Awake(){
+        FieldParent = GameObject.FindWithTag("FieldParent").transform;
+        StoryParent = GameObject.FindWithTag("StoryParent").transform;
+    }
+
     public virtual void ExecuteCommand(string functionName,string animFuncName){
 
     }
@@ -70,6 +78,7 @@ public class CharactorFunction : MonoBehaviour
     protected  virtual void StartEvent()
     {
         Debug.Log("StartEvent");
+        //storyEventScript = this.gameObject.GetComponent<StoryEventScript>();
         GameManager.instance.currentGameState = GameState.POSE;
         storyEventScript.ReadNextMessage();
     }

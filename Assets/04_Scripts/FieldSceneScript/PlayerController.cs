@@ -187,6 +187,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             vx = 0;
             vy = 0;
             myAnim.SetBool("isWalking", false);
+            if(isDigging == true)
+            {
+                isDigging = false;
+                EndDig();
+            }
             return;
         }
         // ゲームがメニュー中でないかつ穴掘り中だったら
@@ -996,18 +1001,26 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    void OnDisable() {
+        myAnim.SetBool("isDigging", false);
+        isDigging = false;
+        dc.enabled = false;
+    }
+
     private void OnTriggerStay2D(Collider2D other)
     {
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        
+
         //Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "Enemy")
         {
             Debug.Log("敵に当たった");
             // バトルシーンに移動する
-            //GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
+            GameManager.instance.CurrentSceneIndex = (int)GameMode.BATTLE_SCENE;
             // バトルシーンに移動する
             //Fade.Instance.RegisterFadeOutEvent(GameManager.instance.StartBattle(collision.gameObject));
             //fadeController.OnFadeOutComplete += GameManager.instance.StartBattle(collision.gameObject);
@@ -1027,7 +1040,22 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private bool isGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.05f, groundLayer);
+        Collider2D hit = Physics2D.OverlapCircle(groundCheck.position, 0.05f, groundLayer);
+        if(!hit){
+            return false;
+        }
+
+        if(hit.gameObject.tag == "Soil"){
+            GameManager.instance.AreaMode = AreaMode.Soil;
+        }else if(hit.gameObject.tag == "Yougan"){
+            GameManager.instance.AreaMode = AreaMode.Yougan;
+        }else if(hit.gameObject.tag == "Forest"){
+            GameManager.instance.AreaMode = AreaMode.Forest;
+        }else if(hit.gameObject.tag == "Science"){
+            GameManager.instance.AreaMode = AreaMode.Science;
+        }
+
+        return true;
     }
 
     private bool IsWalled()

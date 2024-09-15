@@ -17,13 +17,6 @@ public class CF_Event5 : CharactorFunction
     [SerializeField] private GameObject syoposition5;
 
 
-
-
-
-    [SerializeField] private Transform FieldParent;
-    [SerializeField] private Transform StoryParent;
-
-
     private AudioSource audioSource;
     private AudioClip zihibikiSoundClip;
     private GameObject syo;

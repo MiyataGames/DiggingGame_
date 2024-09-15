@@ -44,6 +44,14 @@ public enum GameMode
     BOSS_SCENE,
 }
 
+public enum AreaMode
+{
+    Soil,
+    Yougan,
+    Forest,
+    Science,
+}
+
 public enum Event1Scene
 {
     NONE,

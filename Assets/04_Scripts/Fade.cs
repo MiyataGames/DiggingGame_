@@ -49,7 +49,7 @@ public class Fade : MonoBehaviour
     {
         _fadePanel.gameObject.SetActive(true);
 
-        GameManager.instance.StartBattle(gameObject, 0);
+        //GameManager.instance.StartBattle(gameObject, 0);
         float alpha = 1f;
         Color color = _fadePanel.color;
 

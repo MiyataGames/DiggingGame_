@@ -19,7 +19,6 @@ public class CF_Event2 : CharactorFunction
     [SerializeField] private GameObject SontyoHouse1F;
     [SerializeField] private GameObject SontyoHouse2F;
     [SerializeField] private GameObject Food;
-    [SerializeField] private Transform StoryParent;
     [SerializeField] private Transform SontyoPos1; // インスタンスを生成する場所を指定するためのTransform
     [SerializeField] private Transform CameraPos1; // カメラの目標位置となる空のゲームオブジェクトのTransform
     [SerializeField] private Camera storyCamera; // 操作するカメラへの参照

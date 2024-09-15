@@ -15,8 +15,6 @@ public class CF_Event3_4 : CharactorFunction
     [SerializeField] private GameObject sontyo_StoryPrefab;
     [SerializeField] private GameObject dropRockPrefab;
 
-    [SerializeField] private Transform FieldParent;
-    [SerializeField] private Transform StoryParent;
     [SerializeField] private Transform TilemapParent;
 
     [SerializeField] GameObject event34Tilemap;
