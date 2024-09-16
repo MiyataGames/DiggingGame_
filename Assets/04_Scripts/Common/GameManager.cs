@@ -163,10 +163,10 @@ public class GameManager : MonoBehaviour
             ResultScenePrefab.SetActive(false);
             fieldSceneElements.SetActive(true);
         }else if(sceneIndex == (int)GameMode.TOWN_SCENE){
-            playerTownController = FindObjectOfType<PlayerTownController>();
             GameObject storyElements = nowStoryScene.transform.Find("StoryElements").gameObject;
             storyElements.SetActive(true);
             fieldSceneElements.SetActive(false);
+            playerTownController = FindObjectOfType<PlayerTownController>();
         }
 
     }

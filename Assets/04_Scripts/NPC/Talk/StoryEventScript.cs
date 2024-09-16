@@ -245,7 +245,7 @@ public class StoryEventScript : MonoBehaviour
             ClearAllListeners();
             SwichTalkDialogActivate(false);
             // このゲームオブジェクトを消去
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
         }
         else
         {

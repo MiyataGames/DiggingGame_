@@ -61,7 +61,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
     private int currentItemNum;
     private List<ItemCellData> itemCellData;
 
-    public EnhancedScroller itemPanel;
+    public EnhancedScroller itemElements;
     public EnhancedScrollerCellView cellViewPrefab;
     public float cellSize = 100f;
 
@@ -91,7 +91,29 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         selectedStatusIndex = 0;
         selectedItemTargetIndex = 0;
         //party.SetupFirst();
-        //GameManager.instance.InitGame(party);                                                                
+        //GameManager.instance.InitGame(party);       
+        
+        //Menuを取得
+        Transform CommonDialogCanvasTransform = GameManager.instance.CommonDialogCanvas.transform;
+        Transform menuElements = CommonDialogCanvasTransform.GetChild(0);
+        menu = menuElements.GetChild(0).GetComponent<Menu>();
+
+        //gamemanegerを取得
+        Transform gameManager = GameManager.instance.transform;
+
+        //Partyを取得
+        party = GameObject.FindWithTag("Party").GetComponent<Party>();
+
+        //ItemElementsを取得
+        Transform itemPanel = menu.transform.Find("ItemPanel");
+        itemElements = itemPanel.Find("ItemElements").GetComponent<EnhancedScroller>();
+
+        //playerStatusUIsManagerを取得
+        playerStatusUIsManager = menu.transform.Find("StatusPanel").GetComponent<PlayerStatusUIsManager>();
+
+        //statusDescriptionUIManagerを取得
+        statusDescriptionUIManager = menuElements.Find("StatusDescription").GetComponent<StatusDescriptionUIManager>();
+
         // デリゲート
         menu.menuSelectButtonClickedDelegate = SelectMenuButton;
         menu.itemSelectButtonHoverdDelegate = CellButtonOnHover;
@@ -293,7 +315,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
                 }
                 // アイテムパネルの更新
                 LoadItemData();
-                itemPanel.RefreshActiveCellViews();
+                itemElements.RefreshActiveCellViews();
                 // ステータス画面を閉じてアイテム画面を開く
                 menu.ActivateStatusPanel(false);
                 menu.ActivateItemPanel(true);
@@ -331,9 +353,9 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
 
     private void InitItem()
     {
-        itemPanel.Delegate = this;
+        itemElements.Delegate = this;
         LoadItemData();
-        itemPanel.RefreshActiveCellViews();
+        itemElements.RefreshActiveCellViews();
         currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
     }
 
@@ -351,7 +373,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
                 itemCountText = party.Players[0].Items[i].ItemCount.ToString()
             });
         }
-        itemPanel.ReloadData();
+        itemElements.ReloadData();
     }
 
     public int GetNumberOfCells(EnhancedScroller playerItemPanel)
@@ -391,12 +413,12 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
             itemCellData[i].isSelected = (i == selectedIndex);
         }
         // 見た目の更新
-        itemPanel.RefreshActiveCellViews();
+        itemElements.RefreshActiveCellViews();
     }
     private void CellButtonClicked(int selectedIndex)
     {
         // アクティブセルに対してUIの更新をする
-        itemPanel.RefreshActiveCellViews();
+        itemElements.RefreshActiveCellViews();
         Debug.Log("アイテムを使うよ");
         // 使うアイテムの情報を保持
         Item item = party.Players[0].Items[selectedItemIndex];

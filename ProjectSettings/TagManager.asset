@@ -32,6 +32,7 @@ TagManager:
   - FieldParent
   - StoryParent
   - GameManager
+  - Party
   layers:
   - Default
   - TransparentFX
