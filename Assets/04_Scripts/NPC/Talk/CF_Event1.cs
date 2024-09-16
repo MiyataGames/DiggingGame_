@@ -29,9 +29,17 @@ public class CF_Event1 : CharactorFunction
 
     private string colliderLayer = "SetTileCollider";
 
-    void Awake(){
+    protected override void Awake(){
+        base.Awake();
+        Debug.Log("Awakeしてるよ");
         player_Field = GameObject.FindWithTag("FieldPlayer");
         Tilemap = GameObject.FindWithTag("MainTileMap").GetComponent<Tilemap>();
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        
     }
 
     public override void ExecuteCommand(string functionName, string animFuncName)
@@ -85,6 +93,7 @@ public class CF_Event1 : CharactorFunction
     // カメラの位置を調整する
     void AdjustCamera()
     {
+        Debug.Log("AdjustCameraしてるよ");
         // カメラを調整するスクリプトをオフ
         Camera.main.GetComponent<FollowPlayerScript>().enabled = false;
         Camera.main.transform.position = new Vector3(player_Field.transform.position.x, player_Field.transform.position.y + cameraOffsetY, cameraOffsetZ);

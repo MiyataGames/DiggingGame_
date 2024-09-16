@@ -31,6 +31,7 @@ TagManager:
   - MainTileMap
   - FieldParent
   - StoryParent
+  - GameManager
   layers:
   - Default
   - TransparentFX

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1)]
 public class CharactorFunction : MonoBehaviour
 {
 
@@ -10,9 +11,13 @@ public class CharactorFunction : MonoBehaviour
     public Transform FieldParent;
     public Transform StoryParent;
 
-    void Awake(){
+    protected virtual void Awake(){
         FieldParent = GameObject.FindWithTag("FieldParent").transform;
         StoryParent = GameObject.FindWithTag("StoryParent").transform;
+    }
+
+    protected virtual void OnEnable(){
+
     }
 
     public virtual void ExecuteCommand(string functionName,string animFuncName){

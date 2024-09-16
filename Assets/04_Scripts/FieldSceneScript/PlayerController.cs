@@ -691,6 +691,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void LoadItemData()
     {
         itemCellData = new List<ItemCellData>();
+        Debug.Log("アイテムパネルをロード");
         for (int i = 0; i < party.Players[0].Items.Count; i++)
         {
             // Debug.Log(players[0].Items[i].ItemBase.ItemName);
@@ -702,7 +703,12 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 itemCountText = party.Players[0].Items[i].ItemCount.ToString()
             });
         }
+        Debug.Log("アイテムパネルをロード完了");
+        Debug.Log(itemPanel);
+
         itemPanel.ReloadData();
+        Debug.Log("アイテムパネルをリロード");
+
     }
 
     public int GetNumberOfCells(EnhancedScroller playerItemPanel)

@@ -32,10 +32,12 @@ public class GameManager : MonoBehaviour
     }
 
     public GameObject[] fieldObjects;
-    public GameObject fieldScenePreab;
+    public GameObject fieldSceneElements;
     public GameObject[] battleFieldPrefabs;
     public GameObject ResultScenePrefab;
     public GameObject[] eventSceneObjects;
+
+    public GameObject CommonDialogCanvas;
 
     [SerializeField] private Transform StoryParent;
 
@@ -147,7 +149,7 @@ public class GameManager : MonoBehaviour
         //fieldObjects[sceneIndex].SetActive(true);
         if (sceneIndex == (int)GameMode.BATTLE_SCENE)
         {
-            fieldScenePreab.SetActive(false);
+            fieldSceneElements.SetActive(false);
             ResultScenePrefab.SetActive(false);
             nowBattleScene = Instantiate(battleFieldPrefabs[(int)areaMode], new Vector3(0, 0, 0), Quaternion.identity);
             battleSceneManager = FindObjectOfType<BattleSceneManager>();
@@ -159,9 +161,12 @@ public class GameManager : MonoBehaviour
         else if (sceneIndex == (int)GameMode.FIELD_SCENE)
         {
             ResultScenePrefab.SetActive(false);
-            fieldScenePreab.SetActive(true);
+            fieldSceneElements.SetActive(true);
         }else if(sceneIndex == (int)GameMode.TOWN_SCENE){
-            nowStoryScene.SetActive(true);
+            playerTownController = FindObjectOfType<PlayerTownController>();
+            GameObject storyElements = nowStoryScene.transform.Find("StoryElements").gameObject;
+            storyElements.SetActive(true);
+            fieldSceneElements.SetActive(false);
         }
 
     }

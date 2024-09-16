@@ -79,7 +79,7 @@ public class StoryEventScript : MonoBehaviour
     [SerializeField] private GameObject talkDialog; //会話用ダイアログ
 
     [SerializeField] private GameObject choosedialog; //選択肢用ダイアログ
-    //[SerializeField] private Button readNext; //次の会話を表示するボタン
+    [SerializeField] private Button readNext; //次の会話を表示するボタン
     [SerializeField] private TextMeshProUGUI message; //メインテキスト
     [SerializeField] private TextMeshProUGUI nameText; //名前用テキスト
     [SerializeField] private TextMeshProUGUI yMessage; //肯定選択肢テキスト
@@ -93,6 +93,8 @@ public class StoryEventScript : MonoBehaviour
     private bool isCanNextText = true;
     private bool isNowFading = false;
     private bool isSettingEventFlag = false;
+    
+    private GameManager gameManager;
 
     private void Awake()
     {
@@ -120,17 +122,18 @@ public class StoryEventScript : MonoBehaviour
         fadeController = GameObject.FindWithTag("FadeController").GetComponent<FadeController>();
         charactorFunction = this.gameObject.GetComponent<CharactorFunction>();
 
+        Transform CommonDialogCanvasTransform = GameManager.instance.CommonDialogCanvas.transform;
 
-        talkDialog = GameObject.FindWithTag("CommonTalkDialog");
-        choosedialog = GameObject.FindWithTag("CommonChoseDialog");
-        //readNext = GameObject.FindWithTag("CommonTalkDialog").GetComponent<Button>();
-        message = GameObject.FindWithTag("CommonMessagePlate").GetComponent<TextMeshProUGUI>();
-        nameText = GameObject.FindWithTag("CommonNamePlate").GetComponent<TextMeshProUGUI>();
-        yMessage = GameObject.FindWithTag("CommonYMessagePlate").GetComponent<TextMeshProUGUI>();
-        yButton = GameObject.FindWithTag("CommonYButton").GetComponent<Button>();
-        nMessage = GameObject.FindWithTag("CommonNMessagePlate").GetComponent<TextMeshProUGUI>();
-        nButton = GameObject.FindWithTag("CommonNButton").GetComponent<Button>();
-        image = GameObject.FindWithTag("CommonIconImagePlate").GetComponent<Image>();
+        talkDialog = CommonDialogCanvasTransform.Find("CommonTalkDialog").gameObject;
+        choosedialog = CommonDialogCanvasTransform.Find("CommonChoseDialog").gameObject;
+        readNext = CommonDialogCanvasTransform.Find("CommonTalkDialog").GetComponent<Button>();
+        message = talkDialog.transform.Find("CommonMessagePlate").GetComponent<TextMeshProUGUI>();
+        nameText = talkDialog.transform.Find("CommonNamePlate").GetComponent<TextMeshProUGUI>();
+        yButton = choosedialog.transform.Find("CommonYButton").GetComponent<Button>();
+        yMessage = yButton.transform.Find("CommonYMessagePlate").GetComponent<TextMeshProUGUI>();
+        nButton = choosedialog.transform.Find("CommonNButton").GetComponent<Button>();
+        nMessage = nButton.transform.Find("CommonNMessagePlate").GetComponent<TextMeshProUGUI>();
+        image = talkDialog.transform.Find("CommonIconImagePlate").GetComponent<Image>();
     }
 
     private void OnEnable()
