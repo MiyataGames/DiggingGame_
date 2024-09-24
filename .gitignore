@@ -72,7 +72,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 #フォントファイルを無視する
-/[Aa]ssets/Font/*
+/[Aa]ssets/09_Font/TRY/*
 #visualstudioの設定フォルダを無視
 .vs/
 .vscode/

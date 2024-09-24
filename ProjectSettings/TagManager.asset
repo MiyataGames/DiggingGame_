@@ -15,6 +15,25 @@ TagManager:
   - Town
   - Coin
   - SetTileCollider
+  - BattleSceneManager
+  - CommonTalkDialog
+  - CommonChoseDialog
+  - CommonNamePlate
+  - CommonMessagePlate
+  - CommonYMessagePlate
+  - CommonNMessagePlate
+  - CommonIconImagePlate
+  - CommonYButton
+  - CommonNButton
+  - StoryEventManager
+  - FadeController
+  - FieldPlayer
+  - MainTileMap
+  - FieldParent
+  - StoryParent
+  - GameManager
+  - Party
+  - StoryPlayer
   layers:
   - Default
   - TransparentFX
