@@ -33,6 +33,7 @@ TagManager:
   - StoryParent
   - GameManager
   - Party
+  - StoryPlayer
   layers:
   - Default
   - TransparentFX
