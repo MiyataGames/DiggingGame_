@@ -96,13 +96,18 @@ public class GameManager : MonoBehaviour
         //Debug.Log(currentSceneIndex);
         if (currentSceneIndex == (int)GameMode.FIELD_SCENE)
         {
-            #if UNITY_ANDROID
+#if UNITY_ANDROID
                 playerController.HandleTapUpdate();
-            #endif
+#endif
 
-            #if UNITY_WEBGL            
+#if UNITY_WEBGL
+                playerController.HandleKeyUpdate();
+                Debug.Log("aaa");
+#endif
+#if UNITY_EDITOR
             playerController.HandleKeyUpdate();
-            #endif
+            Debug.Log("Editor");
+#endif
         }
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {
