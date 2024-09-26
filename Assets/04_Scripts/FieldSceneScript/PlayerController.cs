@@ -145,6 +145,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // バトル関係
     [SerializeField] private int enemyBaseNumber;
 
+    // 入力
+    [SerializeField] GameObject canvasForAndroid;
+    [SerializeField] Joystick joystick;
+
     public bool IsDigging { get => isDigging; }
 
     // Start is called before the first frame update
@@ -169,6 +173,10 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // saveLoadCtrl.Load();
         myAnim.SetFloat("isLeft", -1);
         SetSoilCollider.enabled = false;
+
+#if UNITY_ANDROID
+        canvasForAndroid.SetActive(true);
+        #endif
     }
 
     private void OnEnable()
@@ -179,7 +187,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     }
 
     // Update is called once per frame
-    public void HandleUpdate()
+    public void HandleKeyUpdate()
     {
         // ゲームがポーズ中だったら全ての処理を受け付けない
         if (GameManager.instance.currentGameState == GameState.POSE)
@@ -276,17 +284,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 }
             }
 
-            /*// 上キーを入力
-            if (Input.GetKey(KeyCode.W))
-            {
-                myAnim.SetFloat("isUp", 1);
-            }
-            // 下キーを入力
-            else if (Input.GetKey(KeyCode.S))
-            {
-                myAnim.SetFloat("isUp", -1);
-            }*/
-
             // ジャンプボタンが押されたことをフラグで管理
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
             {
@@ -330,6 +327,186 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             HandleSystemSelect();
         }
+    }
+
+    public void HandleTapUpdate()
+    {
+        if (GameManager.instance.currentGameState == GameState.POSE)
+        {
+            vx = 0;
+            vy = 0;
+            myAnim.SetBool("isWalking", false);
+            if (isDigging == true)
+            {
+                isDigging = false;
+                EndDig();
+            }
+            return;
+        }
+        
+        // ゲームがメニュー中でないかつ穴掘り中だったら
+        if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
+        {
+            /*
+            // メニュー画面
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                // ポーズ中にする
+                GameManager.instance.currentGameState = GameState.MENU;
+                // メニュー画面をひらく
+                filedGameStatus = FieldGameState.MENU;
+                menu.ActivateMenuPanel(true);
+                // ゴールドを表示
+                menu.ActivateGoldText(true);
+                menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
+            }
+            // マップ
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                // マップを開く
+            }
+            */
+
+            // 左右の移動
+            keyDirCheck = joystick.Horizontal;
+            Debug.Log(keyDirCheck);
+
+            if (keyDirCheck > 0)
+            {
+                if (isDigging == false)
+                {
+                    isLeft = false;
+                    myAnim.SetFloat("isLeft", -1);
+                    vx = moveSpeed;
+
+                    myAnim.SetBool("isWalking", true);
+                    myAnim.SetFloat("isUp", 0);
+                }
+            }
+            else if (keyDirCheck < 0)
+            {
+                if (isDigging == false)
+                {
+                    isLeft = true;
+                    myAnim.SetFloat("isLeft", 1);
+                    vx = -moveSpeed;
+
+                    myAnim.SetBool("isWalking", true);
+                    myAnim.SetFloat("isUp", 0);
+                }
+            }
+            else
+            {
+                vx = 0;
+                myAnim.SetBool("isWalking", false);
+            }
+            /*
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (isDigging == false)
+                {
+                    startDigAction();
+                }
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (isDigging == false)
+                {
+                    if (SetSoilCollider != null)
+                    {
+                        SetSoilCollider.enabled = true;
+
+                        Bounds bounds = SetSoilCollider.bounds;
+
+                        SetSoilTile(bounds);
+                    }
+                }
+            }
+
+            // ジャンプボタンが押されたことをフラグで管理
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+            {
+                jumpPressed = true;
+            }
+
+            // ジャンプボタンが離されたときの処理もフラグで管理
+            if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0f)
+            {
+                jumpReleased = true;
+            }*/
+
+            WallSlide();
+            WallJump();
+        }
+
+        
+        // メインパネルを選択中だったら
+        else if (filedGameStatus == FieldGameState.MENU)
+        {
+            HandleMenuSelect();
+        }
+        // アイテムを選択中だったら
+        else if (filedGameStatus == FieldGameState.ITEM)
+        {
+            HandleItemSelect();
+        }
+        // ステータスを選択中だったら
+        else if (filedGameStatus == FieldGameState.STATUS)
+        {
+            if (statusState == StatusState.STATUS_All)
+            {
+                HandleStatusSelect();
+            }
+            else if (statusState == StatusState.STATUS_DISCRIPTION)
+            {
+                HandleStatusDescription();
+            }
+        }
+        // システムを選択中だったら
+        else if (filedGameStatus == FieldGameState.SYSTEM)
+        {
+            HandleSystemSelect();
+        }
+    }
+
+    // ジャンプボタンが押されたとき
+    public void TapJumpButton()
+    {
+        if (isGrounded())
+        {
+            jumpPressed = true;
+        }
+    }
+
+    // ジャンプボタンを離したとき
+    public void ReleaseJumpButton()
+    {
+        if (rb.velocity.y > 0f)
+        {
+            jumpReleased = true;
+        }
+    }
+
+    // 掘るボタンが押されたとき
+    public void TapDigButton()
+    {
+        if (isDigging == false)
+        {
+            startDigAction();
+        }
+    }
+
+    // メニューボタンが押されたとき
+    public void TapMenuButton() {
+        // ポーズ中にする
+        GameManager.instance.currentGameState = GameState.MENU;
+        // メニュー画面をひらく
+        filedGameStatus = FieldGameState.MENU;
+        menu.ActivateMenuPanel(true);
+        // ゴールドを表示
+        menu.ActivateGoldText(true);
+        menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
     }
 
     // 穴掘り関係

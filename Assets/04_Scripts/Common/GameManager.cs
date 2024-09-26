@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -96,7 +96,13 @@ public class GameManager : MonoBehaviour
         //Debug.Log(currentSceneIndex);
         if (currentSceneIndex == (int)GameMode.FIELD_SCENE)
         {
-            playerController.HandleUpdate();
+            #if UNITY_ANDROID
+                playerController.HandleTapUpdate();
+            #endif
+
+            #if UNITY_WEBGL            
+            playerController.HandleKeyUpdate();
+            #endif
         }
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {
