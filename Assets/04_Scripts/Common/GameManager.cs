@@ -102,12 +102,11 @@ public class GameManager : MonoBehaviour
 
 #if UNITY_WEBGL
                 playerController.HandleKeyUpdate();
-                Debug.Log("aaa");
 #endif
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
             playerController.HandleKeyUpdate();
             Debug.Log("Editor");
-#endif
+#endif*/
         }
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {

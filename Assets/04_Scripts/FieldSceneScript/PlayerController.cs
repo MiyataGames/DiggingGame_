@@ -371,7 +371,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             keyDirCheck = joystick.Horizontal;
             Debug.Log(keyDirCheck);
 
-            if (keyDirCheck > 0)
+            if (keyDirCheck > 0.3)
             {
                 if (isDigging == false)
                 {
@@ -383,7 +383,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                     myAnim.SetFloat("isUp", 0);
                 }
             }
-            else if (keyDirCheck < 0)
+            else if (keyDirCheck < -0.3)
             {
                 if (isDigging == false)
                 {
@@ -545,15 +545,15 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         //seAudioSource.PlayOneShot(diggingSE);
         //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
-
-        if (Input.GetKey(KeyCode.W))
+        float keyDirVertical = joystick.Vertical;
+        if (Input.GetKey(KeyCode.W) || keyDirCheck >=0 && keyDirCheck < 0.5 && keyDirVertical > 0)
         {
             myAnim.SetFloat("isUp", 1);
             dc.offset = new Vector2(0.0f, 0.68f);
             dc.size = new Vector2(0.76f, 0.45f);
             dc.direction = CapsuleDirection2D.Horizontal;
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S) || keyDirCheck >= 0 && keyDirCheck < 0.5 && keyDirVertical < 0)
         {
             myAnim.SetFloat("isUp", -1);
             dc.offset = new Vector2(0.0f, -0.9f);
