@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    public Vector2 targetResolution = new Vector2(1920, 1080);
+    public Vector2 currentResolution;
     public GameObject[] fieldObjects;
     public GameObject fieldSceneElements;
     public GameObject[] battleFieldPrefabs;

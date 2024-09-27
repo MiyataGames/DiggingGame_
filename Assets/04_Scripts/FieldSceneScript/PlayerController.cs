@@ -369,7 +369,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
             // 左右の移動
             keyDirCheck = joystick.Horizontal;
-            Debug.Log(keyDirCheck);
 
             if (keyDirCheck > 0.3)
             {

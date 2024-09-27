@@ -20,15 +20,22 @@ public class FieldTalk : MonoBehaviour
     private Sprite image;
     private Vector2 defaultPos;
     private float defaultWidth;
+    RectTransform rectTransform;
 
     // Start is called before the first frame update
     void Awake()
     {
-        defaultPos = fieldTalkDialog.transform.position;
-        defaultPos.x = Screen.width + 250;
+        //defaultPos = fieldTalkDialog.transform.position;
+        // defaultPos.x = Screen.width + 250;
+        rectTransform = fieldTalkDialog.GetComponent<RectTransform>();
+        defaultPos.x = Screen.width /2;
         Debug.Log("Screen : " + Screen.width);
-        fieldTalkDialog.transform.position = defaultPos; 
+        //fieldTalkDialog.transform.position = defaultPos;
+        rectTransform.anchoredPosition = defaultPos;
+
+
     }
+
 
     public void DisplayFieldText(string message, string imagePath)
     {
@@ -46,9 +53,9 @@ public class FieldTalk : MonoBehaviour
     void FadeInDialog()
     {
         var sequence = DOTween.Sequence();
-        sequence.Append(fieldTalkDialog.transform.DOMoveX(defaultPos.x - fadeDistance, 1))
+        sequence.Append(rectTransform.DOAnchorPos(new Vector2(defaultPos.x - fadeDistance,rectTransform.anchoredPosition.y), 1))
         .AppendInterval(3)
-        .Append(fieldTalkDialog.transform.DOMoveX(defaultPos.x, 1))
+        .Append(rectTransform.DOAnchorPos(defaultPos, 1))
         .AppendCallback(() =>
         {
             isDisplay = false;
