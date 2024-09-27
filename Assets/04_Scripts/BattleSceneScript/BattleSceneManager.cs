@@ -1247,6 +1247,7 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         Player turnPlayer = turnCharacter as Player;
         EnemySkill skill = turnPlayer.Skills[selectedSkillIndex];
+        Debug.Log("mouseinittarget");
 
         selectedTargetIndex = 0;
         // 敵への効果だったら
