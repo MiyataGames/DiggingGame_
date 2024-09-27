@@ -1887,7 +1887,7 @@ RectTransform:
   m_GameObject: {fileID: 7694096121011493506}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3787831640969797949}
@@ -1987,6 +1987,7 @@ MonoBehaviour:
     battlePlayerUI: {fileID: 0}
     ResultPlayerUI: {fileID: 0}
     items: []
+    gold: 0
   statusPlayerNameText: {fileID: 2851844782383735038}
   statusIconImage: {fileID: 4503451891880599629}
   frame: {fileID: 4503451893130338482}
