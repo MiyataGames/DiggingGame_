@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
 
 [System.Serializable]
 public class EventDatas
@@ -36,6 +37,8 @@ public class EventDatas
 [RequireComponent(typeof(CapsuleCollider2D))]
 public class StoryEventScript : MonoBehaviour
 {
+
+    [SerializeField] Camera storyBaseCamera;
     [Header("Story or SubStory")]
     public string TypeOfStory;
 
@@ -134,6 +137,8 @@ public class StoryEventScript : MonoBehaviour
         nButton = choosedialog.transform.Find("CommonNButton").GetComponent<Button>();
         nMessage = nButton.transform.Find("CommonNMessagePlate").GetComponent<TextMeshProUGUI>();
         image = talkDialog.transform.Find("CommonIconImagePlate").GetComponent<Image>();
+        var cameraData = storyBaseCamera.GetUniversalAdditionalCameraData();
+        cameraData.cameraStack.Add(GameManager.instance.GeneralUICamera);
     }
 
     private void OnEnable()
@@ -144,26 +149,27 @@ public class StoryEventScript : MonoBehaviour
 
     private void Start()
     {
+        readNext.onClick.AddListener(() => OnClickNextButton());
     }
 
     private void Update()
     {
         //Debug.Log(isCanNextText);
-
+        /*
         //イベント中ではなく，プレイヤーが会話エリアにいたら
         if (isInEventNow == false && isPlayerInErea == true)
         {
-            /* トーク開始をクリックで判定する場合
-            if(Input.GetMouseButton(0)){ // そしてマウスの左クリックされたら
-                //レイを作成
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-                //ヒットしたものが自分なら
-                if(hit.collider != null && hit.collider.gameObject == this.gameObject){
-                    isTalkingNow = true; //会話中フラグをtrue
-                    textStart(); //テキストスタート
-                }
-            }*/
+            // トーク開始をクリックで判定する場合
+            //if(Input.GetMouseButton(0)){ // そしてマウスの左クリックされたら
+            //    //レイを作成
+            //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //    RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+            //    //ヒットしたものが自分なら
+            //    if(hit.collider != null && hit.collider.gameObject == this.gameObject){
+            //        isTalkingNow = true; //会話中フラグをtrue
+            //        textStart(); //テキストスタート
+            //    }
+            //}
 
             if (TriggerIsFkey == true)
             {
@@ -180,7 +186,7 @@ public class StoryEventScript : MonoBehaviour
             {
                 ReadNextMessage();
             }
-        }
+        }*/
     }
 
     /*private void OnTriggerEnter2D(Collider2D other)
@@ -198,6 +204,40 @@ public class StoryEventScript : MonoBehaviour
             }
         }
     }*/
+
+    public void OnClickNextButton()
+    {
+        //if (Input.GetKeyDown(KeyCode.F))
+        //{
+        //    if (isInEventNow == false && isPlayerInErea == true)
+        //    {
+        //            isInEventNow = true; //イベント中フラグをtrue
+        //            textStart(); //テキストスタート
+        //    }
+        //    else if (isInEventNow == true)
+        //    {
+        //        if (isCanNextText == true)
+        //        {
+        //            ReadNextMessage();
+        //        }
+        //    }
+        //}
+        if (isInEventNow == false && isPlayerInErea == true)
+        {
+            if (TriggerIsFkey == true)
+            {
+                isInEventNow = true; //イベント中フラグをtrue
+                textStart(); //テキストスタート
+            }
+        }
+        else if (isInEventNow == true)
+        {
+            if (isCanNextText == true)
+            {
+                ReadNextMessage();
+            }
+        }
+    }
 
     private void OnTriggerExit2D(Collider2D other)
     {

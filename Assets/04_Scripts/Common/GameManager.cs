@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     public GameObject ResultScenePrefab;
     public GameObject[] eventSceneObjects;
 
+    public Camera GeneralUICamera;
     public GameObject CommonDialogCanvas;
 
     [SerializeField] private Transform StoryParent;

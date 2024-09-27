@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     // 入力
     [SerializeField] GameObject canvasForAndroid;
-    [SerializeField] Joystick joystick;
+    [SerializeField] GameController gameController;
 
     public bool IsDigging { get => isDigging; }
 
@@ -368,7 +368,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             */
 
             // 左右の移動
-            keyDirCheck = joystick.Horizontal;
+            keyDirCheck = gameController.Horizonal;
 
             if (keyDirCheck > 0.3)
             {
@@ -544,7 +544,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         //seAudioSource.PlayOneShot(diggingSE);
         //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
-        float keyDirVertical = joystick.Vertical;
+        float keyDirVertical = gameController.Vertical;
         if (Input.GetKey(KeyCode.W) || keyDirCheck >=0 && keyDirCheck < 0.5 && keyDirVertical > 0)
         {
             myAnim.SetFloat("isUp", 1);
