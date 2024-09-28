@@ -145,10 +145,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     // バトル関係
     [SerializeField] private int enemyBaseNumber;
 
-    // 入力
-    [SerializeField] GameObject canvasForAndroid;
-    [SerializeField] GameController gameController;
-
     public bool IsDigging { get => isDigging; }
 
     // Start is called before the first frame update
@@ -173,10 +169,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // saveLoadCtrl.Load();
         myAnim.SetFloat("isLeft", -1);
         SetSoilCollider.enabled = false;
-
-#if UNITY_ANDROID
-        canvasForAndroid.SetActive(true);
-        #endif
     }
 
     private void OnEnable()
@@ -336,6 +328,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     public void HandleTapUpdate()
     {
+
+       // Debug.Log(filedGameStatus);
         if (GameManager.instance.currentGameState == GameState.POSE)
         {
             vx = 0;
@@ -373,7 +367,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             */
 
             // 左右の移動
-            keyDirCheck = gameController.Horizonal;
+            keyDirCheck = InputManager.instance.GameController.Horizonal;
 
             if (keyDirCheck > 0.3)
             {
@@ -501,18 +495,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    // メニューボタンが押されたとき
-    public void TapMenuButton() {
-        // ポーズ中にする
-        GameManager.instance.currentGameState = GameState.MENU;
-        // メニュー画面をひらく
-        filedGameStatus = FieldGameState.MENU;
-        menu.ActivateMenuPanel(true);
-        // ゴールドを表示
-        menu.ActivateGoldText(true);
-        menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
-    }
-
     // 穴掘り関係
     // 掘るアニメーション終了時にアニメーション側から呼び出し
     public void endDiggingAnim()
@@ -549,7 +531,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         //seAudioSource.PlayOneShot(diggingSE);
         //CapsuleCollider2D dc = digCollider.GetComponent<CapsuleCollider2D>();
         //BoxCollider2D dc = digCollider.GetComponent<BoxCollider2D>();
-        float keyDirVertical = gameController.Vertical;
+        float keyDirVertical = InputManager.instance.GameController.Vertical;
         if (Input.GetKey(KeyCode.W) || keyDirCheck >=0 && keyDirCheck < 0.5 && keyDirVertical > 0)
         {
             myAnim.SetFloat("isUp", 1);
@@ -654,6 +636,85 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
+    public void MenuButton()
+    {
+        if(filedGameStatus == FieldGameState.DIGGING)
+        {
+            // ポーズ中にする
+            GameManager.instance.currentGameState = GameState.MENU;
+            // メニュー画面をひらく
+            filedGameStatus = FieldGameState.MENU;
+            menu.ActivateMenuPanel(true);
+            // ゴールドを表示
+            menu.ActivateGoldText(true);
+            menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
+            InputManager.instance.OnClickMenu();
+        }
+        else if (filedGameStatus == FieldGameState.MENU)
+        {
+            // メニュー画面を閉じる
+            menu.ActivateMenuPanel(false);
+            // ゴールドを非表示
+            menu.ActivateGoldText(false);
+            // ポーズ終了
+            GameManager.instance.currentGameState = GameState.PLAYING;
+            filedGameStatus = FieldGameState.DIGGING;
+            InputManager.instance.ReturnFromMenu();
+        }
+        else if (filedGameStatus == FieldGameState.ITEM)
+        {
+            if (currentItemUseStatus == ItemUseStatus.SELECT_ITEM)
+            {
+                // アイテム画面を閉じてメニュー画面を開く
+                menu.ActivateMenuPanel(true);
+                menu.ActivateItemPanel(false);
+                filedGameStatus = FieldGameState.MENU;
+                currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
+            }
+            else if (currentItemUseStatus == ItemUseStatus.SELECT_TARGET)
+            {
+                // 0のものをアイテムリストから除外する
+                if (party.Players[0].Items[selectedItemIndex].ItemCount == 0)
+                {
+                    party.Players[0].Items.RemoveAt(selectedItemIndex);
+                    if (selectedItemIndex != 0)
+                    {
+                        selectedItemIndex--;
+                    }
+                }
+                // アイテムパネルの更新
+                LoadItemData();
+                itemPanel.RefreshActiveCellViews();
+                // ステータス画面を閉じてアイテム画面を開く
+                menu.ActivateStatusPanel(false);
+                menu.ActivateItemPanel(true);
+                filedGameStatus = FieldGameState.ITEM;
+                currentItemUseStatus = ItemUseStatus.SELECT_ITEM;
+            }
+        }
+        else if (filedGameStatus == FieldGameState.STATUS)
+        {
+            if(statusState == StatusState.STATUS_All)
+            {
+                // アイテム画面を閉じてメニュー画面を開く
+                menu.ActivateMenuPanel(true);
+                menu.ActivateStatusPanel(false);
+                filedGameStatus = FieldGameState.MENU;
+            }
+            else if (statusState == StatusState.STATUS_DISCRIPTION)
+            {
+                // ステータス詳細画面をとじる
+                statusDescriptionUIManager.gameObject.SetActive(false);
+                statusState = StatusState.STATUS_All;
+            }
+        }else if(filedGameStatus == FieldGameState.SYSTEM)
+        {
+            menu.ActivateSystemPanel(false);
+            menu.ActivateMenuPanel(true);
+            filedGameStatus = FieldGameState.MENU;
+        }
+    }
+
     // マウスでメニューを選択する
     public void SelectMenuButton(int selectMenuIndex)
     {
@@ -666,6 +727,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             menu.ActivateItemPanel(true);
             filedGameStatus = FieldGameState.ITEM;
             menu.ActivateMenuPanel(false);
+            Debug.Log(filedGameStatus);
             InitItem();
         }
         if (currentMenuCommandNum == (int)MenuCommand.STATUS)

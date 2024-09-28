@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using TMPro;
+using UnityEngine.UI;
+
 
 public class InputManager : MonoBehaviour
 {
@@ -20,32 +24,47 @@ public class InputManager : MonoBehaviour
     }
 
     [SerializeField] GameController gameController;
-    [SerializeField] GameObject inputUIs;
     [SerializeField] GameObject androidFieldUIs;
+    [SerializeField] Button menuButton;
 
     public GameController GameController { get => gameController;}
+
+    // メニュー画面になったら
+    public void OnClickMenu()
+    {
+        menuButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "戻る";
+        gameController.gameObject.SetActive(false);
+        androidFieldUIs.SetActive(false);
+    }
+    // メニュー画面から戻る時
+    public void ReturnFromMenu()
+    {
+        menuButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "メニュー";
+        gameController.gameObject.SetActive(true);
+        androidFieldUIs.SetActive(true);
+    }
 
     // ストーリーが始まった時操作UIを消す
     public void InitStory()
     {
         androidFieldUIs.SetActive(false);
-        inputUIs.SetActive(false);
+        gameController.gameObject.SetActive(false);
     }
     public void InitBattle()
     {
-        inputUIs.SetActive(false);
+        gameController.gameObject.SetActive(false);
         androidFieldUIs.SetActive(false);
     }
     // フィールドシーンで操作できるようになったら
     public void EnableInputField()
     {
-        inputUIs.SetActive(true);
+        gameController.gameObject.SetActive(true);
         androidFieldUIs.SetActive(true);
     }
     // ストーリーシーンで操作できるようになったら
     public void EnableInputStory()
     {
         androidFieldUIs.SetActive(false);
-        inputUIs.SetActive(true);
+        gameController.gameObject.SetActive(true);
     }
 }

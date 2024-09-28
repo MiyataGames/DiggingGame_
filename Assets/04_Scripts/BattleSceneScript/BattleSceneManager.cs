@@ -2208,6 +2208,9 @@ public class BattleSceneManager : MonoBehaviour, IEnhancedScrollerDelegate
             diggingGridManager.UseGridItem(position);
         }
         Debug.Log("敵の数" + activeEnemies.Count);
+        yield return new WaitForSeconds(0.5f);
+        Debug.Log("敵の数" + activeEnemies.Count);
+
         // 戦闘不能チェック
         for (int i = 0; i < activeEnemies.Count; i++)
         {
