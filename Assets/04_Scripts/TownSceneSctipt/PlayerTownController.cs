@@ -228,17 +228,13 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             vx = 0;
             vy = 0;
-            myAnim.SetBool("isWalking", false);
+            myAnim.SetBool("isWalk", false);
             return;
         }
 
         // ゲームがメニュー中でないかつ穴掘り中だったら
         if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
         {
-            // 移動
-            vx = 0;
-            vy = 0;
-            myAnim.SetBool("isWalk", false);
             // 左右の移動
             keyDirHorizonalCheck = InputManager.instance.GameController.Horizonal;
             keyDirVerticalCheck = InputManager.instance.GameController.Vertical;
@@ -273,6 +269,11 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
                 myAnim.SetBool("isWalk", true);
                 myAnim.SetFloat("x", 0);
                 myAnim.SetFloat("y", -1);
+            }
+            else
+            {
+                vx = 0;vy = 0;
+                myAnim.SetBool("isWalk", false);
             }
         }
 

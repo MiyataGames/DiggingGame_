@@ -49,22 +49,26 @@ public class InputManager : MonoBehaviour
     {
         androidFieldUIs.SetActive(false);
         gameController.gameObject.SetActive(false);
+        menuButton.gameObject.SetActive(false);
     }
     public void InitBattle()
     {
         gameController.gameObject.SetActive(false);
         androidFieldUIs.SetActive(false);
+        menuButton.gameObject.SetActive(false);
     }
     // フィールドシーンで操作できるようになったら
     public void EnableInputField()
     {
         gameController.gameObject.SetActive(true);
         androidFieldUIs.SetActive(true);
+        menuButton.gameObject.SetActive(true);
     }
     // ストーリーシーンで操作できるようになったら
     public void EnableInputStory()
     {
         androidFieldUIs.SetActive(false);
+        menuButton.gameObject.SetActive(true);
         gameController.gameObject.SetActive(true);
     }
 }
