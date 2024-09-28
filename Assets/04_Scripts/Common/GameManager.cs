@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour
         {
             //skipButton.SetActive(false);
         }
+        
     }
 
     private void Update()

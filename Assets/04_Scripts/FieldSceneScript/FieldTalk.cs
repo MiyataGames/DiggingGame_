@@ -23,12 +23,13 @@ public class FieldTalk : MonoBehaviour
     RectTransform rectTransform;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         //defaultPos = fieldTalkDialog.transform.position;
         // defaultPos.x = Screen.width + 250;
         rectTransform = fieldTalkDialog.GetComponent<RectTransform>();
-        defaultPos.x = Screen.width /2;
+        defaultPos.x = GameManager.instance.targetResolution.x /2;
+        defaultPos.y = GameManager.instance.targetResolution.y / 4;
         Debug.Log("Screen : " + Screen.width);
         //fieldTalkDialog.transform.position = defaultPos;
         rectTransform.anchoredPosition = defaultPos;

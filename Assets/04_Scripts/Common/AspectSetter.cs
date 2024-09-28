@@ -8,7 +8,7 @@ public class AspectSetter : MonoBehaviour
     Camera _camera;   // 目標の解像度
     [SerializeField] bool isUpdate;                 // 毎フレーム画面をそろえるか
 
-    private void Start()
+    private void Awake()
     {
         if (Application.isPlaying)
         {
@@ -33,15 +33,13 @@ public class AspectSetter : MonoBehaviour
         {
             rect.width = rate;
             rect.x = 0.5f - rect.width * 0.5f;
-            /*
-            GameManager.instance.currentResolution.x = rate * Screen.width;
-            GameManager.instance.currentResolution.y =
-            */
+            
         }// 盾をそろえる
         else
         {
             rect.height = 1 / rate;
             rect.y = 0.5f - rect.height * 0.5f;
+
         }
         Debug.Log("x" + rect.x+"y"+rect.y);
 
