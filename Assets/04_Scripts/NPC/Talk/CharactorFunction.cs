@@ -92,6 +92,10 @@ public class CharactorFunction : MonoBehaviour
         GameManager.instance.currentGameState = GameState.PLAYING;
         Camera.main.GetComponent<FollowPlayerScript>().enabled = true;
         storyEventScript.ReadNextMessage();
+        // 入力を有効にする
+#if UNITY_ANDROID
+        InputManager.instance.EnableInputStory();
+#endif
     }
 
     void Update()

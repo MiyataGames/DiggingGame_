@@ -182,6 +182,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
     private void OnEnable()
     {
         isDigging = false;
+#if UNITY_ANDROID
+        // 指を離した状態に強制的に戻す
+        InputManager.instance.GameController.OnReleaseButton();
+        InputManager.instance.EnableInputField();
+#endif
         // this.GetComponent<SpriteRenderer>().flipX = false;
         // Debug.Log(this.GetComponent<SpriteRenderer>().flipX);
     }

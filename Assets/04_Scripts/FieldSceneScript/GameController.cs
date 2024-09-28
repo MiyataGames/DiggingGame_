@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
     {
         vertical = 1;
     }
-    void OnReleaseButton()
+    public void OnReleaseButton()
     {
         vertical = 0;
         horizonal = 0;

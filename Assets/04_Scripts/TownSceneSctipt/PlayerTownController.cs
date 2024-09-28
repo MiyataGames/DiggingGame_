@@ -16,13 +16,7 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
     [SerializeField] private Rigidbody2D rb;
     private float vx;
     private float vy;
-    private float minVelocityY = -9.0f;
-    private float maxVelocityY = 10.0f;
-    private bool pushFlag;
-    private bool jumpFlag;
-    private bool groundFlag;
 
-    private Define.DirectionNumber currentDirectionNumber;
     [SerializeField] private Menu menu;
 
     public static FieldGameState filedGameStatus;
@@ -78,6 +72,10 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
     private int selectedStatusIndex;
     [SerializeField] private PlayerStatusUIsManager playerStatusUIsManager;
     [SerializeField] private StatusDescriptionUIManager statusDescriptionUIManager;
+
+    // 入力
+    private float keyDirHorizonalCheck;
+    private float keyDirVerticalCheck;
 
     // Start is called before the first frame update
     private void Awake()
@@ -146,31 +144,13 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
         // ゲームがメニュー中でないかつ穴掘り中だったら
         if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
         {
-            // サーチ
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                // サーチ機能
-            }
-            // メニュー画面
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                // ポーズ中にする
-                GameManager.instance.currentGameState = GameState.MENU;
-                // メニュー画面をひらく
-                filedGameStatus = FieldGameState.MENU;
-                menu.ActivateMenuPanel(true);
-                menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
-            }
-            // マップ
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                // マップを開く
-            }
-
+            
             // 移動
             vx = 0;
             vy = 0;
             myAnim.SetBool("isWalk", false);
+            
+
 
             if (Input.GetKey(KeyCode.A))// A：左
             {
@@ -213,6 +193,89 @@ public class PlayerTownController : MonoBehaviour, IEnhancedScrollerDelegate
             }
 
         }
+
+        // メインパネルを選択中だったら
+        else if (filedGameStatus == FieldGameState.MENU)
+        {
+            HandleMenuSelect();
+        }
+        // アイテムを選択中だったら
+        else if (filedGameStatus == FieldGameState.ITEM)
+        {
+            HandleItemSelect();
+        }
+        // ステータスを選択中だったら
+        else if (filedGameStatus == FieldGameState.STATUS)
+        {
+            if (statusState == StatusState.STATUS_All)
+            {
+                HandleStatusSelect();
+            }
+            else if (statusState == StatusState.STATUS_DISCRIPTION)
+            {
+                HandleStatusDescription();
+            }
+        }
+        // システムを選択中だったら
+        else if (filedGameStatus == FieldGameState.SYSTEM)
+        {
+            HandleSystemSelect();
+        }
+    }
+    public void HandleTapUpdate()
+    {
+        if (GameManager.instance.currentGameState == GameState.POSE)
+        {
+            vx = 0;
+            vy = 0;
+            myAnim.SetBool("isWalking", false);
+            return;
+        }
+
+        // ゲームがメニュー中でないかつ穴掘り中だったら
+        if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
+        {
+            // 移動
+            vx = 0;
+            vy = 0;
+            myAnim.SetBool("isWalk", false);
+            // 左右の移動
+            keyDirHorizonalCheck = InputManager.instance.GameController.Horizonal;
+            keyDirVerticalCheck = InputManager.instance.GameController.Vertical;
+            if (keyDirVerticalCheck == 0 && keyDirHorizonalCheck == -1)// A：左
+            {
+                vx = -speed;
+                playerVec = PlayerVec.Left;
+                myAnim.SetBool("isWalk", true);
+                myAnim.SetFloat("x", -1);
+                myAnim.SetFloat("y", 0);
+            }
+            else if (keyDirVerticalCheck == 0 && keyDirHorizonalCheck == 1)// D：右
+            {
+                vx = speed;
+                playerVec = PlayerVec.Right;
+                myAnim.SetBool("isWalk", true);
+                myAnim.SetFloat("x", 1);
+                myAnim.SetFloat("y", 0);
+            }
+            else if (keyDirVerticalCheck == 1 && keyDirHorizonalCheck == 0)// 上キーを入力
+            {
+                vy = speed;
+                playerVec = PlayerVec.Up;
+                myAnim.SetBool("isWalk", true);
+                myAnim.SetFloat("x", 0);
+                myAnim.SetFloat("y", 1);
+            }
+            else if (keyDirVerticalCheck == -1 && keyDirHorizonalCheck == 0)// 下キーを入力
+            {
+                vy = -speed;
+                playerVec = PlayerVec.Down;
+                myAnim.SetBool("isWalk", true);
+                myAnim.SetFloat("x", 0);
+                myAnim.SetFloat("y", -1);
+            }
+        }
+
 
         // メインパネルを選択中だったら
         else if (filedGameStatus == FieldGameState.MENU)

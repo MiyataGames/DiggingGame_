@@ -103,9 +103,7 @@ public class GameManager : MonoBehaviour
         {
 #if UNITY_ANDROID
                 playerController.HandleTapUpdate();
-#endif
-
-#if UNITY_WEBGL
+#else
                 playerController.HandleKeyUpdate();
 #endif
 /*#if UNITY_EDITOR
@@ -119,7 +117,11 @@ public class GameManager : MonoBehaviour
         }
         else if (currentSceneIndex == (int)GameMode.TOWN_SCENE)
         {
+#if UNITY_ANDROID
+            playerTownController.HandleTapUpdate();
+#else
             playerTownController.HandleUpdate();
+#endif
         }
         /*
         else if (currentSceneIndex == (int)GameMode.RESULT_SCENE)
@@ -192,12 +194,20 @@ public class GameManager : MonoBehaviour
         Debug.Log(storyPrefab);
         nowStoryScene = Instantiate(storyPrefab, new Vector3(0, 0, 0), Quaternion.identity, StoryParent);
         nowStoryScene.transform.SetAsFirstSibling();
+        // ストーリーが始まったら操作ボタンを消す
+#if UNITY_ANDROID
+        InputManager.instance.InitStory();
+        InputManager.instance.GameController.OnReleaseButton();
+#endif
     }
 
     //private bool FirstBattle = true;
 
     public void StartBattle(GameObject enemyObj, int enemyBaseNumber)
     {
+#if UNITY_ANDROID
+        InputManager.instance.InitBattle();
+#endif
         enemySymbol = enemyObj;
         //ActivateCurrentScene(currentSceneIndex);
         battleSceneManager.StartBattle();

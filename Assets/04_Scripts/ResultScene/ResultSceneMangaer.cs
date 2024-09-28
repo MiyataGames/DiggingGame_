@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public enum ResultState
 {
@@ -18,6 +19,7 @@ public class ResultSceneMangaer : MonoBehaviour
 
     //[SerializeField] private Camera resultSceneCamera;
     [SerializeField] private GameObject resultPanel;
+    [SerializeField] private Button resultPanelButton;
 
     [SerializeField] private GameObject resultAreaPanel;
     [SerializeField] private GameObject resultDropPanel;
@@ -27,34 +29,15 @@ public class ResultSceneMangaer : MonoBehaviour
     private static readonly int hashWin = Animator.StringToHash("Base Layer.Win");
     private GameObject playerModel;
 
+    private void Start()
+    {
+        resultPanelButton = resultPanel.GetComponent<Button>();
+        resultPanelButton.onClick.AddListener(()=>OnClickNextButton());
+    }
+
+
     private void Update()
     {
-        if (resultState == ResultState.RESULT_LEVELUP_END)
-        {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                resultState = ResultState.RESULT_DROP;
-                // 経験値リザルトをオフ
-                resultAreaPanel.SetActive(false);
-                // ドロップリザルトをオン
-                resultDropPanel.SetActive(true);
-                // 必要な情報を書き込む
-                ShowDropObjectsText();
-            }
-        }
-        else if (resultState == ResultState.RESULT_DROP)
-        {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                DeleteDropObjectTexts();
-                GameManager.instance.CurrentSceneIndex = (int)GameMode.FIELD_SCENE;
-                // リザルトの子オブジェクトを削除
-                //Destroy(playerModel);
-                //resultPanel.SetActive(false);
-                // 経験値リザルトをオン
-                resultAreaPanel.SetActive(true);
-            }
-        }
         /*
         if (resultState == ResultState.END)
         {
@@ -66,6 +49,30 @@ public class ResultSceneMangaer : MonoBehaviour
                 resultPanel.SetActive(false);
             }
         }*/
+    }
+
+    void OnClickNextButton()
+    {
+        if (resultState == ResultState.RESULT_LEVELUP_END)
+        {
+                resultState = ResultState.RESULT_DROP;
+                // 経験値リザルトをオフ
+                resultAreaPanel.SetActive(false);
+                // ドロップリザルトをオン
+                resultDropPanel.SetActive(true);
+                // 必要な情報を書き込む
+                ShowDropObjectsText();
+        }
+        else if (resultState == ResultState.RESULT_DROP)
+        {
+                DeleteDropObjectTexts();
+                GameManager.instance.CurrentSceneIndex = (int)GameMode.FIELD_SCENE;
+                // リザルトの子オブジェクトを削除
+                //Destroy(playerModel);
+                //resultPanel.SetActive(false);
+                // 経験値リザルトをオン
+                resultAreaPanel.SetActive(true);
+        }
     }
 
     public IEnumerator ResultPlayer(Player player)
