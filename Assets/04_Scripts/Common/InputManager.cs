@@ -22,6 +22,14 @@ public class InputManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+#if !UNITY_ANDROID
+    private void Start()
+    {
+        gameController.gameObject.SetActive(false);
+        androidFieldUIs.SetActive(false);
+        menuButton.gameObject.SetActive(false);
+    }
+#endif
 
     [SerializeField] GameController gameController;
     [SerializeField] GameObject androidFieldUIs;

@@ -918,7 +918,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    #region
+#region
 
     // アイテム関係 ===========
 
@@ -1072,9 +1072,9 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    #endregion
+#endregion
 
-    #region
+#region
 
     // ステータス関係　=======================
     private void InitStatus()
@@ -1196,7 +1196,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    #endregion
+#endregion
 
     // システム関係　=======================
     // マウスでセーブを選択
