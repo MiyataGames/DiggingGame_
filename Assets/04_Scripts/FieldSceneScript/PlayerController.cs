@@ -346,25 +346,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         // ゲームがメニュー中でないかつ穴掘り中だったら
         if (GameManager.instance.currentGameState != GameState.MENU && filedGameStatus == FieldGameState.DIGGING)
         {
-            /*
-            // メニュー画面
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                // ポーズ中にする
-                GameManager.instance.currentGameState = GameState.MENU;
-                // メニュー画面をひらく
-                filedGameStatus = FieldGameState.MENU;
-                menu.ActivateMenuPanel(true);
-                // ゴールドを表示
-                menu.ActivateGoldText(true);
-                menu.ActivateMenuSelectArrow((int)MenuCommand.ITEM);
-            }
-            // マップ
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                // マップを開く
-            }
-            */
 
             // 左右の移動
             keyDirCheck = InputManager.instance.GameController.Horizonal;
@@ -399,29 +380,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
                 myAnim.SetBool("isWalking", false);
             }
             /*
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (isDigging == false)
-                {
-                    startDigAction();
-                }
-            }
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                if (isDigging == false)
-                {
-                    if (SetSoilCollider != null)
-                    {
-                        SetSoilCollider.enabled = true;
-
-                        Bounds bounds = SetSoilCollider.bounds;
-
-                        SetSoilTile(bounds);
-                    }
-                }
-            }
-
             // ジャンプボタンが押されたことをフラグで管理
             if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
             {
@@ -438,34 +396,6 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             WallJump();
         }
 
-        
-        // メインパネルを選択中だったら
-        else if (filedGameStatus == FieldGameState.MENU)
-        {
-            HandleMenuSelect();
-        }
-        // アイテムを選択中だったら
-        else if (filedGameStatus == FieldGameState.ITEM)
-        {
-            HandleItemSelect();
-        }
-        // ステータスを選択中だったら
-        else if (filedGameStatus == FieldGameState.STATUS)
-        {
-            if (statusState == StatusState.STATUS_All)
-            {
-                HandleStatusSelect();
-            }
-            else if (statusState == StatusState.STATUS_DISCRIPTION)
-            {
-                HandleStatusDescription();
-            }
-        }
-        // システムを選択中だったら
-        else if (filedGameStatus == FieldGameState.SYSTEM)
-        {
-            HandleSystemSelect();
-        }
     }
 
     // ジャンプボタンが押されたとき
@@ -474,6 +404,18 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (isGrounded())
         {
             jumpPressed = true;
+        }
+        // 壁ジャンプ
+        if (isWallSliding)
+        {
+            myAnim.SetBool("isJumping", false);
+            myAnim.SetBool("isWallJumping", true);
+            isWallJumping = true;
+
+            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+
+            wallJumpingCounter = 0f;
+            inputBlockTimer = wallJumpingDuration;
         }
     }
 
@@ -560,6 +502,8 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
 
         myAnim.SetBool("isJumping", false);
+        myAnim.SetBool("isWallGriping", false);
+        myAnim.SetBool("isWallJumping", false);
         myAnim.SetBool("isWalking", false);
         myAnim.SetBool("isDigging", true);
     }
@@ -1228,6 +1172,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             isWallJumping = false;
             inputBlockTimer = 0f;
             myAnim.SetBool("isJumping", false);
+            myAnim.SetBool("isWallJumping", false);
         }
 
         // ジャンプ処理
@@ -1235,7 +1180,7 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpPressed = false;
-            if (isDigging == false)
+            if (isDigging == false && !isWallSliding)
             {
                 myAnim.SetBool("isWalking", false);
                 myAnim.SetBool("isJumping", true);
@@ -1347,11 +1292,14 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (IsWalled() && !isGrounded() && keyDirCheck != 0f)
         {
             isWallSliding = true;
+            myAnim.SetBool("isJumping", false);
+            myAnim.SetBool("isWallGriping", true);
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
             isWallSliding = false;
+            myAnim.SetBool("isWallGriping", false);
         }
     }
 
@@ -1380,8 +1328,11 @@ public class PlayerController : MonoBehaviour, IEnhancedScrollerDelegate
             wallJumpingCounter -= Time.deltaTime;
         }
 
+        // 壁ジャンプ
         if (Input.GetKeyDown(KeyCode.Space) && isWallSliding)
         {
+            myAnim.SetBool("isJumping", false);
+            myAnim.SetBool("isWallJumping", true);
             isWallJumping = true;
 
             rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
