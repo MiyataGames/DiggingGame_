@@ -1,4 +1,4 @@
-public class SkillCellData
+﻿public class SkillCellData
 {
     public int selectedIndex;
     public bool isSelected;

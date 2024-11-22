@@ -1,9 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ƒRƒCƒ“‚Ìƒ}ƒXƒ^[ƒf[ƒ^
+/// ã‚³ã‚¤ãƒ³ã®ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿
 
 /// </summary>
 [CreateAssetMenu(menuName = "Base/CoinBase")]

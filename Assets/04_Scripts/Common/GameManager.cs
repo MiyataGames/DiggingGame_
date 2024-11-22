@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,12 +31,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    public Vector2 targetResolution = new Vector2(1920, 1080);
+    public Vector2 currentResolution;
     public GameObject[] fieldObjects;
     public GameObject fieldSceneElements;
     public GameObject[] battleFieldPrefabs;
     public GameObject ResultScenePrefab;
     public GameObject[] eventSceneObjects;
 
+    public Camera GeneralUICamera;
     public GameObject CommonDialogCanvas;
 
     [SerializeField] private Transform StoryParent;
@@ -89,6 +93,7 @@ public class GameManager : MonoBehaviour
         {
             //skipButton.SetActive(false);
         }
+        
     }
 
     private void Update()
@@ -96,7 +101,15 @@ public class GameManager : MonoBehaviour
         //Debug.Log(currentSceneIndex);
         if (currentSceneIndex == (int)GameMode.FIELD_SCENE)
         {
-            playerController.HandleUpdate();
+#if UNITY_ANDROID
+                playerController.HandleTapUpdate();
+#else
+                playerController.HandleKeyUpdate();
+#endif
+/*#if UNITY_EDITOR
+            playerController.HandleKeyUpdate();
+            Debug.Log("Editor");
+#endif*/
         }
         else if (currentSceneIndex == (int)GameMode.BATTLE_SCENE)
         {
@@ -104,7 +117,11 @@ public class GameManager : MonoBehaviour
         }
         else if (currentSceneIndex == (int)GameMode.TOWN_SCENE)
         {
+#if UNITY_ANDROID
+            playerTownController.HandleTapUpdate();
+#else
             playerTownController.HandleUpdate();
+#endif
         }
         /*
         else if (currentSceneIndex == (int)GameMode.RESULT_SCENE)
@@ -177,12 +194,20 @@ public class GameManager : MonoBehaviour
         Debug.Log(storyPrefab);
         nowStoryScene = Instantiate(storyPrefab, new Vector3(0, 0, 0), Quaternion.identity, StoryParent);
         nowStoryScene.transform.SetAsFirstSibling();
+        // ストーリーが始まったら操作ボタンを消す
+#if UNITY_ANDROID
+        InputManager.instance.InitStory();
+        InputManager.instance.GameController.OnReleaseButton();
+#endif
     }
 
     //private bool FirstBattle = true;
 
     public void StartBattle(GameObject enemyObj, int enemyBaseNumber)
     {
+#if UNITY_ANDROID
+        InputManager.instance.InitBattle();
+#endif
         enemySymbol = enemyObj;
         //ActivateCurrentScene(currentSceneIndex);
         battleSceneManager.StartBattle();
