@@ -88,7 +88,7 @@ public class CharactorFunction : MonoBehaviour
         storyEventScript.ReadNextMessage();
     }
 
-    protected void EndEvent(){
+    protected  virtual void EndEvent(){
         GameManager.instance.currentGameState = GameState.PLAYING;
         Camera.main.GetComponent<FollowPlayerScript>().enabled = true;
         storyEventScript.ReadNextMessage();
